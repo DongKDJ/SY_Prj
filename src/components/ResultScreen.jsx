@@ -1,5 +1,6 @@
 import { useState, useEffect, useMemo } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
+import { getDessertImage } from '../assets/imageMap'
 
 // 컨페티 파티클 생성
 function createConfetti(id) {
@@ -121,7 +122,10 @@ export default function ResultScreen({ result, onViewBook }) {
                            border-2 border-white/40 backdrop-blur-sm"
               >
                 {/* placeholder 디저트 이미지 */}
-                <span className="text-7xl md:text-8xl">🍰</span>
+                {getDessertImage(result.image)
+                  ? <img src={getDessertImage(result.image)} alt={result.name} className="w-32 h-32 md:w-44 md:h-44 object-contain" />
+                  : <span className="text-7xl md:text-8xl">🍰</span>
+                }
               </motion.div>
 
               {/* 디저트 이름 */}
@@ -195,7 +199,10 @@ export default function ResultScreen({ result, onViewBook }) {
                     {/* 디저트 이미지 placeholder */}
                     <div className="flex-1 w-full bg-cream-dark/30
                                     flex items-center justify-center">
-                      <span className="text-8xl md:text-9xl">🍰</span>
+                      {getDessertImage(result.image)
+                        ? <img src={getDessertImage(result.image)} alt={result.name} className="w-full h-full object-contain p-4" />
+                        : <span className="text-8xl md:text-9xl">🍰</span>
+                      }
                     </div>
                     {/* 카드 하단: 이름 */}
                     <div className="w-full px-4 py-3 bg-white/60 text-center

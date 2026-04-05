@@ -1,6 +1,7 @@
 import { useState } from 'react'
 import { motion } from 'framer-motion'
 import StarParticles from './shared/StarParticles'
+import { getCardImage } from '../assets/imageMap'
 
 export default function CardSelect({ stage, onSelect, dark = false }) {
   const [selectedId, setSelectedId] = useState(null)
@@ -11,8 +12,6 @@ export default function CardSelect({ stage, onSelect, dark = false }) {
   const handlePick = (card) => {
     if (selectedId) return
     setSelectedId(card.id)
-
-    // 선택 → glow → 뒤집기 → 확대 뷰로 전환
     setTimeout(() => setFlippedId(card.id), 500)
     setTimeout(() => onSelect(card.id), 1800)
   }
@@ -37,6 +36,7 @@ export default function CardSelect({ stage, onSelect, dark = false }) {
           const isSelected = selectedId === card.id
           const isOther = selectedId && !isSelected
           const isFlipped = flippedId === card.id
+          const backImg = getCardImage(card.backImage)
 
           return (
             <motion.div
@@ -57,26 +57,43 @@ export default function CardSelect({ stage, onSelect, dark = false }) {
                 disabled={!!selectedId}
               >
                 <div className={`card-inner ${isFlipped ? 'flipped' : ''}`}>
-                  {/* 뒷면 (처음 보이는 면) — 설명 */}
+                  {/* 뒷면 (처음 보이는 면) — 설명 카드 */}
                   <div className="card-face bg-card border-2 border-cabin/20
-                                  flex flex-col items-center justify-center p-3 shadow-lg">
-                    <div className="w-full h-full bg-cream-dark rounded-xl
-                                    flex flex-col items-center justify-center gap-2 p-2">
-                      <span className="text-3xl">{card.emoji}</span>
-                      <span className="text-sm font-bold text-brown">{card.label}</span>
-                      <p className="text-[11px] text-brown-light/70 text-center leading-snug px-1">
-                        {card.brief}
-                      </p>
+                                  flex flex-col items-center justify-center p-2 shadow-lg">
+                    <div className="w-full h-full rounded-xl overflow-hidden
+                                    flex flex-col items-center justify-center relative">
+                      {backImg ? (
+                        <img src={backImg} alt={card.label}
+                             className="w-full h-full object-cover" />
+                      ) : (
+                        <div className="w-full h-full bg-cream-dark flex flex-col
+                                        items-center justify-center gap-2 p-2">
+                          <span className="text-3xl">{card.emoji}</span>
+                          <span className="text-sm font-bold text-brown">{card.label}</span>
+                          <p className="text-[11px] text-brown-light/70 text-center leading-snug px-1">
+                            {card.brief}
+                          </p>
+                        </div>
+                      )}
                     </div>
                   </div>
 
-                  {/* 앞면 (뒤집힌 후) — 재료 */}
+                  {/* 앞면 (뒤집힌 후) — 재료 카드 */}
                   <div className="card-face card-face-front bg-card border-2 border-cabin
-                                  flex flex-col items-center justify-center p-3 shadow-xl">
-                    <div className="w-full h-full bg-cream rounded-xl
-                                    flex flex-col items-center justify-center gap-3">
-                      <span className="text-5xl">{card.ingredientEmoji}</span>
-                      <span className="text-base font-bold text-brown">{card.ingredient}</span>
+                                  flex flex-col items-center justify-center p-2 shadow-xl">
+                    <div className="w-full h-full rounded-xl overflow-hidden
+                                    flex flex-col items-center justify-center">
+                      {backImg ? (
+                        /* 앞면도 같은 카드 이미지 사용 — 나중에 frontImage로 분리 가능 */
+                        <img src={backImg} alt={card.ingredient}
+                             className="w-full h-full object-cover" />
+                      ) : (
+                        <div className="w-full h-full bg-cream flex flex-col
+                                        items-center justify-center gap-3">
+                          <span className="text-5xl">{card.ingredientEmoji}</span>
+                          <span className="text-base font-bold text-brown">{card.ingredient}</span>
+                        </div>
+                      )}
                     </div>
                   </div>
                 </div>
@@ -99,7 +116,6 @@ export default function CardSelect({ stage, onSelect, dark = false }) {
         })}
       </div>
 
-      {/* 안내 텍스트 */}
       {!selectedId && (
         <motion.p
           initial={{ opacity: 0 }}

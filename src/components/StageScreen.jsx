@@ -1,6 +1,7 @@
 import { useState, useRef } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
 import IngredientStack from './shared/IngredientStack'
+import { getCardImage } from '../assets/imageMap'
 import CardSelect from './CardSelect'
 import { stages, foxDialogs } from '../data/desserts'
 
@@ -220,23 +221,26 @@ export default function StageScreen({ stageIndex, selections, onSelect, onComple
                   className="relative z-10 flex flex-col items-center"
                 >
                   {/* 확대된 카드 */}
-                  <div className="w-56 h-80 md:w-72 md:h-[26rem] bg-card rounded-3xl
-                                  border-2 border-cabin/30 shadow-2xl overflow-hidden
-                                  flex flex-col items-center justify-center card-glow">
-                    {/* 카드 이미지 영역 (placeholder) */}
-                    <div className="flex-1 w-full bg-cream-dark/50 flex items-center justify-center">
-                      <span className="text-6xl md:text-7xl">{card.ingredientEmoji}</span>
-                    </div>
-                    {/* 이미지 타이틀 */}
-                    <div className="w-full px-4 py-4 bg-white/80 text-center">
-                      <p className="text-lg md:text-xl font-bold text-brown">
-                        {card.ingredient}
-                      </p>
-                      <p className="text-xs text-brown-light/60 mt-1">
-                        {card.brief}
-                      </p>
-                    </div>
-                  </div>
+                  {(() => {
+                    const cardImg = getCardImage(card.backImage)
+                    return (
+                      <div className="w-56 h-80 md:w-72 md:h-[26rem] bg-card rounded-3xl
+                                      border-2 border-cabin/30 shadow-2xl overflow-hidden
+                                      flex flex-col card-glow">
+                        <div className="flex-1 w-full bg-cream-dark/50 flex items-center justify-center overflow-hidden">
+                          {cardImg ? (
+                            <img src={cardImg} alt={card.ingredient} className="w-full h-full object-cover" />
+                          ) : (
+                            <span className="text-6xl md:text-7xl">{card.ingredientEmoji}</span>
+                          )}
+                        </div>
+                        <div className="w-full px-4 py-4 bg-white/80 text-center">
+                          <p className="text-lg md:text-xl font-bold text-brown">{card.ingredient}</p>
+                          <p className="text-xs text-brown-light/60 mt-1">{card.brief}</p>
+                        </div>
+                      </div>
+                    )
+                  })()}
 
                   {/* 설명 텍스트 */}
                   <motion.div

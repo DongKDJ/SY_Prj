@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
 import { dessertResults } from '../data/desserts'
+import { getDessertImage, cardBack } from '../assets/imageMap'
 
 const allDesserts = Object.values(dessertResults).sort((a, b) => a.id - b.id)
 
@@ -90,9 +91,11 @@ export default function DessertBook({ currentResult, onRestart, onExit }) {
                           /* 앞면: 카드 이미지만 (이름/설명 없음) */
                           <div className="w-full h-full flex flex-col">
                             <div className="flex-1 bg-gradient-to-b from-cream via-cream-dark/20 to-cabin-light/10
-                                            flex items-center justify-center">
-                              {/* placeholder 디저트 이미지 */}
-                              <span className="text-4xl md:text-5xl">🍰</span>
+                                            flex items-center justify-center overflow-hidden">
+                              {getDessertImage(d.image)
+                                ? <img src={getDessertImage(d.image)} alt={d.name} className="w-full h-full object-cover" />
+                                : <span className="text-4xl md:text-5xl">🍰</span>
+                              }
                             </div>
                             {/* 하단: 조합법 */}
                             <div className="px-1.5 py-2 bg-cabin/8 text-center border-t border-cabin/10">
@@ -109,32 +112,12 @@ export default function DessertBook({ currentResult, onRestart, onExit }) {
                             )}
                           </div>
                         ) : (
-                          /* 뒷면: 장식 패턴 */
-                          <div className="w-full h-full
-                                          bg-gradient-to-br from-[#E8D5C0] via-[#D4C0A8] to-[#C8B498]
-                                          flex items-center justify-center relative">
-                            {/* 외곽 장식 */}
-                            <div className="absolute inset-2.5 border-2 border-cabin/12 rounded-xl" />
-                            <div className="absolute inset-5 border border-cabin/8 rounded-lg" />
-                            {/* 중앙 원형 문양 */}
-                            <div className="relative w-14 h-14 md:w-16 md:h-16">
-                              <div className="absolute inset-0 border-2 border-cabin/15 rounded-full" />
-                              <div className="absolute inset-2 border border-cabin/10 rounded-full" />
-                              <div className="absolute inset-0 flex items-center justify-center">
-                                <div className="w-5 h-5 md:w-6 md:h-6 bg-cabin/10 rounded-full
-                                                flex items-center justify-center">
-                                  <span className="text-cabin/30 text-sm font-bold">?</span>
-                                </div>
-                              </div>
+                          /* 뒷면: card-back 이미지 */
+                          <div className="w-full h-full flex flex-col">
+                            <div className="flex-1 overflow-hidden flex items-center justify-center">
+                              <img src={cardBack} alt="미해금" className="w-full h-full object-cover opacity-70" />
                             </div>
-                            {/* 꼭짓점 장식 */}
-                            <div className="absolute top-3 left-3 w-3 h-3 border border-cabin/10 rounded-full" />
-                            <div className="absolute top-3 right-3 w-3 h-3 border border-cabin/10 rounded-full" />
-                            <div className="absolute bottom-3 left-3 w-3 h-3 border border-cabin/10 rounded-full" />
-                            <div className="absolute bottom-3 right-3 w-3 h-3 border border-cabin/10 rounded-full" />
-                            {/* 하단 */}
-                            <div className="absolute bottom-0 left-0 right-0 px-1.5 py-2
-                                            bg-cabin/8 text-center border-t border-cabin/10 rounded-b-xl">
+                            <div className="px-1.5 py-2 bg-cabin/8 text-center border-t border-cabin/10">
                               <p className="text-[10px] md:text-xs text-brown/40 font-semibold">???</p>
                             </div>
                           </div>
@@ -225,7 +208,10 @@ export default function DessertBook({ currentResult, onRestart, onExit }) {
                     <div className="bg-card rounded-2xl border-2 border-cabin/20
                                     shadow-xl overflow-hidden aspect-[3/4]
                                     flex items-center justify-center">
-                      <span className="text-7xl md:text-8xl">🍰</span>
+                      {getDessertImage(detailDessert.image)
+                        ? <img src={getDessertImage(detailDessert.image)} alt={detailDessert.name} className="w-full h-full object-contain p-2" />
+                        : <span className="text-7xl md:text-8xl">🍰</span>
+                      }
                     </div>
                   </div>
 
