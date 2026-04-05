@@ -4,7 +4,12 @@ import { dessertResults } from '../data/desserts'
 
 const allDesserts = Object.values(dessertResults).sort((a, b) => a.id - b.id)
 
-// localStorage로 해금 목록 관리
+// 4개씩 행으로 나누기
+const rows = []
+for (let i = 0; i < allDesserts.length; i += 4) {
+  rows.push(allDesserts.slice(i, i + 4))
+}
+
 function getUnlocked() {
   try {
     const saved = localStorage.getItem('fox-dessert-unlocked')
@@ -21,7 +26,6 @@ export default function DessertBook({ currentResult, onRestart, onExit }) {
   const [unlockedIds, setUnlockedIds] = useState(() => getUnlocked())
   const [detailDessert, setDetailDessert] = useState(null)
 
-  // 현재 결과를 해금 목록에 추가
   useEffect(() => {
     if (currentResult && !unlockedIds.includes(currentResult.id)) {
       const next = [...unlockedIds, currentResult.id]
@@ -31,8 +35,6 @@ export default function DessertBook({ currentResult, onRestart, onExit }) {
   }, [currentResult])
 
   const isUnlocked = (id) => unlockedIds.includes(id)
-
-  // 해금된 디저트만 탐색
   const unlockedDesserts = allDesserts.filter(d => isUnlocked(d.id))
 
   const navigateDetail = (dir) => {
@@ -45,116 +47,131 @@ export default function DessertBook({ currentResult, onRestart, onExit }) {
   }
 
   return (
-    <div className="min-h-[100dvh] bg-gradient-to-b from-cream-dark to-cream relative">
+    <div className="min-h-[100dvh] bg-cream-dark relative">
       <AnimatePresence mode="wait">
         {!detailDessert ? (
-          /* ===== 그리드 뷰 ===== */
+          /* ===== 그리드 뷰: 한 행에 4장, 세로 스크롤 ===== */
           <motion.div
             key="grid"
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
-            className="px-4 py-8"
+            className="min-h-[100dvh] flex flex-col"
           >
             {/* 헤더 */}
-            <div className="text-center mb-6">
-              <h2 className="text-2xl font-bold text-brown">디저트 북</h2>
-              <p className="text-sm text-brown-light/60 mt-1">
-                스크롤 내리며 다른 카드 스캔 가능
+            <div className="flex items-center justify-between px-5 py-4 bg-cream-dark">
+              <div />
+              <h2 className="text-xl font-bold text-brown">디저트 북</h2>
+              <p className="text-[10px] text-brown-light/50 text-right leading-tight">
+                스크롤 내리며 다른<br />카드 스캔 가능
               </p>
             </div>
 
-            {/* 4×4 그리드 */}
-            <div className="grid grid-cols-4 gap-3 max-w-lg mx-auto">
-              {allDesserts.map((d, i) => {
-                const unlocked = isUnlocked(d.id)
-                return (
-                  <motion.button
-                    key={d.id}
-                    initial={{ opacity: 0, scale: 0.9 }}
-                    animate={{ opacity: 1, scale: 1 }}
-                    transition={{ delay: i * 0.03 }}
-                    whileHover={unlocked ? { scale: 1.05 } : {}}
-                    whileTap={unlocked ? { scale: 0.95 } : {}}
-                    onClick={() => unlocked && setDetailDessert(d)}
-                    className={`aspect-[3/4] rounded-xl border-2 overflow-hidden
-                               transition-all duration-200 relative
-                               ${unlocked
-                                 ? 'border-cabin/25 bg-card shadow-md cursor-pointer hover:shadow-lg'
-                                 : 'border-cabin/10 bg-cabin-dark/8 cursor-default'
-                               }`}
-                  >
-                    {unlocked ? (
-                      /* 앞면: 해금된 디저트 */
-                      <div className="w-full h-full flex flex-col">
-                        <div className="flex-1 bg-cream-dark/20 flex items-center justify-center">
-                          {/* placeholder 디저트 이미지 */}
-                          <span className="text-2xl md:text-3xl">🍰</span>
-                        </div>
-                        <div className="px-1 py-1.5 bg-white/50 text-center">
-                          <p className="text-[9px] md:text-[10px] font-bold text-brown leading-tight
-                                        line-clamp-2">
-                            {d.name}
-                          </p>
-                        </div>
-                        {currentResult?.id === d.id && (
-                          <div className="absolute top-1 right-1 w-4 h-4 bg-cabin rounded-full
-                                          flex items-center justify-center">
-                            <span className="text-[8px] text-cream">★</span>
+            {/* 카드 스크롤 영역 */}
+            <div className="flex-1 overflow-y-auto px-3 pb-24">
+              {rows.map((row, rowIdx) => (
+                <div key={rowIdx} className="flex gap-2.5 mb-2.5">
+                  {row.map(d => {
+                    const unlocked = isUnlocked(d.id)
+                    return (
+                      <motion.button
+                        key={d.id}
+                        whileHover={unlocked ? { scale: 1.03 } : {}}
+                        whileTap={unlocked ? { scale: 0.97 } : {}}
+                        onClick={() => unlocked && setDetailDessert(d)}
+                        className={`flex-1 aspect-[3/4] rounded-2xl border-2 overflow-hidden
+                                   flex flex-col relative
+                                   ${unlocked
+                                     ? 'border-cabin/20 bg-card shadow-lg cursor-pointer'
+                                     : 'border-cabin/10 cursor-default'
+                                   }`}
+                      >
+                        {unlocked ? (
+                          /* 앞면: 카드 이미지만 (이름/설명 없음) */
+                          <div className="w-full h-full flex flex-col">
+                            <div className="flex-1 bg-gradient-to-b from-cream via-cream-dark/20 to-cabin-light/10
+                                            flex items-center justify-center">
+                              {/* placeholder 디저트 이미지 */}
+                              <span className="text-4xl md:text-5xl">🍰</span>
+                            </div>
+                            {/* 하단: 조합법 */}
+                            <div className="px-1.5 py-2 bg-cabin/8 text-center border-t border-cabin/10">
+                              <p className="text-[10px] md:text-xs text-brown font-semibold">
+                                {d.combo}
+                              </p>
+                            </div>
+                            {/* 현재 결과 표시 */}
+                            {currentResult?.id === d.id && (
+                              <div className="absolute top-1.5 right-1.5 w-5 h-5 bg-cabin rounded-full
+                                              flex items-center justify-center shadow-md">
+                                <span className="text-[9px] text-cream">★</span>
+                              </div>
+                            )}
+                          </div>
+                        ) : (
+                          /* 뒷면: 장식 패턴 */
+                          <div className="w-full h-full
+                                          bg-gradient-to-br from-[#E8D5C0] via-[#D4C0A8] to-[#C8B498]
+                                          flex items-center justify-center relative">
+                            {/* 외곽 장식 */}
+                            <div className="absolute inset-2.5 border-2 border-cabin/12 rounded-xl" />
+                            <div className="absolute inset-5 border border-cabin/8 rounded-lg" />
+                            {/* 중앙 원형 문양 */}
+                            <div className="relative w-14 h-14 md:w-16 md:h-16">
+                              <div className="absolute inset-0 border-2 border-cabin/15 rounded-full" />
+                              <div className="absolute inset-2 border border-cabin/10 rounded-full" />
+                              <div className="absolute inset-0 flex items-center justify-center">
+                                <div className="w-5 h-5 md:w-6 md:h-6 bg-cabin/10 rounded-full
+                                                flex items-center justify-center">
+                                  <span className="text-cabin/30 text-sm font-bold">?</span>
+                                </div>
+                              </div>
+                            </div>
+                            {/* 꼭짓점 장식 */}
+                            <div className="absolute top-3 left-3 w-3 h-3 border border-cabin/10 rounded-full" />
+                            <div className="absolute top-3 right-3 w-3 h-3 border border-cabin/10 rounded-full" />
+                            <div className="absolute bottom-3 left-3 w-3 h-3 border border-cabin/10 rounded-full" />
+                            <div className="absolute bottom-3 right-3 w-3 h-3 border border-cabin/10 rounded-full" />
+                            {/* 하단 */}
+                            <div className="absolute bottom-0 left-0 right-0 px-1.5 py-2
+                                            bg-cabin/8 text-center border-t border-cabin/10 rounded-b-xl">
+                              <p className="text-[10px] md:text-xs text-brown/40 font-semibold">???</p>
+                            </div>
                           </div>
                         )}
-                      </div>
-                    ) : (
-                      /* 뒷면: 미해금 카드 패턴 */
-                      <div className="w-full h-full flex items-center justify-center
-                                      bg-gradient-to-br from-cabin/8 via-cabin-light/5 to-cabin/10
-                                      relative overflow-hidden">
-                        {/* 장식 패턴 */}
-                        <div className="absolute inset-2 border border-cabin/10 rounded-lg" />
-                        <div className="absolute inset-4 border border-cabin/8 rounded-md" />
-                        <div className="absolute w-8 h-8 border-2 border-cabin/12 rounded-full" />
-                        <div className="absolute w-4 h-4 bg-cabin/8 rounded-full" />
-                        {/* 꼭짓점 장식 */}
-                        <div className="absolute top-2 left-2 w-2 h-2 bg-cabin/10 rounded-full" />
-                        <div className="absolute top-2 right-2 w-2 h-2 bg-cabin/10 rounded-full" />
-                        <div className="absolute bottom-2 left-2 w-2 h-2 bg-cabin/10 rounded-full" />
-                        <div className="absolute bottom-2 right-2 w-2 h-2 bg-cabin/10 rounded-full" />
-                        {/* 물음표 */}
-                        <span className="text-cabin/20 text-2xl font-bold z-10">?</span>
-                      </div>
-                    )}
-                  </motion.button>
-                )
-              })}
+                      </motion.button>
+                    )
+                  })}
+                </div>
+              ))}
             </div>
 
-            {/* 해금 현황 */}
-            <p className="text-center text-xs text-brown-light/50 mt-4">
-              {unlockedIds.length} / {allDesserts.length} 해금됨
-            </p>
-
-            {/* 하단 버튼 */}
-            <div className="flex justify-center gap-3 mt-6">
-              <motion.button
-                whileHover={{ scale: 1.03 }}
-                whileTap={{ scale: 0.97 }}
-                onClick={onRestart}
-                className="bg-cabin-light/20 text-brown px-6 py-2.5 rounded-full
-                           text-sm font-semibold border border-cabin/20
-                           hover:bg-cabin-light/30 transition-colors cursor-pointer"
-              >
-                다시하기
-              </motion.button>
-              <motion.button
-                whileHover={{ scale: 1.03 }}
-                whileTap={{ scale: 0.97 }}
-                onClick={onExit}
-                className="bg-cabin text-cream px-6 py-2.5 rounded-full
-                           text-sm font-semibold shadow-md
-                           hover:bg-cabin-dark transition-colors cursor-pointer"
-              >
-                나가기
-              </motion.button>
+            {/* 고정 하단 바 */}
+            <div className="fixed bottom-0 left-0 right-0 bg-cream-dark/95 backdrop-blur-sm
+                            border-t border-cabin/10 px-4 py-3
+                            flex items-center justify-between z-50">
+              <p className="text-xs text-brown-light/50">
+                {unlockedIds.length} / {allDesserts.length} 해금
+              </p>
+              <div className="flex gap-2">
+                <motion.button
+                  whileTap={{ scale: 0.95 }}
+                  onClick={onRestart}
+                  className="bg-cabin-light/20 text-brown px-4 py-2 rounded-lg
+                             text-xs font-semibold border border-cabin/15
+                             cursor-pointer"
+                >
+                  다시하기
+                </motion.button>
+                <motion.button
+                  whileTap={{ scale: 0.95 }}
+                  onClick={onExit}
+                  className="bg-cabin text-cream px-4 py-2 rounded-lg
+                             text-xs font-semibold shadow-md cursor-pointer"
+                >
+                  나가기
+                </motion.button>
+              </div>
             </div>
           </motion.div>
         ) : (
@@ -166,7 +183,7 @@ export default function DessertBook({ currentResult, onRestart, onExit }) {
             exit={{ opacity: 0 }}
             className="min-h-[100dvh] bg-cabin-dark/95 flex flex-col"
           >
-            {/* 닫기 (그리드로 돌아가기) */}
+            {/* 닫기 */}
             <div className="flex justify-end p-4">
               <motion.button
                 whileHover={{ scale: 1.1 }}
@@ -180,14 +197,14 @@ export default function DessertBook({ currentResult, onRestart, onExit }) {
             </div>
 
             {/* 메인 콘텐츠 */}
-            <div className="flex-1 flex items-center px-4">
+            <div className="flex-1 flex items-center px-2">
               {/* 좌측 화살표 */}
               <motion.button
                 whileHover={{ scale: 1.15 }}
                 whileTap={{ scale: 0.9 }}
                 onClick={() => navigateDetail(-1)}
                 className="flex-shrink-0 text-cream/70 text-2xl md:text-3xl
-                           cursor-pointer hover:text-cream transition-colors px-2"
+                           cursor-pointer hover:text-cream transition-colors px-1 md:px-3"
               >
                 ◀
               </motion.button>
@@ -204,16 +221,11 @@ export default function DessertBook({ currentResult, onRestart, onExit }) {
                              items-center md:items-stretch max-w-3xl mx-auto"
                 >
                   {/* 좌: 디저트 카드 이미지 */}
-                  <div className="w-56 md:w-72 flex-shrink-0">
+                  <div className="w-52 md:w-72 flex-shrink-0">
                     <div className="bg-card rounded-2xl border-2 border-cabin/20
                                     shadow-xl overflow-hidden aspect-[3/4]
-                                    flex flex-col">
-                      <div className="flex-1 bg-cream-dark/30 flex items-center justify-center">
-                        <span className="text-6xl md:text-7xl">🍰</span>
-                      </div>
-                      <div className="px-3 py-2 bg-white/50 text-center">
-                        <p className="text-xs text-brown-light">{detailDessert.combo}</p>
-                      </div>
+                                    flex items-center justify-center">
+                      <span className="text-7xl md:text-8xl">🍰</span>
                     </div>
                   </div>
 
@@ -237,7 +249,6 @@ export default function DessertBook({ currentResult, onRestart, onExit }) {
 
                       {/* 디저트 설명 */}
                       <div className="px-5 py-4 border-b border-cabin/10 flex-1">
-                        <p className="text-xs text-cabin font-semibold mb-1.5">디저트 설명</p>
                         <p className="text-sm text-brown leading-relaxed">
                           "{detailDessert.description}"
                         </p>
@@ -245,7 +256,7 @@ export default function DessertBook({ currentResult, onRestart, onExit }) {
 
                       {/* 레시피북의 문장 */}
                       <div className="px-5 py-4 bg-cabin/5">
-                        <p className="text-xs text-cabin font-semibold mb-1.5">레시피북의 문장</p>
+                        <p className="text-xs text-cabin font-semibold mb-1">레시피북의 문장</p>
                         <p className="text-sm text-brown-light leading-relaxed italic">
                           "{detailDessert.description}"
                         </p>
@@ -261,7 +272,7 @@ export default function DessertBook({ currentResult, onRestart, onExit }) {
                 whileTap={{ scale: 0.9 }}
                 onClick={() => navigateDetail(1)}
                 className="flex-shrink-0 text-cream/70 text-2xl md:text-3xl
-                           cursor-pointer hover:text-cream transition-colors px-2"
+                           cursor-pointer hover:text-cream transition-colors px-1 md:px-3"
               >
                 ▶
               </motion.button>
@@ -270,22 +281,20 @@ export default function DessertBook({ currentResult, onRestart, onExit }) {
             {/* 하단 버튼 */}
             <div className="flex justify-end gap-3 p-4">
               <motion.button
-                whileHover={{ scale: 1.03 }}
-                whileTap={{ scale: 0.97 }}
+                whileTap={{ scale: 0.95 }}
                 onClick={onRestart}
                 className="bg-white/10 text-cream/80 px-5 py-2.5 rounded-lg
                            text-sm font-semibold border border-white/10
-                           hover:bg-white/20 transition-colors cursor-pointer"
+                           cursor-pointer"
               >
                 다시하기
               </motion.button>
               <motion.button
-                whileHover={{ scale: 1.03 }}
-                whileTap={{ scale: 0.97 }}
+                whileTap={{ scale: 0.95 }}
                 onClick={onExit}
                 className="bg-white/15 text-cream/80 px-5 py-2.5 rounded-lg
                            text-sm font-semibold border border-white/10
-                           hover:bg-white/25 transition-colors cursor-pointer"
+                           cursor-pointer"
               >
                 나가기
               </motion.button>
