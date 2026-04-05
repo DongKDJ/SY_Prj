@@ -45,6 +45,41 @@ export function getDessertImage(filename) {
   return dessertImages[filename] || null
 }
 
+// ── 레이어 분리 디저트 이미지 (동적 글로브 임포트) ──
+// src/assets/images/desserts/layers/ 폴더에 이미지를 넣으면 자동 인식
+const layerModules = import.meta.glob('./images/desserts/layers/*.png', { eager: true })
+
+function getLayerImage(filename) {
+  const key = `./images/desserts/layers/${filename}`
+  return layerModules[key]?.default || null
+}
+
+/**
+ * 디저트 레이어 이미지 조회
+ * @param {number} dessertId – 디저트 번호 (1–16)
+ * @returns {{ plate: string|null, main: string, subs: string[] } | null}
+ *
+ * 파일 규칙:
+ *   plate_01.png  → 접시 (정적, 선택)
+ *   main_01.png   → 디저트 본체 (필수)
+ *   sub1_01.png ~ sub4_01.png → 서브 장식 (선택)
+ */
+export function getDessertLayers(dessertId) {
+  const num = String(dessertId).padStart(2, '0')
+  const main = getLayerImage(`main_${num}.png`)
+  if (!main) return null // main 필수
+
+  const plate = getLayerImage(`plate_${num}.png`)
+  // sub 파일명: sub{디저트번호}_{서브순번}.png  (예: sub1_01.png, sub1_02.png)
+  const subs = []
+  for (let i = 1; i <= 4; i++) {
+    const subNum = String(i).padStart(2, '0')
+    const sub = getLayerImage(`sub${dessertId}_${subNum}.png`)
+    if (sub) subs.push(sub)
+  }
+  return { plate, main, subs }
+}
+
 export function getCardImage(filename) {
   return cardImages[filename] || null
 }

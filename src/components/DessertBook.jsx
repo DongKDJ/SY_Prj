@@ -1,7 +1,8 @@
 import { useState, useEffect } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
 import { dessertResults } from '../data/desserts'
-import { getDessertImage, cardBack } from '../assets/imageMap'
+import { cardBack } from '../assets/imageMap'
+import AnimatedDessert from './shared/AnimatedDessert'
 
 const allDesserts = Object.values(dessertResults).sort((a, b) => a.id - b.id)
 
@@ -99,10 +100,14 @@ export default function DessertBook({ currentResult, onRestart, onExit }) {
                           <div className="w-full h-full flex flex-col">
                             <div className="flex-1 bg-gradient-to-b from-cream via-cream-dark/20 to-cabin-light/10
                                             flex items-center justify-center overflow-hidden">
-                              {getDessertImage(d.image)
-                                ? <img src={getDessertImage(d.image)} alt={d.name} className="w-full h-full object-cover" />
-                                : <span className="text-4xl md:text-5xl">🍰</span>
-                              }
+                              <AnimatedDessert
+                                dessertId={d.id}
+                                image={d.image}
+                                name={d.name}
+                                variant="thumb"
+                                className="w-full h-full"
+                                imgClassName="w-full h-full object-cover"
+                              />
                             </div>
                             {/* 하단: 조합법 */}
                             <div className="px-1.5 py-2 bg-cabin/8 text-center border-t border-cabin/10">
@@ -214,11 +219,15 @@ export default function DessertBook({ currentResult, onRestart, onExit }) {
                   <div className="w-52 md:w-72 flex-shrink-0">
                     <div className="bg-card rounded-2xl border-2 border-cabin/20
                                     shadow-xl overflow-hidden aspect-[3/4]
-                                    flex items-center justify-center">
-                      {getDessertImage(detailDessert.image)
-                        ? <img src={getDessertImage(detailDessert.image)} alt={detailDessert.name} className="w-full h-full object-contain p-2" />
-                        : <span className="text-7xl md:text-8xl">🍰</span>
-                      }
+                                    flex items-center justify-center p-2">
+                      <AnimatedDessert
+                        dessertId={detailDessert.id}
+                        image={detailDessert.image}
+                        name={detailDessert.name}
+                        variant="card"
+                        className="w-full h-full"
+                        imgClassName="w-full h-full object-contain"
+                      />
                     </div>
                   </div>
 

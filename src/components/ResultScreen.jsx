@@ -1,6 +1,6 @@
 import { useState, useEffect, useMemo } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
-import { getDessertImage } from '../assets/imageMap'
+import AnimatedDessert from './shared/AnimatedDessert'
 
 // 컨페티 파티클 생성
 function createConfetti(id) {
@@ -121,11 +121,15 @@ export default function ResultScreen({ result, onViewBook }) {
                            flex items-center justify-center
                            border-2 border-white/40 backdrop-blur-sm"
               >
-                {/* placeholder 디저트 이미지 */}
-                {getDessertImage(result.image)
-                  ? <img src={getDessertImage(result.image)} alt={result.name} className="w-32 h-32 md:w-44 md:h-44 object-contain" />
-                  : <span className="text-7xl md:text-8xl">🍰</span>
-                }
+                {/* 디저트 레이어 애니메이션 */}
+                <AnimatedDessert
+                  dessertId={result.id}
+                  image={result.image}
+                  name={result.name}
+                  variant="full"
+                  className="w-32 h-32 md:w-44 md:h-44"
+                  imgClassName="w-32 h-32 md:w-44 md:h-44 object-contain"
+                />
               </motion.div>
 
               {/* 디저트 이름 */}
@@ -196,13 +200,17 @@ export default function ResultScreen({ result, onViewBook }) {
                   <div className="bg-card rounded-3xl border-2 border-cabin/15
                                   shadow-2xl overflow-hidden aspect-[3/4]
                                   flex flex-col items-center justify-center">
-                    {/* 디저트 이미지 placeholder */}
+                    {/* 디저트 레이어 애니메이션 */}
                     <div className="flex-1 w-full bg-cream-dark/30
-                                    flex items-center justify-center">
-                      {getDessertImage(result.image)
-                        ? <img src={getDessertImage(result.image)} alt={result.name} className="w-full h-full object-contain p-4" />
-                        : <span className="text-8xl md:text-9xl">🍰</span>
-                      }
+                                    flex items-center justify-center p-4">
+                      <AnimatedDessert
+                        dessertId={result.id}
+                        image={result.image}
+                        name={result.name}
+                        variant="card"
+                        className="w-full h-full"
+                        imgClassName="w-full h-full object-contain"
+                      />
                     </div>
                     {/* 카드 하단: 이름 */}
                     <div className="w-full px-4 py-3 bg-white/60 text-center

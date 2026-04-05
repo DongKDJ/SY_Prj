@@ -126,3 +126,100 @@ body {
 .card-glow {
   animation: glow-pulse 2s ease-in-out infinite;
 }
+
+/* ===== Dessert Layer Animation System ===== */
+
+.dessert-stage {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.dessert-wrap {
+  position: relative;
+  width: 100%;
+  flex: 1 1 0;
+  min-height: 0;
+}
+
+.dessert-layer {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+  pointer-events: none;
+}
+
+/* ── Boing 바운스 (full / card) ── */
+.dessert-bounce {
+  position: absolute;
+  inset: 0;
+  transform-origin: center bottom;
+  animation: dessert-boing 1.8s ease-in-out infinite;
+}
+
+@keyframes dessert-boing {
+  0%, 100% {
+    transform: translateY(0) scaleX(1) scaleY(1);
+    animation-timing-function: cubic-bezier(0.33, 0, 0.66, 0);
+  }
+  35% {
+    transform: translateY(-20%) scaleX(0.93) scaleY(1.10);
+    animation-timing-function: cubic-bezier(0.33, 1, 0.66, 1);
+  }
+  60% {
+    transform: translateY(0) scaleX(1.10) scaleY(0.90);
+  }
+  75% {
+    transform: translateY(-8%) scaleX(0.97) scaleY(1.04);
+    animation-timing-function: cubic-bezier(0.33, 1, 0.66, 1);
+  }
+  88% {
+    transform: translateY(0) scaleX(1.03) scaleY(0.97);
+  }
+  95% {
+    transform: translateY(-2%);
+  }
+}
+
+/* ── Thumb용 부드러운 플로트 ── */
+.dessert-float-sm {
+  position: absolute;
+  inset: 0;
+  transform-origin: center bottom;
+  animation: dessert-float-sm-kf 2.4s ease-in-out infinite;
+}
+
+@keyframes dessert-float-sm-kf {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-5%); }
+}
+
+/* ── 서브 레이어 추가 흔들림 ── */
+.dessert-sub {
+  animation: dessert-sub-wobble 2.2s ease-in-out infinite;
+}
+
+@keyframes dessert-sub-wobble {
+  0%, 100% { transform: translateY(0) rotate(0deg); }
+  25% { transform: translateY(-2%) rotate(0.5deg); }
+  75% { transform: translateY(1%) rotate(-0.5deg); }
+}
+
+/* ── 바운스와 동기화되는 그림자 ── */
+.dessert-shadow-el {
+  width: 55%;
+  height: 6px;
+  background: radial-gradient(ellipse, rgba(100, 60, 0, 0.28) 0%, transparent 72%);
+  border-radius: 50%;
+  margin-top: -2px;
+  flex-shrink: 0;
+  animation: dessert-shadow-pulse 1.8s ease-in-out infinite;
+}
+
+@keyframes dessert-shadow-pulse {
+  0%, 100% { transform: scaleX(1); opacity: 0.4; }
+  35% { transform: scaleX(0.55); opacity: 0.15; }
+  60% { transform: scaleX(1.15); opacity: 0.5; }
+}
