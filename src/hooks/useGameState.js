@@ -19,8 +19,8 @@ export function useGameState() {
   const [selections, setSelections] = useState([])
   const [currentResult, setCurrentResult] = useState(null)
   const selectionsRef = useRef(selections)
+  const lockRef = useRef(false)
 
-  // selections가 바뀔 때 ref도 업데이트
   selectionsRef.current = selections
 
   const selectCard = useCallback((stageIndex, cardId) => {
@@ -31,8 +31,12 @@ export function useGameState() {
     })
   }, [])
 
-  // nextScreen은 의존성 없이 안정적 참조 유지
+  // 전환 락: 한 번 호출되면 700ms간 추가 호출 무시
   const nextScreen = useCallback(() => {
+    if (lockRef.current) return
+    lockRef.current = true
+    setTimeout(() => { lockRef.current = false }, 700)
+
     setScreen(prev => {
       const idx = SCREENS.indexOf(prev)
       if (idx < SCREENS.length - 1) {
@@ -48,6 +52,10 @@ export function useGameState() {
   }, [])
 
   const goToScreen = useCallback((screenName) => {
+    if (lockRef.current) return
+    lockRef.current = true
+    setTimeout(() => { lockRef.current = false }, 700)
+
     setScreen(screenName)
     if (screenName === 'result') {
       const key = selectionsRef.current.join('-')
@@ -56,6 +64,7 @@ export function useGameState() {
   }, [])
 
   const restart = useCallback(() => {
+    lockRef.current = false
     setScreen('title')
     setSelections([])
     setCurrentResult(null)

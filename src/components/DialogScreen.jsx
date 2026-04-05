@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useRef } from 'react'
 import { motion } from 'framer-motion'
 import Character from './shared/Character'
 import { foxDialogs } from '../data/desserts'
@@ -16,6 +16,7 @@ export default function DialogScreen({ onComplete }) {
   const [lineIndex, setLineIndex] = useState(0)
   const [charIndex, setCharIndex] = useState(0)
   const [isTyping, setIsTyping] = useState(true)
+  const completedRef = useRef(false)
 
   const currentLine = lines[lineIndex] || ''
 
@@ -42,7 +43,10 @@ export default function DialogScreen({ onComplete }) {
     } else if (lineIndex < lines.length - 1) {
       setLineIndex(prev => prev + 1)
     } else {
-      onComplete()
+      if (!completedRef.current) {
+        completedRef.current = true
+        onComplete()
+      }
     }
   }
 

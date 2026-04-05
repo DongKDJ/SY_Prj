@@ -1,9 +1,16 @@
-import { useState, useEffect } from 'react'
+import { useState, useRef } from 'react'
 import { motion } from 'framer-motion'
 import DialogBox from './shared/DialogBox'
 
 export default function ResultTransition({ onComplete }) {
   const [dialogDone, setDialogDone] = useState(false)
+  const calledRef = useRef(false)
+
+  const handleComplete = () => {
+    if (calledRef.current) return
+    calledRef.current = true
+    onComplete()
+  }
 
   return (
     <div className="min-h-[100dvh] bg-gradient-to-b from-night via-night/90 to-cabin-dark/40
@@ -48,7 +55,7 @@ export default function ResultTransition({ onComplete }) {
           animate={{ opacity: 1, y: 0 }}
           whileHover={{ scale: 1.05 }}
           whileTap={{ scale: 0.97 }}
-          onClick={onComplete}
+          onClick={handleComplete}
           className="mt-6 bg-cabin text-cream px-8 py-3 rounded-full
                      font-semibold shadow-lg cursor-pointer
                      hover:bg-cabin-dark transition-colors"

@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useState, useRef } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
 import IngredientStack from './shared/IngredientStack'
 import CardSelect from './CardSelect'
@@ -39,6 +39,7 @@ const timeStyles = {
 export default function StageScreen({ stageIndex, selections, onSelect, onComplete }) {
   const [phase, setPhase] = useState('bookmark')
   const [selectedCardId, setSelectedCardId] = useState(null)
+  const proceedRef = useRef(false)
 
   const stage = stages[stageIndex]
   const style = timeStyles[stage.timeOfDay]
@@ -51,6 +52,8 @@ export default function StageScreen({ stageIndex, selections, onSelect, onComple
   }
 
   const handleProceed = () => {
+    if (proceedRef.current) return
+    proceedRef.current = true
     onSelect(stageIndex, selectedCardId)
     onComplete()
   }
