@@ -111,7 +111,6 @@ export default function CardSelect({ stage, onSelect, dark = false }) {
               >
                 <p className="text-lg md:text-xl font-bold">{card.ingredient}</p>
                 <p className="text-xs md:text-sm opacity-60 mt-0.5">{card.label}</p>
-                <p className="text-[11px] md:text-xs opacity-50 mt-0.5">{card.brief}</p>
               </motion.div>
             </motion.div>
           )

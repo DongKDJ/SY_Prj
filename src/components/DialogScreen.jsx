@@ -110,9 +110,9 @@ export default function DialogScreen({ onComplete }) {
           initial={{ x: -40, opacity: 0 }}
           animate={{ x: 0, opacity: 1 }}
           transition={{ type: 'spring', delay: 0.2, stiffness: 80 }}
-          className="relative z-20 ml-[6%] md:ml-[12%] -mb-6"
+          className="relative z-20 ml-[2%] md:ml-[8%] -mb-6"
         >
-          <Character variant="half" />
+          <Character variant="half" size="large" />
         </motion.div>
 
         {/* 카운터 테이블 + 디저트 */}
