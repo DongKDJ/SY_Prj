@@ -151,40 +151,26 @@ body {
   pointer-events: none;
 }
 
-/* ── 숨쉬기 바운스: 접시에 붙은 채 부드러운 상하 (full / card) ── */
+/* ── 단일 이미지용 CSS 흔들림 (레이어 없는 디저트) ── */
 .dessert-bounce {
   position: absolute;
   inset: 0;
   transform-origin: center bottom;
-  animation: dessert-breathe 2.2s ease-in-out infinite;
+  animation: dessert-sway 2.2s ease-in-out infinite;
 }
 
-@keyframes dessert-breathe {
+@keyframes dessert-sway {
   0%, 100% { transform: rotate(0deg); }
-  25%      { transform: rotate(2deg); }
-  75%      { transform: rotate(-2deg); }
+  25%      { transform: rotate(1.5deg); }
+  75%      { transform: rotate(-1.5deg); }
 }
 
-/* ── Thumb용 (더 작은 폭) ── */
-.dessert-float-sm {
-  position: absolute;
-  inset: 0;
-  transform-origin: center bottom;
-  animation: dessert-breathe 2.2s ease-in-out infinite;
+/* ── 스프링 물리 레이어: GPU 가속 ── */
+.dessert-layer-spring {
+  will-change: transform;
 }
 
-/* ── 서브 레이어: 아주 살짝만 움직임 ── */
-.dessert-sub {
-  animation: dessert-sub-drift 2.8s ease-in-out infinite;
-}
-
-@keyframes dessert-sub-drift {
-  0%, 100% { transform: rotate(0deg) translateX(0); }
-  30%      { transform: rotate(1deg) translateX(1%); }
-  70%      { transform: rotate(-0.8deg) translateX(-0.8%); }
-}
-
-/* ── 숨쉬기와 동기화되는 그림자 ── */
+/* ── 그림자 ── */
 .dessert-shadow-el {
   width: 55%;
   height: 6px;
