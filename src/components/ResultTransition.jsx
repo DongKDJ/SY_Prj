@@ -1,10 +1,14 @@
-import { useState, useRef } from 'react'
+import { useState, useRef, useEffect } from 'react'
 import { motion } from 'framer-motion'
-import DialogBox from './shared/DialogBox'
 
 export default function ResultTransition({ onComplete }) {
-  const [dialogDone, setDialogDone] = useState(false)
+  const [showButton, setShowButton] = useState(false)
   const calledRef = useRef(false)
+
+  useEffect(() => {
+    const timer = setTimeout(() => setShowButton(true), 3000)
+    return () => clearTimeout(timer)
+  }, [])
 
   const handleComplete = () => {
     if (calledRef.current) return
@@ -14,49 +18,46 @@ export default function ResultTransition({ onComplete }) {
 
   return (
     <div className="min-h-[100dvh] bg-gradient-to-b from-night via-night/90 to-cabin-dark/40
-                    flex flex-col items-center justify-end pb-8 px-4">
-      {/* 오븐 안에서 굽고 있는 연출 */}
+                    flex flex-col items-center justify-center px-4">
+      {/* 오븐 연출 */}
       <motion.div
         initial={{ opacity: 0 }}
         animate={{ opacity: 1 }}
         transition={{ duration: 1 }}
-        className="flex-1 flex items-center justify-center"
+        className="text-center mb-10"
       >
         <motion.div
-          animate={{
-            scale: [1, 1.05, 1],
-            opacity: [0.6, 1, 0.6],
-          }}
+          animate={{ scale: [1, 1.05, 1], opacity: [0.6, 1, 0.6] }}
           transition={{ repeat: Infinity, duration: 2 }}
-          className="text-center"
         >
           <span className="text-6xl block mb-4">🔥</span>
-          <p className="text-night-text/60 text-sm">디저트가 구워지고 있어요...</p>
         </motion.div>
+        <p className="text-night-text/60 text-sm">디저트가 구워지고 있어요...</p>
       </motion.div>
 
+      {/* 대사 1줄 */}
       <motion.div
-        initial={{ y: 30, opacity: 0 }}
-        animate={{ y: 0, opacity: 1 }}
+        initial={{ opacity: 0, y: 15 }}
+        animate={{ opacity: 1, y: 0 }}
         transition={{ delay: 1.5 }}
+        className="bg-cream-dark/90 backdrop-blur-sm rounded-2xl px-6 py-4
+                   border-2 border-cabin/30 shadow-lg max-w-md mx-auto text-center"
       >
-        <DialogBox
-          lines={[
-            '드디어 완성이 다 되어가!',
-            '너의 이야기가 담긴 디저트를 확인해볼까?',
-          ]}
-          onComplete={() => setDialogDone(true)}
-        />
+        <p className="text-brown text-base">
+          <span className="text-cabin font-semibold mr-2">여우씨</span>
+          너의 이야기가 담긴 디저트를 확인해볼까?
+        </p>
       </motion.div>
 
-      {dialogDone && (
+      {/* 책장 넘기기 버튼 */}
+      {showButton && (
         <motion.button
           initial={{ opacity: 0, y: 10 }}
           animate={{ opacity: 1, y: 0 }}
           whileHover={{ scale: 1.05 }}
           whileTap={{ scale: 0.97 }}
           onClick={handleComplete}
-          className="mt-6 bg-cabin text-cream px-8 py-3 rounded-full
+          className="mt-8 bg-cabin text-cream px-8 py-3 rounded-full
                      font-semibold shadow-lg cursor-pointer
                      hover:bg-cabin-dark transition-colors"
         >
