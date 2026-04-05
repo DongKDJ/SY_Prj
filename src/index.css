@@ -160,9 +160,9 @@ body {
 }
 
 @keyframes dessert-sway {
-  0%, 100% { transform: rotate(0deg); }
-  25%      { transform: rotate(1.5deg); }
-  75%      { transform: rotate(-1.5deg); }
+  0%, 100% { transform: skewX(0deg) scaleY(1); }
+  25%      { transform: skewX(1.2deg) scaleY(1.003); }
+  75%      { transform: skewX(-1.2deg) scaleY(1.003); }
 }
 
 /* ── 스프링 물리 레이어: GPU 가속 ── */

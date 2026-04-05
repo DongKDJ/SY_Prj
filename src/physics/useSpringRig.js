@@ -70,13 +70,15 @@ export default function useSpringRig(dessertId, layerRefs, layers) {
       mainCfg.idleAmplitude * Math.sin(2 * Math.PI * (now + mainCfg.phaseOffset) / mainCfg.idlePeriod)
     stepSpring(springData.main, mainCfg, dt)
 
-    // DOM 적용: main
+    // DOM 적용: main — skewX로 바닥 고정 + 위쪽만 찰랑
     if (layerRefs.main?.current) {
+      const a = springData.main.angle
+      const stretch = 1 + Math.abs(a) * 0.003 // 살짝 세로 늘어남
       layerRefs.main.current.style.transform =
-        `rotate(${springData.main.angle.toFixed(3)}deg)`
+        `skewX(${a.toFixed(3)}deg) scaleY(${stretch.toFixed(4)})`
     }
 
-    // subs
+    // subs — skewX + 살짝 translateX로 따라 흔들림
     rigData.subs.forEach((subCfg, i) => {
       const subSpring = springData.subs[i]
       if (!subSpring) return
@@ -87,8 +89,10 @@ export default function useSpringRig(dessertId, layerRefs, layers) {
 
       const ref = layerRefs.subs?.[i]
       if (ref?.current) {
+        const sa = subSpring.angle
+        const drift = sa * 0.3 // 각도에 비례한 수평 이동
         ref.current.style.transform =
-          `rotate(${subSpring.angle.toFixed(3)}deg)`
+          `skewX(${sa.toFixed(3)}deg) translateX(${drift.toFixed(2)}%)`
       }
     })
 

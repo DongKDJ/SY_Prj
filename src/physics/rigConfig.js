@@ -14,10 +14,10 @@
 const defaultMain = {
   pivotX: '50%',
   pivotY: '100%',        // 바닥 고정
-  stiffness: 40,
+  stiffness: 45,
   damping: 6,
   mass: 1.2,
-  idleAmplitude: 1.8,    // 살짝 흔들림
+  idleAmplitude: 1.2,    // skewX는 작은 값이 자연스러움
   idlePeriod: 2400,
   impulseScale: 1.0,
   phaseOffset: 0,
@@ -25,11 +25,11 @@ const defaultMain = {
 
 const defaultSub = {
   pivotX: '50%',
-  pivotY: '85%',         // 약간 위쪽 기준
+  pivotY: '85%',
   stiffness: 65,
   damping: 4.5,
   mass: 0.5,
-  idleAmplitude: 2.5,
+  idleAmplitude: 1.8,
   idlePeriod: 2000,
   impulseScale: 1.6,
   phaseOffset: 0,
@@ -56,14 +56,14 @@ const defaultRig = {
  */
 const dessertRigs = {
   7: {
-    main: { ...defaultMain, stiffness: 35, idleAmplitude: 2.0, idlePeriod: 2600 },
+    main: { ...defaultMain, stiffness: 38, idleAmplitude: 1.5, idlePeriod: 2600 },
     subs: [
-      // sub7_01: 크림 — 부드럽게 출렁
-      { ...defaultSub, pivotX: '45%', pivotY: '70%', stiffness: 30, damping: 3.5, mass: 0.7, idleAmplitude: 3.0, idlePeriod: 2200, impulseScale: 2.0, phaseOffset: 0 },
-      // sub7_02: 블루베리 — 통통 튀는
-      { ...defaultSub, pivotX: '55%', pivotY: '60%', stiffness: 90, damping: 5, mass: 0.3, idleAmplitude: 2.0, idlePeriod: 1600, impulseScale: 2.2, phaseOffset: 500 },
-      // sub7_03: 사과 조각 — 꽂힌 느낌
-      { ...defaultSub, pivotX: '35%', pivotY: '80%', stiffness: 50, damping: 4, mass: 0.5, idleAmplitude: 2.5, idlePeriod: 1900, impulseScale: 1.8, phaseOffset: 900 },
+      // sub7_01: 크림 — 부드럽게 출렁 (위쪽이 많이 흔들림)
+      { ...defaultSub, pivotX: '45%', pivotY: '100%', stiffness: 25, damping: 3, mass: 0.7, idleAmplitude: 2.2, idlePeriod: 2200, impulseScale: 2.0, phaseOffset: 0 },
+      // sub7_02: 블루베리 — 가볍게 통통
+      { ...defaultSub, pivotX: '55%', pivotY: '100%', stiffness: 80, damping: 5, mass: 0.3, idleAmplitude: 1.5, idlePeriod: 1600, impulseScale: 2.2, phaseOffset: 500 },
+      // sub7_03: 사과 조각 — 꽂힌 곳 기준 흔들림
+      { ...defaultSub, pivotX: '35%', pivotY: '100%', stiffness: 50, damping: 4, mass: 0.5, idleAmplitude: 1.8, idlePeriod: 1900, impulseScale: 1.8, phaseOffset: 900 },
     ],
   },
 }
