@@ -151,75 +151,38 @@ body {
   pointer-events: none;
 }
 
-/* ── Boing 바운스: 접시에 바닥이 붙은 느낌 (squash & stretch 중심) ── */
+/* ── 숨쉬기 바운스: 접시에 붙은 채 부드러운 상하 (full / card) ── */
 .dessert-bounce {
   position: absolute;
   inset: 0;
   transform-origin: center bottom;
-  animation: dessert-boing 1.8s ease-in-out infinite;
+  animation: dessert-breathe 2.2s ease-in-out infinite;
 }
 
-@keyframes dessert-boing {
-  0%, 100% {
-    transform: translateY(0) scaleX(1) scaleY(1);
-    animation-timing-function: cubic-bezier(0.33, 0, 0.66, 0);
-  }
-  30% {
-    transform: translateY(-5%) scaleX(0.95) scaleY(1.08);
-    animation-timing-function: cubic-bezier(0.33, 1, 0.66, 1);
-  }
-  50% {
-    transform: translateY(0) scaleX(1.06) scaleY(0.94);
-  }
-  65% {
-    transform: translateY(-2.5%) scaleX(0.98) scaleY(1.04);
-    animation-timing-function: cubic-bezier(0.33, 1, 0.66, 1);
-  }
-  80% {
-    transform: translateY(0) scaleX(1.02) scaleY(0.98);
-  }
-  92% {
-    transform: translateY(-0.8%) scaleX(0.99) scaleY(1.01);
-  }
+@keyframes dessert-breathe {
+  0%, 100% { transform: translateY(0) scaleY(1); }
+  50%      { transform: translateY(-3%) scaleY(1.025); }
 }
 
-/* ── Thumb용 부드러운 플로트 ── */
+/* ── Thumb용 (더 작은 폭) ── */
 .dessert-float-sm {
   position: absolute;
   inset: 0;
   transform-origin: center bottom;
-  animation: dessert-float-sm-kf 2.4s ease-in-out infinite;
+  animation: dessert-breathe 2.2s ease-in-out infinite;
 }
 
-@keyframes dessert-float-sm-kf {
-  0%, 100% { transform: translateY(0) scaleY(1); }
-  50% { transform: translateY(-2%) scaleY(1.03); }
-}
-
-/* ── 서브 레이어: 살짝씩 개별 흔들림 ── */
+/* ── 서브 레이어: 아주 살짝만 움직임 ── */
 .dessert-sub {
-  animation: dessert-sub-wobble 2s ease-in-out infinite;
+  animation: dessert-sub-drift 2.8s ease-in-out infinite;
 }
 
-@keyframes dessert-sub-wobble {
-  0%, 100% {
-    transform: translateY(0) translateX(0) rotate(0deg);
-  }
-  15% {
-    transform: translateY(-3%) translateX(1.2%) rotate(1.5deg);
-  }
-  40% {
-    transform: translateY(0.5%) translateX(-1%) rotate(-1deg);
-  }
-  65% {
-    transform: translateY(-2%) translateX(0.8%) rotate(1.2deg);
-  }
-  85% {
-    transform: translateY(0.3%) translateX(-0.5%) rotate(-0.6deg);
-  }
+@keyframes dessert-sub-drift {
+  0%, 100% { transform: translateY(0) rotate(0deg); }
+  50%      { transform: translateY(-1.2%) rotate(0.6deg); }
 }
 
-/* ── 바운스와 동기화되는 그림자 ── */
+/* ── 숨쉬기와 동기화되는 그림자 ── */
 .dessert-shadow-el {
   width: 55%;
   height: 6px;
@@ -227,11 +190,10 @@ body {
   border-radius: 50%;
   margin-top: -2px;
   flex-shrink: 0;
-  animation: dessert-shadow-pulse 1.8s ease-in-out infinite;
+  animation: dessert-shadow-pulse 2.2s ease-in-out infinite;
 }
 
 @keyframes dessert-shadow-pulse {
-  0%, 100% { transform: scaleX(1); opacity: 0.4; }
-  35% { transform: scaleX(0.55); opacity: 0.15; }
-  60% { transform: scaleX(1.15); opacity: 0.5; }
+  0%, 100% { transform: scaleX(1); opacity: 0.35; }
+  50%      { transform: scaleX(0.93); opacity: 0.25; }
 }
