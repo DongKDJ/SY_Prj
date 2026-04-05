@@ -1,16 +1,26 @@
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useRef } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
 
 export default function IntroScreen({ onComplete }) {
   const [phase, setPhase] = useState(0)
+  const calledRef = useRef(false)
 
   useEffect(() => {
-    // 어두운 화면 → 끓어지는 소리 연출 → 밝아지면서 전환
-    const t1 = setTimeout(() => setPhase(1), 800)   // 텍스트 등장
-    const t2 = setTimeout(() => setPhase(2), 2500)   // 페이드아웃
-    const t3 = setTimeout(() => onComplete(), 3500)   // 다음 화면
-    return () => { clearTimeout(t1); clearTimeout(t2); clearTimeout(t3) }
-  }, [onComplete])
+    const t1 = setTimeout(() => setPhase(1), 800)
+    const t2 = setTimeout(() => setPhase(2), 2500)
+    const t3 = setTimeout(() => {
+      // 한 번만 호출되도록 보호
+      if (!calledRef.current) {
+        calledRef.current = true
+        onComplete()
+      }
+    }, 3500)
+    return () => {
+      clearTimeout(t1)
+      clearTimeout(t2)
+      clearTimeout(t3)
+    }
+  }, []) // 의존성 비움 — 마운트 시 1회만 실행
 
   return (
     <AnimatePresence>
