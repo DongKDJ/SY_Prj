@@ -83,3 +83,20 @@ export function getDessertLayers(dessertId) {
 export function getCardImage(filename) {
   return cardImages[filename] || null
 }
+
+// ── Lottie 애니메이션 (동적 글로브 임포트) ──
+// src/assets/animations/desserts/ 폴더에 JSON을 넣으면 자동 인식
+const lottieModules = import.meta.glob('./animations/desserts/*.json', { eager: true })
+
+/**
+ * 디저트 Lottie 애니메이션 데이터 조회
+ * @param {number} dessertId – 디저트 번호 (1–16)
+ * @returns {object|null} Lottie animationData JSON 또는 null
+ *
+ * 파일 규칙: dessert_01.json ~ dessert_16.json
+ */
+export function getDessertLottie(dessertId) {
+  const num = String(dessertId).padStart(2, '0')
+  const key = `./animations/desserts/dessert_${num}.json`
+  return lottieModules[key]?.default || null
+}
