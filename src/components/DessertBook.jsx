@@ -61,7 +61,14 @@ export default function DessertBook({ currentResult, onRestart, onExit }) {
           >
             {/* 헤더 */}
             <div className="flex items-center justify-between px-5 py-4 bg-cream-dark">
-              <div />
+              <motion.button
+                whileTap={{ scale: 0.9 }}
+                onClick={onExit}
+                className="w-8 h-8 rounded-full bg-cabin/15 flex items-center justify-center
+                           text-brown cursor-pointer hover:bg-cabin/25 transition-colors text-sm"
+              >
+                ✕
+              </motion.button>
               <h2 className="text-xl font-bold text-brown">디저트 북</h2>
               <p className="text-[10px] text-brown-light/50 text-right leading-tight">
                 스크롤 내리며 다른<br />카드 스캔 가능

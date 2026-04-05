@@ -102,16 +102,15 @@ export default function CardSelect({ stage, onSelect, dark = false }) {
                 <StarParticles active={isSelected} count={15} />
               </button>
 
-              {/* 카드 라벨 — 재료 이름 크게 */}
-              <motion.div
+              {/* 카드 라벨 — 재료 이름만 */}
+              <motion.p
                 initial={{ opacity: 0 }}
                 animate={{ opacity: isOther ? 0.3 : 1 }}
                 transition={{ delay: 0.5 + i * 0.1 }}
-                className={`text-center mt-3 ${textColor}`}
+                className={`text-center mt-3 text-lg md:text-xl font-bold ${textColor}`}
               >
-                <p className="text-lg md:text-xl font-bold">{card.ingredient}</p>
-                <p className="text-xs md:text-sm opacity-60 mt-0.5">{card.label}</p>
-              </motion.div>
+                {card.ingredient}
+              </motion.p>
             </motion.div>
           )
         })}

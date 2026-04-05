@@ -4,7 +4,7 @@ export default function Character({ variant = 'half', size = 'normal', className
   const isHalf = variant === 'half'
 
   const sizeClass = size === 'large'
-    ? 'w-60 h-72 md:w-72 md:h-[22rem]'
+    ? 'w-60 h-72 md:w-[28rem] md:h-[34rem] lg:w-[32rem] lg:h-[38rem]'
     : 'w-44 h-56 md:w-52 md:h-64'
 
   return (
