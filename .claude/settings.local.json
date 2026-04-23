@@ -17,7 +17,21 @@
       "Bash(npm run:*)",
       "Bash(gh run:*)",
       "Bash(wc:*)",
-      "Bash(ls -d ~/.claude/projects/*SY*)"
+      "Bash(ls -d ~/.claude/projects/*SY*)",
+      "WebFetch(domain:claude.ai)",
+      "Bash(mv plate_01.png plate_07.png)",
+      "Bash(mv main_01.png main_07.png)",
+      "Bash(mv sub1_01.png sub7_01.png)",
+      "Bash(mv sub1_02.png sub7_02.png)",
+      "Bash(mv sub1_03.png sub7_03.png)",
+      "Bash(npm uninstall:*)",
+      "Bash(git branch:*)",
+      "Bash(git push:*)",
+      "Bash(git add:*)",
+      "Bash(git commit -m ':*)",
+      "Bash(gh workflow:*)",
+      "WebFetch(domain:dongkdj.github.io)",
+      "Bash(curl -sL https://dongkdj.github.io/SY_Prj/)"
     ]
   }
 }
