@@ -3,14 +3,11 @@ import { getDessertImage, getDessertLayers } from '../../assets/imageMap'
 /**
  * 디저트 애니메이션 컴포넌트
  *
- * 레이어 이미지가 있으면 → 접시(static) + 메인·서브(boing + 흔들림)
+ * 레이어 이미지가 있으면 → 접시(static) + 백(static) + 메인·서브(boing + 흔들림)
  * 레이어 이미지가 없으면 → 단일 이미지에도 바운스 애니메이션 적용
  *
- * 이미지 파일 규칙 (src/assets/images/desserts/layers/):
- *   plate_NN.png       – 접시 (정적, 선택)
- *   main_NN.png        – 디저트 본체 (필수, 바운스 대상)
- *   sub{N}_NN.png      – 서브 장식 (선택, 흔들림)
- *     파일명 규칙: sub{디저트번호}_{서브순번 01~04}.png
+ * 레이어 순서 (뒤→앞): 접시 > 백 > 메인 > 서브
+ * 같은 종류 내에서는 숫자가 높을수록 앞에 렌더링
  */
 export default function AnimatedDessert({
   dessertId,
@@ -59,26 +56,38 @@ export default function AnimatedDessert({
           />
         )}
 
-        {/* 바운스 그룹: 메인 (접시에 붙은 느낌) */}
+        {/* 백 레이어 – 정적 */}
+        {layers.back && (
+          <img
+            src={layers.back}
+            alt=""
+            className="dessert-layer"
+            draggable={false}
+          />
+        )}
+
+        {/* 바운스 그룹: 메인 + 서브 (접시에 붙은 느낌) */}
         <div className={bounceClass}>
-          {layers.main && (
+          {/* 메인 레이어 (복수 가능, 숫자 높을수록 앞) */}
+          {layers.mains.map((main, i) => (
             <img
-              src={layers.main}
-              alt={name}
+              key={`main-${i}`}
+              src={main}
+              alt={i === 0 ? name : ''}
               className="dessert-layer"
               draggable={false}
             />
-          )}
-          {/* 서브 레이어: 개별 흔들림 (각기 다른 타이밍) */}
+          ))}
+          {/* 서브 레이어: 바닥 고정 탄성 + 스태거 딜레이 */}
           {layers.subs.map((sub, i) => (
             <img
-              key={i}
+              key={`sub-${i}`}
               src={sub}
               alt=""
               className="dessert-layer dessert-sub"
               style={{
-                animationDelay: `${(i + 1) * 0.25}s`,
-                animationDuration: `${1.8 + (i + 1) * 0.3}s`,
+                animationDelay: `${(i + 1) * 0.15}s`,
+                animationDuration: `${2.4 + i * 0.2}s`,
               }}
               draggable={false}
             />

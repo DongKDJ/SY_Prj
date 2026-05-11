@@ -151,12 +151,12 @@ body {
   pointer-events: none;
 }
 
-/* ── Boing 바운스: 접시에 바닥이 붙은 느낌 (squash & stretch 중심) ── */
+/* ── Boing 바운스: 접시에 바닥이 붙은 느낌 (절제된 squash & stretch) ── */
 .dessert-bounce {
   position: absolute;
   inset: 0;
   transform-origin: center bottom;
-  animation: dessert-boing 1.8s ease-in-out infinite;
+  animation: dessert-boing 2.4s ease-in-out infinite;
 }
 
 @keyframes dessert-boing {
@@ -165,21 +165,18 @@ body {
     animation-timing-function: cubic-bezier(0.33, 0, 0.66, 0);
   }
   30% {
-    transform: translateY(-5%) scaleX(0.95) scaleY(1.08);
+    transform: translateY(-2%) scaleX(0.98) scaleY(1.03);
     animation-timing-function: cubic-bezier(0.33, 1, 0.66, 1);
   }
   50% {
-    transform: translateY(0) scaleX(1.06) scaleY(0.94);
+    transform: translateY(0) scaleX(1.02) scaleY(0.97);
   }
   65% {
-    transform: translateY(-2.5%) scaleX(0.98) scaleY(1.04);
+    transform: translateY(-1%) scaleX(0.99) scaleY(1.015);
     animation-timing-function: cubic-bezier(0.33, 1, 0.66, 1);
   }
   80% {
-    transform: translateY(0) scaleX(1.02) scaleY(0.98);
-  }
-  92% {
-    transform: translateY(-0.8%) scaleX(0.99) scaleY(1.01);
+    transform: translateY(0) scaleX(1.005) scaleY(0.995);
   }
 }
 
@@ -188,34 +185,32 @@ body {
   position: absolute;
   inset: 0;
   transform-origin: center bottom;
-  animation: dessert-float-sm-kf 2.4s ease-in-out infinite;
+  animation: dessert-float-sm-kf 3s ease-in-out infinite;
 }
 
 @keyframes dessert-float-sm-kf {
   0%, 100% { transform: translateY(0) scaleY(1); }
-  50% { transform: translateY(-2%) scaleY(1.03); }
+  50% { transform: translateY(-1%) scaleY(1.01); }
 }
 
-/* ── 서브 레이어: 살짝씩 개별 흔들림 ── */
+/* ── 서브 레이어: 바닥 고정 탄성 떨림 (스태거 딜레이로 개별 존재감) ── */
 .dessert-sub {
-  animation: dessert-sub-wobble 2s ease-in-out infinite;
+  transform-origin: center bottom;
+  animation: dessert-sub-jelly 2.4s ease-in-out infinite;
 }
 
-@keyframes dessert-sub-wobble {
+@keyframes dessert-sub-jelly {
   0%, 100% {
-    transform: translateY(0) translateX(0) rotate(0deg);
+    transform: scaleY(1) scaleX(1);
   }
-  15% {
-    transform: translateY(-3%) translateX(1.2%) rotate(1.5deg);
+  25% {
+    transform: scaleY(1.012) scaleX(0.994);
   }
-  40% {
-    transform: translateY(0.5%) translateX(-1%) rotate(-1deg);
+  50% {
+    transform: scaleY(0.994) scaleX(1.006);
   }
-  65% {
-    transform: translateY(-2%) translateX(0.8%) rotate(1.2deg);
-  }
-  85% {
-    transform: translateY(0.3%) translateX(-0.5%) rotate(-0.6deg);
+  75% {
+    transform: scaleY(1.006) scaleX(0.998);
   }
 }
 
@@ -227,11 +222,11 @@ body {
   border-radius: 50%;
   margin-top: -2px;
   flex-shrink: 0;
-  animation: dessert-shadow-pulse 1.8s ease-in-out infinite;
+  animation: dessert-shadow-pulse 2.4s ease-in-out infinite;
 }
 
 @keyframes dessert-shadow-pulse {
-  0%, 100% { transform: scaleX(1); opacity: 0.4; }
-  35% { transform: scaleX(0.55); opacity: 0.15; }
-  60% { transform: scaleX(1.15); opacity: 0.5; }
+  0%, 100% { transform: scaleX(1); opacity: 0.35; }
+  35% { transform: scaleX(0.85); opacity: 0.25; }
+  60% { transform: scaleX(1.06); opacity: 0.4; }
 }

@@ -9,7 +9,7 @@ import cardStage3Flour from './images/cards/card-stage3-flour.png'
 import cardStage4Sugar from './images/cards/card-stage4-sugar.png'
 import cardStage4Choco from './images/cards/card-stage4-choco.png'
 
-// 디저트 이미지 (있는 것만)
+// 디저트 이미지 (16종 전체)
 import dessert01 from './images/desserts/dessert-01.png'
 import dessert02 from './images/desserts/dessert-02.png'
 import dessert03 from './images/desserts/dessert-03.png'
@@ -17,6 +17,15 @@ import dessert04 from './images/desserts/dessert-04.png'
 import dessert05 from './images/desserts/dessert-05.png'
 import dessert06 from './images/desserts/dessert-06.png'
 import dessert07 from './images/desserts/dessert-07.png'
+import dessert08 from './images/desserts/dessert-08.png'
+import dessert09 from './images/desserts/dessert-09.png'
+import dessert10 from './images/desserts/dessert-10.png'
+import dessert11 from './images/desserts/dessert-11.png'
+import dessert12 from './images/desserts/dessert-12.png'
+import dessert13 from './images/desserts/dessert-13.png'
+import dessert14 from './images/desserts/dessert-14.png'
+import dessert15 from './images/desserts/dessert-15.png'
+import dessert16 from './images/desserts/dessert-16.png'
 
 export { cardBack }
 
@@ -39,6 +48,15 @@ export const dessertImages = {
   'dessert-05.png': dessert05,
   'dessert-06.png': dessert06,
   'dessert-07.png': dessert07,
+  'dessert-08.png': dessert08,
+  'dessert-09.png': dessert09,
+  'dessert-10.png': dessert10,
+  'dessert-11.png': dessert11,
+  'dessert-12.png': dessert12,
+  'dessert-13.png': dessert13,
+  'dessert-14.png': dessert14,
+  'dessert-15.png': dessert15,
+  'dessert-16.png': dessert16,
 }
 
 export function getDessertImage(filename) {
@@ -57,27 +75,44 @@ function getLayerImage(filename) {
 /**
  * 디저트 레이어 이미지 조회
  * @param {number} dessertId – 디저트 번호 (1–16)
- * @returns {{ plate: string|null, main: string, subs: string[] } | null}
+ * @returns {{ plate, back, mains: string[], subs: string[] } | null}
+ *
+ * 레이어 순서 (뒤→앞): 접시 > 백 > 메인 > 서브
+ * 같은 종류 내에서는 숫자가 높을수록 앞에 렌더링
  *
  * 파일 규칙:
- *   plate_01.png  → 접시 (정적, 선택)
- *   main_01.png   → 디저트 본체 (필수)
- *   sub1_01.png ~ sub4_01.png → 서브 장식 (선택)
+ *   plate_{NN}.png           → 접시 (정적, 선택)
+ *   back_{NN}.png            → 백 레이어 (선택)
+ *   main_{NN}.png            → 단일 메인 (필수)
+ *   main_{NN}_01.png~02.png  → 복수 메인 (선택)
+ *   sub_{NN}_01.png~10.png   → 서브 장식 (선택)
  */
 export function getDessertLayers(dessertId) {
   const num = String(dessertId).padStart(2, '0')
-  const main = getLayerImage(`main_${num}.png`)
-  if (!main) return null // main 필수
+
+  // 메인: 단일 또는 복수
+  const singleMain = getLayerImage(`main_${num}.png`)
+  const mains = []
+  if (singleMain) {
+    mains.push(singleMain)
+  } else {
+    for (let i = 1; i <= 4; i++) {
+      const m = getLayerImage(`main_${num}_${String(i).padStart(2, '0')}.png`)
+      if (m) mains.push(m)
+    }
+  }
+  if (mains.length === 0) return null // main 필수
 
   const plate = getLayerImage(`plate_${num}.png`)
-  // sub 파일명: sub{디저트번호}_{서브순번}.png  (예: sub1_01.png, sub1_02.png)
+  const back = getLayerImage(`back_${num}.png`)
+
   const subs = []
-  for (let i = 1; i <= 4; i++) {
-    const subNum = String(i).padStart(2, '0')
-    const sub = getLayerImage(`sub${dessertId}_${subNum}.png`)
+  for (let i = 1; i <= 10; i++) {
+    const sub = getLayerImage(`sub_${num}_${String(i).padStart(2, '0')}.png`)
     if (sub) subs.push(sub)
   }
-  return { plate, main, subs }
+
+  return { plate, back, mains, subs }
 }
 
 export function getCardImage(filename) {
