@@ -56,6 +56,64 @@ All image placeholders in `src/assets/images/`. Replace PNG files with same file
 ## Color Palette
 
 Warm cream + brown cabin theme defined in `src/index.css` @theme block.
+Storybook 테마 작업 후 확장된 액센트: `jam`(라즈베리), `honey`(황금), `sage`(세이지 그린), `ink`(진갈색), `paper`/`paper-edge`(양피지).
+
+## Storybook Recipe Journal Theme
+
+`experiment/frontend-design` 브랜치에서 진행. 컨셉: **동화책 + 낡은 레시피 노트**.
+
+### 브랜치
+- `experiment/frontend-design` — 테마 적용 브랜치 (현재 5/8 화면 완료)
+- 베이스: `review/bounce-animation`에서 분기
+
+### 폰트 (index.html에 Google Fonts 추가됨)
+- **Display:** Gowun Batang — 한글 명조, 손글씨 느낌 살짝 (`.font-display`)
+- **Script:** Caveat — 영문 손글씨, 라벨/캡션용 (`.font-script`)
+- **Body:** Pretendard (기존 유지)
+
+### 공통 장식 컴포넌트
+`src/components/shared/Decorations.jsx`:
+- `<PaperGrain />` — 종이 결 노이즈 오버레이 (absolute inset-0, 반드시 부모 relative)
+- `<Divider variant="diamond|wave" />` — 손그림 디바이더
+- `<Sparkle />`, `<Floret />`, `<WheatSprig flip />` — 작은 장식 SVG
+- `<CornerOrnament corner="tl|tr|bl|br" />` — 페이지 코너 장식
+- `<WaxSeal size rotate>` — 왁스 씰 도장 (children에 텍스트)
+- `<MaskingTape width rotate tone="honey|jam|sage|cream" />` — 마스킹 테이프
+- `<FloatingMotes count palette />` — 떠있는 작은 별/꽃잎 배경 장식
+
+### 색 톤 사용 가이드 (정적 클래스만 사용 — Tailwind v4가 동적 보간을 못 잡음)
+- 메인 액센트: `text-jam`, `text-honey`, `text-sage`
+- 부드러운 변형: `text-jam-soft`, `text-honey-soft`, `text-sage-soft`
+- 잉크 본문: `text-ink`, `text-ink/65` 식
+- 종이 배경: `bg-paper`, `border-paper-edge`
+
+> StageScreen에서 시간대별 액센트 매핑 사용 (`accentText`, `accentBg` 등 정적 키로). 절대 `text-${var}` 식 동적 보간 금지.
+
+### CSS 유틸리티 (`src/index.css`)
+- `.paper-grain` / `.page-vignette` — 종이 효과
+- `.ink-bleed-in` — 잉크 번지듯 진입
+- `.page-turn-in` — 페이지 넘김 (perspective rotateY)
+- `.seal-stamp` — 왁스 도장 찍기 (overshoot scale + rotate)
+- `.tape-settle` — 테이프 자리 잡기
+- `.drift-float` — 작은 입자 부유 (CSS var --dur/--dx/--dy/--dr)
+- `.script-shimmer` — 손글씨 opacity 반짝
+- `.paper-lift` — hover 시 종이 살짝 들림
+
+### 화면 적용 진행
+- ✅ TitleScreen — 책 표지 (Vol. I, 큰 타이틀, 여우씨, 왁스 씰 "시작하기")
+- ✅ DialogScreen — 오두막 내부 (SVG 창문/잼병/책/꿀단지, 양피지 말풍선)
+- ✅ StageScreen — 챕터 인트로 페이지 + 빈티지 표본 카드 확대
+- ✅ CardSelect — 양피지 질문 패널 + 손그림 코너 장식 카드
+- ✅ ResultScreen — 메달리온 reveal + 펼친 책 양면 detail
+- ⬜ IntroScreen — 인트로 애니메이션 (다음 세션)
+- ⬜ ResultTransition — 결과 진입 전환 (다음 세션)
+- ⬜ DessertBook — 16종 도감 그리드 (다음 세션)
+
+### 다음 세션 작업 시 주의
+- preview/dessert-animations에는 이 테마 미적용 — 디저트 애니메이션 튜닝 전용
+- 테마 작업은 `experiment/frontend-design`에서, 디저트 애니메이션 튜닝은 `preview/dessert-animations`에서 분리 진행
+- 확정 후 본 작업 브랜치(`review/bounce-animation` 또는 `main`)에 어떻게 합칠지 사용자와 협의 필요
+- 새로운 색/유틸리티 추가 시 반드시 정적 클래스 — Tailwind v4 보간 미감지 주의
 
 ## Dessert Animation System
 
