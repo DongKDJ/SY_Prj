@@ -37,10 +37,21 @@ Key data in `src/data/desserts.js`: stages (4 questions), dessertResults (16 com
 ## Image Assets
 
 All image placeholders in `src/assets/images/`. Replace PNG files with same filenames:
-- `character/` — fox-half.png, fox-full.png, fox-blink-1~5.png
+- `character/` — fox-body.png, fox-blink-01~04.png, fox-hand.png
 - `cards/` — card-stage{1-4}-{id}.png, ingredient-{name}.png
 - `desserts/` — dessert-01.png through dessert-16.png
 - `backgrounds/` — morning.png, noon.png, evening.png, night.png, dawn.png
+
+### Fox Character Layer System
+`Character.jsx`가 동적 임포트로 자동 인식. 다음 파일이 모두 있으면 레이어 모드로 동작:
+- `fox-body.png` — 몸체 (눈 뜬 상태, 손 빠진 상태)
+- `fox-blink-01.png` ~ `fox-blink-04.png` — 4프레임 깜빡임 (눈 뜸 → 반쯤 감김 → 감김 → 반쯤 뜸)
+- `fox-hand.png` — 분리된 손 (`.fox-hand-sway` 애니메이션 자동 적용)
+
+모든 레이어는 같은 캔버스 크기의 투명 PNG여야 좌표가 맞음. 각 레이어는 존재하면 렌더링, 없으면 스킵 (body는 필수).
+
+깜빡임 타이밍: 2~4.5초 랜덤 간격, 1프레임 80ms → 2프레임 120ms → 3프레임 80ms → 0프레임 복귀.
+손 흔들림: `index.css` `@keyframes fox-hand-sway-kf` (3.2s loop, transform-origin 50% 35%).
 
 ## Color Palette
 
