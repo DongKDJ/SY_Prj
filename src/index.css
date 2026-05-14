@@ -133,6 +133,7 @@ body {
   display: flex;
   flex-direction: column;
   align-items: center;
+  height: 100%;
 }
 
 .dessert-wrap {
@@ -160,23 +161,96 @@ body {
 }
 
 @keyframes dessert-boing {
-  0%, 100% {
-    transform: translateY(0) scaleX(1) scaleY(1);
+  /* 1단: 늘어남 */
+  0% {
+    transform: scaleX(1) scaleY(1);
     animation-timing-function: cubic-bezier(0.33, 0, 0.66, 0);
   }
-  30% {
-    transform: translateY(-2%) scaleX(0.98) scaleY(1.03);
-    animation-timing-function: cubic-bezier(0.33, 1, 0.66, 1);
+  12% {
+    transform: scaleX(0.97) scaleY(1.04);
+  }
+  /* 1단: 눌림 → 원상복귀 (느리게) */
+  22% {
+    transform: scaleX(1.025) scaleY(0.965);
+    animation-timing-function: cubic-bezier(0.25, 0.1, 0.25, 1);
+  }
+  34% {
+    transform: scaleX(0.998) scaleY(1.006);
+  }
+  40% {
+    transform: scaleX(1) scaleY(1);
+  }
+  /* 2단: 늘어남 */
+  48% {
+    transform: scaleX(0.99) scaleY(1.018);
+  }
+  /* 2단: 눌림 → 원상복귀 (느리게) */
+  56% {
+    transform: scaleX(1.012) scaleY(0.985);
+    animation-timing-function: cubic-bezier(0.25, 0.1, 0.25, 1);
+  }
+  66% {
+    transform: scaleX(0.997) scaleY(1.005);
+  }
+  74%, 100% {
+    transform: scaleX(1) scaleY(1);
+  }
+}
+
+/* ── Soft 바운스: 몽글몽글 부풀기 (무스/구름 디저트용) ── */
+.dessert-soft {
+  position: absolute;
+  inset: 0;
+  transform-origin: center bottom;
+  animation: dessert-soft-kf 3.2s ease-in-out infinite;
+}
+
+@keyframes dessert-soft-kf {
+  0%, 100% {
+    transform: scaleY(1) scaleX(1);
   }
   50% {
-    transform: translateY(0) scaleX(1.02) scaleY(0.97);
+    transform: scaleY(1.025) scaleX(0.99);
   }
-  65% {
-    transform: translateY(-1%) scaleX(0.99) scaleY(1.015);
-    animation-timing-function: cubic-bezier(0.33, 1, 0.66, 1);
+}
+
+/* ── Wobble 바운스: 말랑 젤리 (scaleY↔scaleX 교차 변형) ── */
+.dessert-wobble {
+  position: absolute;
+  inset: 0;
+  transform-origin: center bottom;
+  animation: dessert-wobble-kf 1.55s ease-in-out infinite;
+}
+
+@keyframes dessert-wobble-kf {
+  0%, 100% {
+    transform: scaleX(1) scaleY(1);
   }
-  80% {
-    transform: translateY(0) scaleX(1.005) scaleY(0.995);
+  25% {
+    transform: scaleX(0.975) scaleY(1.05);
+  }
+  50% {
+    transform: scaleX(1.025) scaleY(0.975);
+  }
+  75% {
+    transform: scaleX(0.98) scaleY(1.04);
+  }
+}
+
+/* ── Float 바운스: 구름처럼 부유 (translateY + 미세 scaleY) ── */
+.dessert-float {
+  position: absolute;
+  inset: 0;
+  transform-origin: center bottom;
+  animation: dessert-float-kf 3.5s ease-in-out infinite;
+}
+
+@keyframes dessert-float-kf {
+  0%, 100% {
+    transform: translateY(0) scaleY(1);
+  }
+  50% {
+    transform: translateY(-1.8%) scaleY(1.015);
   }
 }
 
@@ -193,25 +267,216 @@ body {
   50% { transform: translateY(-1%) scaleY(1.01); }
 }
 
-/* ── 서브 레이어: 바닥 고정 탄성 떨림 (스태거 딜레이로 개별 존재감) ── */
-.dessert-sub {
+/* ── 백 레이어: 메인보다 느린 미세 바운스 ── */
+.dessert-back {
   transform-origin: center bottom;
-  animation: dessert-sub-jelly 2.4s ease-in-out infinite;
+  animation: dessert-back-sway 1.2s ease-in-out infinite;
 }
 
-@keyframes dessert-sub-jelly {
+@keyframes dessert-back-sway {
   0%, 100% {
     transform: scaleY(1) scaleX(1);
   }
-  25% {
-    transform: scaleY(1.012) scaleX(0.994);
+  30% {
+    transform: scaleX(1.012) scaleY(0.988);
   }
-  50% {
-    transform: scaleY(0.994) scaleX(1.006);
+  60% {
+    transform: scaleX(0.988) scaleY(1.015);
   }
-  75% {
-    transform: scaleY(1.006) scaleX(0.998);
-  }
+}
+
+/* ── 서브 레이어 공통 ── */
+.dessert-sub {
+  transform-origin: center bottom;
+}
+
+/* jelly: scaleY + scaleX + skewX 탱글 (기본) */
+.dessert-sub-jelly {
+  animation: dessert-sub-jelly 2.4s ease-in-out infinite;
+}
+@keyframes dessert-sub-jelly {
+  0%, 100% { transform: scaleY(1) scaleX(1) skewX(0deg); }
+  25% { transform: scaleY(1.022) scaleX(0.984) skewX(0.8deg); }
+  50% { transform: scaleY(0.984) scaleX(1.016) skewX(0deg); }
+  75% { transform: scaleY(1.016) scaleX(0.99) skewX(-0.8deg); }
+}
+
+/* sway: 바닥고정 skewX 찰랑 */
+.dessert-sub-sway {
+  animation: dessert-sub-sway 2.8s ease-in-out infinite;
+}
+@keyframes dessert-sub-sway {
+  0%, 100% { transform: skewX(0deg); }
+  30% { transform: skewX(0.6deg); }
+  70% { transform: skewX(-0.6deg); }
+}
+
+/* drift: 좌우 미세 이동 */
+.dessert-sub-drift {
+  animation: dessert-sub-drift 3s ease-in-out infinite;
+}
+@keyframes dessert-sub-drift {
+  0%, 100% { transform: translateX(0); }
+  30% { transform: translateX(0.8%); }
+  70% { transform: translateX(-0.8%); }
+}
+
+/* drift-scale: 좌우 이동 + 크기 변화 바운스 */
+.dessert-sub-drift-scale {
+  animation: dessert-sub-drift-scale 8.67s ease-in-out infinite;
+}
+@keyframes dessert-sub-drift-scale {
+  0%, 100% { transform: translateX(0) scale(1); }
+  25% { transform: translateX(0.8%) scale(1.04); }
+  50% { transform: translateX(0) scale(0.97); }
+  75% { transform: translateX(-0.8%) scale(1.03); }
+}
+
+/* sway-sm: sway의 20% 적용 */
+.dessert-sub-sway-sm {
+  animation: dessert-sub-sway-sm 2.8s ease-in-out infinite;
+}
+@keyframes dessert-sub-sway-sm {
+  0%, 100% { transform: skewX(0deg); }
+  30% { transform: skewX(0.12deg); }
+  70% { transform: skewX(-0.12deg); }
+}
+
+/* pulse: opacity 반짝 */
+.dessert-sub-pulse {
+  animation: dessert-sub-pulse 2.6s ease-in-out infinite;
+}
+@keyframes dessert-sub-pulse {
+  0%, 100% { opacity: 1; transform: scale(1); }
+  50% { opacity: 0.82; transform: scale(0.98); }
+}
+
+/* hover: translateY 미세 부유 */
+.dessert-sub-hover {
+  animation: dessert-sub-hover 3s ease-in-out infinite;
+}
+@keyframes dessert-sub-hover {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-1.5%); }
+}
+
+/* sync: 메인 바운스와 동기화 (약간 작은 스케일) */
+.dessert-sub-sync {
+  animation: dessert-sub-sync 2.4s ease-in-out infinite;
+}
+@keyframes dessert-sub-sync {
+  0% { transform: scaleY(1) scaleX(1); }
+  12% { transform: scaleY(1.03) scaleX(0.975); }
+  22% { transform: scaleY(0.97) scaleX(1.02); }
+  34% { transform: scaleY(1.005) scaleX(0.998); }
+  40% { transform: scaleY(1) scaleX(1); }
+  48% { transform: scaleY(1.015) scaleX(0.99); }
+  56% { transform: scaleY(0.988) scaleX(1.01); }
+  66% { transform: scaleY(1.004) scaleX(0.998); }
+  74%, 100% { transform: scaleY(1) scaleX(1); }
+}
+
+/* sync-sm: sync의 0.8배 스케일 */
+.dessert-sub-sync-sm {
+  animation: dessert-sub-sync-sm 2.4s ease-in-out infinite;
+}
+@keyframes dessert-sub-sync-sm {
+  0% { transform: scaleY(1) scaleX(1); }
+  12% { transform: scaleY(1.029) scaleX(0.976); }
+  22% { transform: scaleY(0.971) scaleX(1.019); }
+  34% { transform: scaleY(1.005) scaleX(0.998); }
+  40% { transform: scaleY(1) scaleX(1); }
+  48% { transform: scaleY(1.014) scaleX(0.99); }
+  56% { transform: scaleY(0.988) scaleX(1.01); }
+  66% { transform: scaleY(1.004) scaleX(0.998); }
+  74%, 100% { transform: scaleY(1) scaleX(1); }
+}
+
+/* sync-fast: 메인과 동기화, 변형량 0.8배 */
+.dessert-sub-sync-fast {
+  animation: dessert-sub-sync-fast 2.4s ease-in-out infinite;
+}
+@keyframes dessert-sub-sync-fast {
+  0% { transform: scaleY(1) scaleX(1); }
+  12% { transform: scaleY(1.024) scaleX(0.98); }
+  22% { transform: scaleY(0.976) scaleX(1.016); }
+  34% { transform: scaleY(1.004) scaleX(0.998); }
+  40% { transform: scaleY(1) scaleX(1); }
+  48% { transform: scaleY(1.012) scaleX(0.992); }
+  56% { transform: scaleY(0.99) scaleX(1.008); }
+  66% { transform: scaleY(1.003) scaleX(0.998); }
+  74%, 100% { transform: scaleY(1) scaleX(1); }
+}
+
+/* pulse-bounce: opacity 반짝 + scaleY 바운스 복합 */
+.dessert-sub-pulse-bounce {
+  animation: dessert-sub-pulse-bounce 3.6s ease-in-out infinite;
+}
+@keyframes dessert-sub-pulse-bounce {
+  0% { opacity: 1; transform: scaleY(1) scaleX(1); }
+  15% { opacity: 0.88; transform: scaleY(1.02) scaleX(0.985); }
+  25% { opacity: 1; transform: scaleY(0.98) scaleX(1.015); }
+  42% { opacity: 1; transform: scaleY(1) scaleX(1); }
+  55% { opacity: 0.9; transform: scaleY(1.012) scaleX(0.993); }
+  65% { opacity: 1; transform: scaleY(0.99) scaleX(1.008); }
+  85%, 100% { opacity: 1; transform: scaleY(1) scaleX(1); }
+}
+
+/* sway-sm2: rotate 찰랑 (sway-lg의 0.5배) */
+.dessert-sub-sway-sm2 {
+  animation: dessert-sub-sway-sm2 2.8s ease-in-out infinite;
+}
+@keyframes dessert-sub-sway-sm2 {
+  0%, 100% { transform: rotate(0deg); }
+  30% { transform: rotate(-0.576deg); }
+  70% { transform: rotate(0.576deg); }
+}
+
+/* sway-lg: 꽂힌 지점 기준 rotate 찰랑 — 피봇은 config에서 지정 */
+.dessert-sub-sway-lg {
+  animation: dessert-sub-sway-lg 2.8s ease-in-out infinite;
+}
+@keyframes dessert-sub-sway-lg {
+  0%, 100% { transform: rotate(0deg); }
+  30% { transform: rotate(2.4deg); }
+  70% { transform: rotate(-2.4deg); }
+}
+
+/* sway-xl: sway-lg의 1.4배 */
+.dessert-sub-sway-xl {
+  animation: dessert-sub-sway-xl 2.8s ease-in-out infinite;
+}
+@keyframes dessert-sub-sway-xl {
+  0%, 100% { transform: rotate(0deg); }
+  30% { transform: rotate(3.36deg); }
+  70% { transform: rotate(-3.36deg); }
+}
+
+/* hover-lg: hover의 1.3배 */
+.dessert-sub-hover-lg {
+  animation: dessert-sub-hover-lg 3s ease-in-out infinite;
+}
+@keyframes dessert-sub-hover-lg {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-1.95%); }
+}
+
+/* breathe: scaleY 부풀기 */
+.dessert-sub-breathe {
+  animation: dessert-sub-breathe 3s ease-in-out infinite;
+}
+@keyframes dessert-sub-breathe {
+  0%, 100% { transform: scaleY(1); }
+  50% { transform: scaleY(1.025); }
+}
+
+/* breathe-lg: breathe의 1.3배 */
+.dessert-sub-breathe-lg {
+  animation: dessert-sub-breathe-lg 3s ease-in-out infinite;
+}
+@keyframes dessert-sub-breathe-lg {
+  0%, 100% { transform: scaleY(1); }
+  50% { transform: scaleY(1.0325); }
 }
 
 /* ── 바운스와 동기화되는 그림자 ── */

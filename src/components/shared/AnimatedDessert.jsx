@@ -1,4 +1,5 @@
 import { getDessertImage, getDessertLayers } from '../../assets/imageMap'
+import { dessertLayerConfig } from '../../data/dessertLayerConfig'
 
 /**
  * 디저트 애니메이션 컴포넌트
@@ -19,8 +20,11 @@ export default function AnimatedDessert({
 }) {
   const layers = getDessertLayers(dessertId)
   const fallbackImage = getDessertImage(image)
+  const config = dessertLayerConfig[dessertId]
   const isThumb = variant === 'thumb'
-  const bounceClass = isThumb ? 'dessert-float-sm' : 'dessert-bounce'
+  const bounceType = config?.bounce || 'bounce'
+  const bounceClass = isThumb ? 'dessert-float-sm' : `dessert-${bounceType}`
+  const pivotY = config?.pivotY || 'bottom'
 
   /* ── 레이어 없음: 단일 이미지에도 바운스 적용 ── */
   if (!layers) {
@@ -46,6 +50,24 @@ export default function AnimatedDessert({
   return (
     <div className={`dessert-stage ${className}`}>
       <div className="dessert-wrap">
+        {/* 서브 레이어 (접시 뒤): 맨 뒤에 렌더링 */}
+        {layers.subs.map((sub, i) => {
+          if (!config?.subBehind?.[i]) return null
+          const type = config?.subs?.[i] || 'jelly'
+          const subDelay = config?.subDelays?.[i]
+          const delay = subDelay !== undefined && subDelay !== null ? subDelay : (i + 1) * 0.15
+          return (
+            <img
+              key={`sub-behind-${i}`}
+              src={sub}
+              alt=""
+              className={`dessert-layer dessert-sub dessert-sub-${type}`}
+              style={{ animationDelay: `${delay}s` }}
+              draggable={false}
+            />
+          )
+        })}
+
         {/* 접시 레이어 – 항상 정적 */}
         {layers.plate && (
           <img
@@ -56,18 +78,17 @@ export default function AnimatedDessert({
           />
         )}
 
-        {/* 백 레이어 – 정적 */}
-        {layers.back && (
-          <img
-            src={layers.back}
-            alt=""
-            className="dessert-layer"
-            draggable={false}
-          />
-        )}
-
-        {/* 바운스 그룹: 메인 + 서브 (접시에 붙은 느낌) */}
-        <div className={bounceClass}>
+        {/* 바운스 그룹: 백 + 메인 + 서브 (접시에 붙은 느낌) */}
+        <div className={bounceClass} style={{ transformOrigin: `center ${pivotY}` }}>
+          {/* 백 레이어 – 개별 미세 바운스 */}
+          {layers.back && (
+            <img
+              src={layers.back}
+              alt=""
+              className="dessert-layer dessert-back"
+              draggable={false}
+            />
+          )}
           {/* 메인 레이어 (복수 가능, 숫자 높을수록 앞) */}
           {layers.mains.map((main, i) => (
             <img
@@ -78,21 +99,50 @@ export default function AnimatedDessert({
               draggable={false}
             />
           ))}
-          {/* 서브 레이어: 바닥 고정 탄성 + 스태거 딜레이 */}
-          {layers.subs.map((sub, i) => (
+          {/* 서브 레이어 (바운스 그룹 안): 메인과 함께 움직임 */}
+          {layers.subs.map((sub, i) => {
+            if (config?.subDetach?.[i]) return null
+            const type = config?.subs?.[i] || 'jelly'
+            const subPivot = config?.subPivots?.[i]
+            const subDelay = config?.subDelays?.[i]
+            const delay = subDelay !== undefined && subDelay !== null ? subDelay : (i + 1) * 0.15
+            return (
+              <img
+                key={`sub-${i}`}
+                src={sub}
+                alt=""
+                className={`dessert-layer dessert-sub dessert-sub-${type}`}
+                style={{
+                  animationDelay: `${delay}s`,
+                  ...(subPivot && { transformOrigin: subPivot.includes(' ') ? subPivot : `center ${subPivot}` }),
+                }}
+                draggable={false}
+              />
+            )
+          })}
+        </div>
+
+        {/* 서브 레이어 (바운스 그룹 밖): 독립 움직임 */}
+        {layers.subs.map((sub, i) => {
+          if (!config?.subDetach?.[i] || config?.subBehind?.[i]) return null
+          const type = config?.subs?.[i] || 'jelly'
+          const subPivot = config?.subPivots?.[i]
+          const subDelay = config?.subDelays?.[i]
+          const delay = subDelay !== undefined && subDelay !== null ? subDelay : (i + 1) * 0.15
+          return (
             <img
-              key={`sub-${i}`}
+              key={`sub-detach-${i}`}
               src={sub}
               alt=""
-              className="dessert-layer dessert-sub"
+              className={`dessert-layer dessert-sub dessert-sub-${type}`}
               style={{
-                animationDelay: `${(i + 1) * 0.15}s`,
-                animationDuration: `${2.4 + i * 0.2}s`,
+                animationDelay: `${delay}s`,
+                ...(subPivot && { transformOrigin: subPivot.includes(' ') ? subPivot : `center ${subPivot}` }),
               }}
               draggable={false}
             />
-          ))}
-        </div>
+          )
+        })}
       </div>
 
       {/* 그림자 */}
