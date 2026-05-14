@@ -15,7 +15,28 @@
   --color-night: #2C1810;
   --color-night-text: #F5E6D3;
   --color-dawn: #FFE8D6;
+  /* Storybook accent palette */
+  --color-jam: #8B2E3F;
+  --color-jam-soft: #B85870;
+  --color-honey: #D4A24C;
+  --color-honey-soft: #E8C078;
+  --color-sage: #7A8A6F;
+  --color-sage-soft: #A8B498;
+  --color-ink: #3A2418;
+  --color-paper: #FBF3E3;
+  --color-paper-edge: #E8D7B8;
   --font-family-sans: 'Pretendard', -apple-system, BlinkMacSystemFont, system-ui, sans-serif;
+  --font-family-display: 'Gowun Batang', 'Pretendard', serif;
+  --font-family-script: 'Caveat', 'Pretendard', cursive;
+}
+
+.font-display {
+  font-family: var(--font-family-display);
+  letter-spacing: -0.01em;
+}
+.font-script {
+  font-family: var(--font-family-script);
+  letter-spacing: 0.01em;
 }
 
 html, body, #root {
@@ -125,6 +146,105 @@ body {
 
 .card-glow {
   animation: glow-pulse 2s ease-in-out infinite;
+}
+
+/* ===== Storybook Page Aesthetics ===== */
+
+/* 종이 결 — SVG 노이즈 + 미세한 얼룩 */
+.paper-grain {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  background-image:
+    radial-gradient(at 20% 18%, rgba(139, 46, 63, 0.05) 0px, transparent 50%),
+    radial-gradient(at 78% 78%, rgba(58, 36, 24, 0.06) 0px, transparent 60%),
+    radial-gradient(at 65% 30%, rgba(212, 162, 76, 0.05) 0px, transparent 45%);
+  mix-blend-mode: multiply;
+}
+.paper-grain::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='240' height='240'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='2' stitchTiles='stitch'/><feColorMatrix values='0 0 0 0 0.22  0 0 0 0 0.14  0 0 0 0 0.09  0 0 0 0.18 0'/></filter><rect width='100%25' height='100%25' filter='url(%23n)'/></svg>");
+  opacity: 0.55;
+  mix-blend-mode: multiply;
+}
+
+/* 페이지 바닥 — 빛바랜 가장자리 비네팅 */
+.page-vignette {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  background:
+    radial-gradient(ellipse at center, transparent 55%, rgba(58, 36, 24, 0.12) 100%);
+}
+
+/* 잉크 번짐 진입 */
+@keyframes ink-bleed {
+  0%   { opacity: 0; filter: blur(8px); transform: translateY(6px); }
+  60%  { filter: blur(0.5px); }
+  100% { opacity: 1; filter: blur(0); transform: translateY(0); }
+}
+.ink-bleed-in {
+  animation: ink-bleed 0.9s cubic-bezier(0.2, 0.7, 0.2, 1) both;
+}
+
+/* 종이 들림 hover */
+.paper-lift {
+  transition: transform 0.4s cubic-bezier(0.2, 0.8, 0.2, 1),
+              box-shadow 0.4s ease;
+}
+.paper-lift:hover {
+  transform: translateY(-2px) rotate(-0.4deg);
+  box-shadow: 0 18px 28px -16px rgba(58, 36, 24, 0.35);
+}
+
+/* 왁스 씰 스탬프 */
+@keyframes seal-stamp {
+  0%   { transform: scale(1.2) rotate(-8deg); opacity: 0; }
+  60%  { transform: scale(0.95) rotate(-2deg); opacity: 1; }
+  100% { transform: scale(1) rotate(-3deg); opacity: 1; }
+}
+.seal-stamp {
+  animation: seal-stamp 0.7s cubic-bezier(0.3, 1.6, 0.5, 1) both;
+}
+
+/* 마스킹 테이프 살짝 흔들림 */
+@keyframes tape-settle {
+  0%   { transform: rotate(var(--rot, -6deg)) scale(0.9); opacity: 0; }
+  100% { transform: rotate(var(--rot, -6deg)) scale(1);   opacity: 0.85; }
+}
+.tape-settle {
+  animation: tape-settle 0.5s ease-out both;
+}
+
+/* 페이지 넘김 */
+@keyframes page-turn-in {
+  0%   { transform: perspective(1200px) rotateY(-22deg) translateX(-30px); opacity: 0; }
+  100% { transform: perspective(1200px) rotateY(0) translateX(0);          opacity: 1; }
+}
+.page-turn-in {
+  animation: page-turn-in 0.85s cubic-bezier(0.2, 0.8, 0.2, 1) both;
+  transform-origin: left center;
+}
+
+/* 손글씨 깜빡임 (script 캡션 강조용) */
+@keyframes script-shimmer {
+  0%, 100% { opacity: 0.85; }
+  50%      { opacity: 1; }
+}
+.script-shimmer {
+  animation: script-shimmer 3s ease-in-out infinite;
+}
+
+/* 떠있는 작은 별/꽃잎 */
+@keyframes drift-float {
+  0%   { transform: translate(0, 0) rotate(0deg); }
+  50%  { transform: translate(var(--dx, 6px), var(--dy, -8px)) rotate(var(--dr, 10deg)); }
+  100% { transform: translate(0, 0) rotate(0deg); }
+}
+.drift-float {
+  animation: drift-float var(--dur, 5s) ease-in-out infinite;
 }
 
 /* ===== Fox character hand sway ===== */
