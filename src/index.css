@@ -248,19 +248,18 @@ body {
 }
 
 /* ===== Fox character hand sway ===== */
-/* 분리된 손 이미지(fox-hand.png)에 적용. 살짝 좌우/상하 + 미세 회전 */
+/* 분리된 손 이미지(fox-hand.png)에 적용. 말하는 듯 간헐적으로 상하 까딱 */
 @keyframes fox-hand-sway-kf {
-  0%, 100% { transform: translate(0, 0) rotate(0deg); }
-  25%      { transform: translate(0.4px, -1.2px) rotate(-0.8deg); }
-  50%      { transform: translate(0, -0.6px) rotate(0.4deg); }
-  75%      { transform: translate(-0.3px, -1px) rotate(-0.4deg); }
+  /* 대부분 정지(0~60%) → 잠깐 두 번 까딱 → 다시 정지 */
+  0%, 60%, 100% { transform: translateY(0); }
+  67%  { transform: translateY(-3px); }
+  74%  { transform: translateY(-0.6px); }
+  81%  { transform: translateY(-2.4px); }
+  88%  { transform: translateY(0); }
 }
 
 .fox-hand-sway {
-  /* 회전 축: 손이 몸에 붙어있는 부분(어깨/팔 시작점) 가정 */
-  /* 손 이미지의 회전 중심을 손목/어깨 위치에 맞게 조절 필요시 수정 */
-  transform-origin: 50% 35%;
-  animation: fox-hand-sway-kf 3.2s ease-in-out infinite;
+  animation: fox-hand-sway-kf 5s ease-in-out infinite;
   will-change: transform;
 }
 

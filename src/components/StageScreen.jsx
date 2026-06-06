@@ -4,6 +4,7 @@ import IngredientStack from './shared/IngredientStack'
 import { getCardImage } from '../assets/imageMap'
 import CardSelect from './CardSelect'
 import { stages } from '../data/desserts'
+import { InkButton } from './shared/InkButton'
 import {
   PaperGrain,
   Divider,
@@ -11,7 +12,6 @@ import {
   Floret,
   WheatSprig,
   CornerOrnament,
-  WaxSeal,
   MaskingTape,
 } from './shared/Decorations'
 
@@ -359,22 +359,19 @@ export default function StageScreen({ stageIndex, selections, onSelect, onComple
                   </p>
                 </motion.div>
 
-                {/* 다음으로 - 왁스 씰 */}
-                <motion.button
-                  initial={{ opacity: 0, scale: 0.6 }}
-                  animate={{ opacity: 1, scale: 1 }}
-                  transition={{ delay: 0.8, type: 'spring', stiffness: 140, damping: 12 }}
-                  whileHover={{ scale: 1.06, rotate: 2 }}
-                  whileTap={{ scale: 0.94, rotate: -2 }}
+                {/* 다음으로 - 잉크 알약 버튼 */}
+                <InkButton
                   onClick={handleProceed}
-                  className="mt-8 cursor-pointer"
+                  size="md"
+                  sub="next page"
+                  initial={{ opacity: 0, y: 12 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  transition={{ delay: 0.8, type: 'spring', stiffness: 140, damping: 14 }}
+                  className="mt-8"
                   aria-label="다음으로"
                 >
-                  <WaxSeal size={96} rotate={-3} className="seal-stamp">
-                    <span className="block font-display text-base leading-tight">다음으로</span>
-                    <span className="block font-script text-[10px] mt-0.5 opacity-80">next page →</span>
-                  </WaxSeal>
-                </motion.button>
+                  다음으로
+                </InkButton>
               </motion.div>
             </motion.div>
           )

@@ -1,6 +1,7 @@
 import { useState, useMemo } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
 import AnimatedDessert from './shared/AnimatedDessert'
+import { InkButton } from './shared/InkButton'
 import {
   PaperGrain,
   Divider,
@@ -8,7 +9,6 @@ import {
   Floret,
   WheatSprig,
   CornerOrnament,
-  WaxSeal,
   MaskingTape,
 } from './shared/Decorations'
 
@@ -251,7 +251,7 @@ export default function ResultScreen({ result, onViewBook }) {
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             transition={{ duration: 0.6 }}
-            className="min-h-[100dvh] relative px-3 py-6 md:px-8 md:py-10"
+            className="min-h-[100dvh] relative flex items-center justify-center px-3 py-6 md:px-8 md:py-10"
           >
             {/* 배경 */}
             <div className="absolute inset-0 bg-gradient-to-b from-[#E8D0AC] via-[#F0DCB8] to-[#D8B888]" />
@@ -275,7 +275,8 @@ export default function ResultScreen({ result, onViewBook }) {
                   initial={{ opacity: 0, x: -20 }}
                   animate={{ opacity: 1, x: 0 }}
                   transition={{ delay: 0.25, duration: 0.7 }}
-                  className="relative p-6 md:p-10 md:pr-14 min-h-[60vh] md:min-h-[78vh]
+                  className="relative flex flex-col justify-center p-6 md:p-10 md:pr-14
+                             min-h-[60vh] md:min-h-[78vh]
                              bg-gradient-to-br from-[#FBF3E3] to-[#F0DEB6]"
                 >
                   <PaperGrain />
@@ -386,7 +387,8 @@ export default function ResultScreen({ result, onViewBook }) {
                   initial={{ opacity: 0, x: 20 }}
                   animate={{ opacity: 1, x: 0 }}
                   transition={{ delay: 0.4, duration: 0.7 }}
-                  className="relative p-6 md:p-10 md:pl-14 min-h-[60vh] md:min-h-[78vh]
+                  className="relative flex flex-col justify-center p-6 md:p-10 md:pl-14
+                             min-h-[60vh] md:min-h-[78vh]
                              bg-gradient-to-bl from-[#FCF5E6] to-[#F0DEB6]"
                 >
                   <PaperGrain />
@@ -441,31 +443,17 @@ export default function ResultScreen({ result, onViewBook }) {
                     <Floret className="w-5 h-5 text-honey/80" />
                   </div>
 
-                  {/* 레시피북 인용 */}
-                  <motion.blockquote
-                    initial={{ opacity: 0 }}
-                    animate={{ opacity: 1 }}
-                    transition={{ delay: 1.0 }}
-                    className="relative pl-5 pr-2 py-3 border-l-2 border-jam/40
-                               bg-honey-soft/15 rounded-r-md"
-                  >
-                    <p className="absolute -top-2.5 left-3 font-script text-base text-jam
-                                  bg-paper px-2">
-                      from the recipe book
-                    </p>
-                    <p className="font-display italic text-sm text-ink/75 leading-relaxed">
-                      &ldquo;{result.description}&rdquo;
-                    </p>
-                  </motion.blockquote>
-
-                  {/* 버튼 — 왁스 씰 2개 */}
+                  {/* 버튼 2개 */}
                   <motion.div
                     initial={{ opacity: 0, y: 10 }}
                     animate={{ opacity: 1, y: 0 }}
                     transition={{ delay: 1.2 }}
-                    className="flex justify-center items-center gap-6 mt-10"
+                    className="flex justify-center items-start gap-6 mt-10"
                   >
-                    <button
+                    <InkButton
+                      size="sm"
+                      tone="honey"
+                      arrow={false}
                       onClick={() => {
                         const text =
                           `나의 디저트는 "${result.name}"!\n성격: ${result.personality}\n\n${result.description}\n\n여우씨의 디저트 레시피에서 확인해보세요!`
@@ -476,30 +464,19 @@ export default function ResultScreen({ result, onViewBook }) {
                           alert('결과가 클립보드에 복사되었습니다!')
                         }
                       }}
-                      className="relative group cursor-pointer transition-transform hover:scale-105
-                                 active:scale-95"
                       aria-label="결과 공유하기"
                     >
-                      <WaxSeal size={84} rotate={-7}>
-                        <span className="block font-display text-xs leading-tight">결과</span>
-                        <span className="block font-display text-sm leading-tight">공유</span>
-                      </WaxSeal>
-                    </button>
+                      결과 공유
+                    </InkButton>
 
-                    <button
+                    <InkButton
+                      size="sm"
+                      sub="recipe book"
                       onClick={onViewBook}
-                      className="relative group cursor-pointer transition-transform hover:scale-105
-                                 active:scale-95"
                       aria-label="디저트 북 보기"
                     >
-                      <WaxSeal size={102} rotate={5}>
-                        <span className="block font-display text-xs leading-tight">디저트</span>
-                        <span className="block font-display text-base leading-tight">북 보기</span>
-                        <span className="block font-script text-[10px] mt-0.5 opacity-80">
-                          recipe book
-                        </span>
-                      </WaxSeal>
-                    </button>
+                      디저트 북 보기
+                    </InkButton>
                   </motion.div>
 
                   {/* 페이지 번호 */}

@@ -4,10 +4,7 @@ import StarParticles from './shared/StarParticles'
 import { getCardImage } from '../assets/imageMap'
 import {
   PaperGrain,
-  Divider,
   Sparkle,
-  Floret,
-  CornerOrnament,
   MaskingTape,
 } from './shared/Decorations'
 
@@ -23,8 +20,6 @@ export default function CardSelect({ stage, onSelect, dark = false, accent = 'ho
   const [flippedId, setFlippedId] = useState(null)
 
   const a = accentMap[accent] || accentMap.honey
-  const ink = dark ? 'text-cream' : 'text-ink'
-  const softInk = dark ? 'text-cream/65' : 'text-ink/65'
   const stageNum = String(stage.id).padStart(2, '0')
 
   const handlePick = (card) => {
@@ -73,7 +68,6 @@ export default function CardSelect({ stage, onSelect, dark = false, accent = 'ho
           const isOther    = selectedId && !isSelected
           const isFlipped  = flippedId === card.id
           const backImg    = getCardImage(card.backImage)
-          const labelTone  = i === 0 ? '-rotate-2' : 'rotate-2'
 
           return (
             <motion.div
@@ -89,7 +83,7 @@ export default function CardSelect({ stage, onSelect, dark = false, accent = 'ho
               className="relative flex flex-col items-center"
             >
               <button
-                className={`perspective w-40 h-56 md:w-48 md:h-72 cursor-pointer
+                className={`perspective w-40 md:w-48 aspect-[3/4] cursor-pointer
                            ${isSelected && !isFlipped ? 'card-glow' : ''}`}
                 onClick={() => handlePick(card)}
                 disabled={!!selectedId}
@@ -97,112 +91,40 @@ export default function CardSelect({ stage, onSelect, dark = false, accent = 'ho
               >
                 <div className={`card-inner ${isFlipped ? 'flipped' : ''}`}>
 
-                  {/* ── 뒷면 (선택 전 보이는 면) ── */}
-                  <div className="card-face bg-[#FBF3E3] border border-paper-edge
-                                  shadow-[0_18px_30px_-16px_rgba(58,36,24,0.55)]
-                                  flex flex-col p-2.5 relative overflow-hidden">
-                    <PaperGrain />
-                    {/* 코너 장식 */}
-                    <CornerOrnament corner="tl" className="absolute top-1 left-1 w-5 h-5 text-ink/40 z-10" />
-                    <CornerOrnament corner="tr" className="absolute top-1 right-1 w-5 h-5 text-ink/40 z-10" />
-                    <CornerOrnament corner="bl" className="absolute bottom-1 left-1 w-5 h-5 text-ink/40 z-10" />
-                    <CornerOrnament corner="br" className="absolute bottom-1 right-1 w-5 h-5 text-ink/40 z-10" />
-
-                    {/* 카드 상단 라벨 */}
-                    <div className="relative flex items-center justify-between px-1.5 py-1
-                                    border-b border-dashed border-ink/20 z-10">
-                      <span className={`font-script text-xs ${a.text}`}>
-                        №{stageNum}·{i + 1}
-                      </span>
-                      <span className="font-display text-[8px] text-ink/45 tracking-[0.25em]">
-                        CARD
-                      </span>
-                    </div>
-
-                    {/* 이미지 또는 emoji */}
-                    <div className="flex-1 w-full bg-[#F3E2C2] my-1.5 overflow-hidden
-                                    flex items-center justify-center relative">
-                      {backImg ? (
-                        <img src={backImg} alt={card.label}
-                             className="w-full h-full object-cover" />
-                      ) : (
-                        <div className="flex flex-col items-center justify-center gap-2 p-2">
-                          <span className="text-4xl">{card.emoji}</span>
-                          <span className="font-display text-sm font-bold text-ink">
-                            {card.label}
-                          </span>
-                          <p className="font-display text-[10px] text-ink/65 text-center leading-snug px-2">
-                            {card.brief}
-                          </p>
-                        </div>
-                      )}
-                    </div>
-
-                    {/* 카드 하단 */}
-                    <div className="relative flex items-center justify-center gap-1 pb-0.5 z-10">
-                      <Floret className="w-2.5 h-2.5 text-honey/70" />
-                      <span className={`font-script text-xs ${a.text}`}>
-                        pick me?
-                      </span>
-                      <Floret className="w-2.5 h-2.5 text-honey/70" />
-                    </div>
+                  {/* ── 뒷면 (선택 전 보이는 면) — 완성형 카드 이미지 ── */}
+                  <div className="card-face bg-[#F3E2C2] relative
+                                  shadow-[0_18px_30px_-16px_rgba(58,36,24,0.55)]">
+                    {backImg ? (
+                      <img src={backImg} alt={card.label}
+                           className="w-full h-full object-cover" />
+                    ) : (
+                      <div className="w-full h-full flex flex-col items-center justify-center gap-2 p-3
+                                      bg-[#FBF3E3]">
+                        <span className="text-4xl">{card.emoji}</span>
+                        <span className="font-display text-sm font-bold text-ink text-center">
+                          {card.label}
+                        </span>
+                      </div>
+                    )}
                   </div>
 
-                  {/* ── 앞면 (뒤집힌 후, 재료 공개) ── */}
-                  <div className="card-face card-face-front bg-[#FCF5E6]
-                                  border-2 border-jam/50
-                                  shadow-[0_22px_36px_-18px_rgba(58,36,24,0.65)]
-                                  flex flex-col p-2.5 relative overflow-hidden">
-                    <PaperGrain />
-                    {/* 상단 도장 라벨 */}
-                    <div className="relative flex items-center justify-between px-1.5 py-1 z-10">
-                      <span className="font-script text-xs text-jam">
-                        Ingredient
-                      </span>
-                      <span className="font-display text-[8px] text-jam/70 tracking-[0.25em]">
-                        № {stageNum}
-                      </span>
-                    </div>
-                    <Divider variant="wave" className="w-full h-2 text-jam/40 mb-1" />
-
-                    {/* 메인 이미지 */}
-                    <div className="flex-1 w-full bg-[#F3E2C2] overflow-hidden
-                                    flex items-center justify-center relative">
-                      {backImg ? (
-                        <img src={backImg} alt={card.ingredient}
-                             className="w-full h-full object-cover" />
-                      ) : (
-                        <span className="text-6xl">{card.ingredientEmoji}</span>
-                      )}
-                    </div>
-
-                    {/* 캡션 */}
-                    <div className="relative text-center pt-2 z-10">
-                      <p className="font-display text-sm md:text-base font-bold text-ink leading-tight">
-                        {card.ingredient}
-                      </p>
-                      <p className="font-script text-xs text-jam mt-0.5">
-                        {card.brief}
-                      </p>
-                    </div>
+                  {/* ── 앞면 (선택 후 뒤집힘) — 같은 카드 이미지 + 선택 강조 ── */}
+                  <div className="card-face card-face-front bg-[#F3E2C2] relative ring-2 ring-jam/40
+                                  shadow-[0_22px_36px_-18px_rgba(58,36,24,0.65)]">
+                    {backImg ? (
+                      <img src={backImg} alt={card.label}
+                           className="w-full h-full object-cover" />
+                    ) : (
+                      <div className="w-full h-full flex items-center justify-center bg-[#FCF5E6]">
+                        <span className="text-6xl">{card.emoji}</span>
+                      </div>
+                    )}
                   </div>
                 </div>
 
                 {/* 별 파티클 */}
                 <StarParticles active={isSelected} count={18} />
               </button>
-
-              {/* 카드 라벨 */}
-              <motion.p
-                initial={{ opacity: 0 }}
-                animate={{ opacity: isOther ? 0.35 : 1 }}
-                transition={{ delay: 0.55 + i * 0.1 }}
-                className={`mt-3 font-display text-base md:text-lg font-bold ${ink}
-                           ${labelTone} flex items-center gap-1.5`}
-              >
-                <span>{card.emoji}</span>
-                <span>{card.label}</span>
-              </motion.p>
             </motion.div>
           )
         })}

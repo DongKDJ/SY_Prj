@@ -3,14 +3,10 @@ import { motion, AnimatePresence } from 'framer-motion'
 import { dessertResults } from '../data/desserts'
 import { cardBack } from '../assets/imageMap'
 import AnimatedDessert from './shared/AnimatedDessert'
+import { InkButton } from './shared/InkButton'
+import { PaperGrain, Divider } from './shared/Decorations'
 
 const allDesserts = Object.values(dessertResults).sort((a, b) => a.id - b.id)
-
-// 4개씩 행으로 나누기
-const rows = []
-for (let i = 0; i < allDesserts.length; i += 4) {
-  rows.push(allDesserts.slice(i, i + 4))
-}
 
 function getUnlocked() {
   try {
@@ -49,123 +45,109 @@ export default function DessertBook({ currentResult, onRestart, onExit }) {
   }
 
   return (
-    <div className="min-h-[100dvh] bg-cream-dark relative">
+    <div className="min-h-[100dvh] relative
+                    bg-gradient-to-b from-[#F5DDB8] via-[#EFE0BE] to-[#E2C89C]">
+      <PaperGrain />
+      <div className="page-vignette" />
+
       <AnimatePresence mode="wait">
         {!detailDessert ? (
-          /* ===== 그리드 뷰: 한 행에 4장, 세로 스크롤 ===== */
+          /* ===== 그리드 뷰 ===== */
           <motion.div
             key="grid"
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
-            className="min-h-[100dvh] flex flex-col"
+            className="relative min-h-[100dvh] flex flex-col"
           >
-            {/* 헤더 */}
-            <div className="flex items-center justify-between px-5 py-4 bg-cream-dark">
-              <motion.button
-                whileTap={{ scale: 0.9 }}
-                onClick={onExit}
-                className="w-8 h-8 rounded-full bg-cabin/15 flex items-center justify-center
-                           text-brown cursor-pointer hover:bg-cabin/25 transition-colors text-sm"
-              >
-                ✕
-              </motion.button>
-              <h2 className="text-xl font-bold text-brown">디저트 북</h2>
-              <p className="text-[10px] text-brown-light/50 text-right leading-tight">
-                스크롤 내리며 다른<br />카드 스캔 가능
-              </p>
-            </div>
-
-            {/* 카드 스크롤 영역 */}
-            <div className="flex-1 overflow-y-auto px-3 pb-24">
-              {rows.map((row, rowIdx) => (
-                <div key={rowIdx} className="flex gap-2.5 mb-2.5">
-                  {row.map(d => {
-                    const unlocked = isUnlocked(d.id)
-                    return (
-                      <motion.button
-                        key={d.id}
-                        whileHover={unlocked ? { scale: 1.03 } : {}}
-                        whileTap={unlocked ? { scale: 0.97 } : {}}
-                        onClick={() => unlocked && setDetailDessert(d)}
-                        className={`flex-1 aspect-[3/4] rounded-2xl border-2 overflow-hidden
-                                   flex flex-col relative
-                                   ${unlocked
-                                     ? 'border-cabin/20 bg-card shadow-lg cursor-pointer'
-                                     : 'border-cabin/10 cursor-default'
-                                   }`}
-                      >
-                        {unlocked ? (
-                          /* 앞면: 카드 이미지만 (이름/설명 없음) */
-                          <div className="w-full h-full flex flex-col">
-                            <div className="flex-1 bg-gradient-to-b from-cream via-cream-dark/20 to-cabin-light/10
-                                            flex items-center justify-center overflow-hidden">
-                              <AnimatedDessert
-                                dessertId={d.id}
-                                image={d.image}
-                                name={d.name}
-                                variant="thumb"
-                                className="w-full h-full"
-                                imgClassName="w-full h-full object-cover"
-                              />
-                            </div>
-                            {/* 하단: 조합법 */}
-                            <div className="px-1.5 py-2 bg-cabin/8 text-center border-t border-cabin/10">
-                              <p className="text-[10px] md:text-xs text-brown font-semibold">
-                                {d.combo}
-                              </p>
-                            </div>
-                            {/* 현재 결과 표시 */}
-                            {currentResult?.id === d.id && (
-                              <div className="absolute top-1.5 right-1.5 w-5 h-5 bg-cabin rounded-full
-                                              flex items-center justify-center shadow-md">
-                                <span className="text-[9px] text-cream">★</span>
-                              </div>
-                            )}
-                          </div>
-                        ) : (
-                          /* 뒷면: card-back 이미지 */
-                          <div className="w-full h-full flex flex-col">
-                            <div className="flex-1 overflow-hidden flex items-center justify-center">
-                              <img src={cardBack} alt="미해금" className="w-full h-full object-cover opacity-70" />
-                            </div>
-                            <div className="px-1.5 py-2 bg-cabin/8 text-center border-t border-cabin/10">
-                              <p className="text-[10px] md:text-xs text-brown/40 font-semibold">???</p>
-                            </div>
-                          </div>
-                        )}
-                      </motion.button>
-                    )
-                  })}
-                </div>
-              ))}
-            </div>
-
-            {/* 고정 하단 바 */}
-            <div className="fixed bottom-0 left-0 right-0 bg-cream-dark/95 backdrop-blur-sm
-                            border-t border-cabin/10 px-4 py-3
-                            flex items-center justify-between z-50">
-              <p className="text-xs text-brown-light/50">
-                {unlockedIds.length} / {allDesserts.length} 해금
-              </p>
-              <div className="flex gap-2">
+            <div className="w-full max-w-4xl mx-auto px-4 py-8 md:py-10 flex flex-col">
+              {/* 헤더 */}
+              <div className="relative flex items-center justify-between gap-3">
                 <motion.button
-                  whileTap={{ scale: 0.95 }}
-                  onClick={onRestart}
-                  className="bg-cabin-light/20 text-brown px-4 py-2 rounded-lg
-                             text-xs font-semibold border border-cabin/15
-                             cursor-pointer"
-                >
-                  다시하기
-                </motion.button>
-                <motion.button
-                  whileTap={{ scale: 0.95 }}
+                  whileTap={{ scale: 0.9 }}
                   onClick={onExit}
-                  className="bg-cabin text-cream px-4 py-2 rounded-lg
-                             text-xs font-semibold shadow-md cursor-pointer"
+                  aria-label="결과로 돌아가기"
+                  className="w-9 h-9 rounded-full bg-ink/10 flex items-center justify-center
+                             text-ink/70 cursor-pointer hover:bg-ink/20 transition-colors"
                 >
-                  나가기
+                  ✕
                 </motion.button>
+                <div className="text-center">
+                  <h2 className="font-display text-2xl md:text-3xl font-bold text-ink leading-tight">
+                    디저트 도감
+                  </h2>
+                  <p className="font-script text-sm text-jam">recipe collection</p>
+                </div>
+                <span className="font-display text-xs md:text-sm text-ink/55 tracking-wider
+                                 min-w-9 text-right">
+                  {unlockedIds.length}/{allDesserts.length}
+                </span>
+              </div>
+
+              <Divider variant="wave" className="w-full h-3 text-ink/30 my-5" />
+
+              {/* 카드 그리드 */}
+              <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-3 md:gap-4 items-start">
+                {allDesserts.map(d => {
+                  const unlocked = isUnlocked(d.id)
+                  return (
+                    <motion.button
+                      key={d.id}
+                      whileHover={unlocked ? { scale: 1.03 } : {}}
+                      whileTap={unlocked ? { scale: 0.97 } : {}}
+                      onClick={() => unlocked && setDetailDessert(d)}
+                      className={`aspect-[3/4] rounded-xl border overflow-hidden
+                                 flex flex-col relative
+                                 ${unlocked
+                                   ? 'border-paper-edge bg-[#FBF3E3] shadow-md cursor-pointer'
+                                   : 'border-ink/10 bg-[#EFE2C4] cursor-default'
+                                 }`}
+                    >
+                      {unlocked ? (
+                        <>
+                          <div className="flex-1 overflow-hidden flex items-center justify-center bg-[#F3E2C2]">
+                            <AnimatedDessert
+                              dessertId={d.id}
+                              image={d.image}
+                              name={d.name}
+                              variant="thumb"
+                              className="w-full h-full"
+                              imgClassName="w-full h-full object-cover"
+                            />
+                          </div>
+                          <div className="px-1.5 py-1.5 text-center border-t border-paper-edge bg-[#FBF3E3]">
+                            <p className="font-display text-[10px] md:text-xs text-ink/80 font-semibold truncate">
+                              {d.combo}
+                            </p>
+                          </div>
+                          {currentResult?.id === d.id && (
+                            <div className="absolute top-1.5 right-1.5 w-5 h-5 bg-jam rounded-full
+                                            flex items-center justify-center shadow">
+                              <span className="text-[9px] text-cream">★</span>
+                            </div>
+                          )}
+                        </>
+                      ) : (
+                        <div className="w-full h-full relative flex items-center justify-center
+                                        bg-[#F2DBE6]">
+                          <img src={cardBack} alt="미해금"
+                               className="w-full h-full object-contain" />
+                          <div className="absolute inset-0 bg-ink/12" />
+                        </div>
+                      )}
+                    </motion.button>
+                  )
+                })}
+              </div>
+
+              {/* 하단 버튼 */}
+              <div className="flex justify-center items-start gap-5 mt-9">
+                <InkButton size="sm" tone="honey" arrow={false} onClick={onRestart}>
+                  다시하기
+                </InkButton>
+                <InkButton size="sm" onClick={onExit}>
+                  돌아가기
+                </InkButton>
               </div>
             </div>
           </motion.div>
@@ -176,130 +158,107 @@ export default function DessertBook({ currentResult, onRestart, onExit }) {
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
-            className="min-h-[100dvh] bg-cabin-dark/95 flex flex-col"
+            className="relative min-h-[100dvh] flex flex-col"
           >
-            {/* 닫기 */}
-            <div className="flex justify-end p-4">
-              <motion.button
-                whileHover={{ scale: 1.1 }}
-                whileTap={{ scale: 0.9 }}
-                onClick={() => setDetailDessert(null)}
-                className="w-8 h-8 rounded-full bg-white/10 flex items-center justify-center
-                           text-cream/70 cursor-pointer hover:bg-white/20 transition-colors text-sm"
-              >
-                ✕
-              </motion.button>
-            </div>
-
-            {/* 메인 콘텐츠 */}
-            <div className="flex-1 flex items-center px-2">
-              {/* 좌측 화살표 */}
-              <motion.button
-                whileHover={{ scale: 1.15 }}
-                whileTap={{ scale: 0.9 }}
-                onClick={() => navigateDetail(-1)}
-                className="flex-shrink-0 text-cream/70 text-2xl md:text-3xl
-                           cursor-pointer hover:text-cream transition-colors px-1 md:px-3"
-              >
-                ◀
-              </motion.button>
-
-              {/* 카드 + 설명 */}
-              <AnimatePresence mode="wait">
-                <motion.div
-                  key={detailDessert.id}
-                  initial={{ opacity: 0, x: 30 }}
-                  animate={{ opacity: 1, x: 0 }}
-                  exit={{ opacity: 0, x: -30 }}
-                  transition={{ duration: 0.25 }}
-                  className="flex-1 flex flex-col md:flex-row gap-4 md:gap-6
-                             items-center md:items-stretch max-w-3xl mx-auto"
+            <div className="w-full max-w-3xl mx-auto px-4 py-6 flex-1 flex flex-col">
+              {/* 그리드로 닫기 */}
+              <div className="flex justify-end">
+                <motion.button
+                  whileHover={{ scale: 1.1 }}
+                  whileTap={{ scale: 0.9 }}
+                  onClick={() => setDetailDessert(null)}
+                  aria-label="도감으로"
+                  className="w-9 h-9 rounded-full bg-ink/10 flex items-center justify-center
+                             text-ink/70 cursor-pointer hover:bg-ink/20 transition-colors"
                 >
-                  {/* 좌: 디저트 카드 이미지 */}
-                  <div className="w-52 md:w-72 flex-shrink-0">
-                    <div className="bg-card rounded-2xl border-2 border-cabin/20
-                                    shadow-xl overflow-hidden aspect-[3/4]
-                                    flex items-center justify-center p-2">
-                      <AnimatedDessert
-                        dessertId={detailDessert.id}
-                        image={detailDessert.image}
-                        name={detailDessert.name}
-                        variant="card"
-                        className="w-full h-full"
-                        imgClassName="w-full h-full object-contain"
-                      />
-                    </div>
-                  </div>
+                  ✕
+                </motion.button>
+              </div>
 
-                  {/* 우: 정보 패널 */}
-                  <div className="flex-1 max-w-md w-full">
-                    <div className="bg-card/90 rounded-2xl border border-cabin/15
-                                    shadow-lg overflow-hidden h-full flex flex-col">
-                      {/* 디저트 이름 */}
-                      <div className="px-5 py-4 border-b border-cabin/10 bg-white/40">
-                        <h3 className="text-xl md:text-2xl font-bold text-brown text-center">
+              {/* 메인: 화살표 + 카드 + 패널 */}
+              <div className="flex-1 flex items-center gap-1 md:gap-3">
+                <motion.button
+                  whileHover={{ scale: 1.15 }}
+                  whileTap={{ scale: 0.9 }}
+                  onClick={() => navigateDetail(-1)}
+                  aria-label="이전"
+                  className="flex-shrink-0 text-ink/45 text-2xl md:text-3xl
+                             cursor-pointer hover:text-ink transition-colors px-1 md:px-2"
+                >
+                  ◀
+                </motion.button>
+
+                <AnimatePresence mode="wait">
+                  <motion.div
+                    key={detailDessert.id}
+                    initial={{ opacity: 0, x: 30 }}
+                    animate={{ opacity: 1, x: 0 }}
+                    exit={{ opacity: 0, x: -30 }}
+                    transition={{ duration: 0.25 }}
+                    className="flex-1 flex flex-col md:flex-row gap-5 md:gap-6
+                               items-center max-w-2xl mx-auto"
+                  >
+                    {/* 카드 이미지 */}
+                    <div className="w-48 md:w-60 flex-shrink-0">
+                      <div className="bg-[#FBF3E3] rounded-2xl border border-paper-edge
+                                      shadow-xl overflow-hidden aspect-[3/4]
+                                      flex items-center justify-center p-2">
+                        <AnimatedDessert
+                          dessertId={detailDessert.id}
+                          image={detailDessert.image}
+                          name={detailDessert.name}
+                          variant="card"
+                          className="w-full h-full"
+                          imgClassName="w-full h-full object-contain"
+                        />
+                      </div>
+                    </div>
+
+                    {/* 정보 패널 (종이 노트) */}
+                    <div className="flex-1 w-full">
+                      <div className="relative bg-[#FBF3E3] rounded-2xl border border-paper-edge
+                                      shadow-lg p-5 md:p-6 overflow-hidden">
+                        <PaperGrain />
+                        <h3 className="relative font-display text-xl md:text-2xl font-bold
+                                       text-ink text-center leading-tight">
                           {detailDessert.name}
                         </h3>
-                      </div>
-
-                      {/* 한줄 성격 */}
-                      <div className="px-5 py-3 border-b border-cabin/10 bg-cabin/5">
-                        <p className="text-sm md:text-base font-semibold text-brown text-center">
+                        <div className="flex justify-center my-3">
+                          <Divider className="w-24 h-3 text-jam/60" />
+                        </div>
+                        <p className="relative font-display font-semibold text-ink text-center
+                                      text-sm md:text-base">
                           {detailDessert.personality}
                         </p>
-                      </div>
-
-                      {/* 디저트 설명 */}
-                      <div className="px-5 py-4 border-b border-cabin/10 flex-1">
-                        <p className="text-sm text-brown leading-relaxed">
-                          "{detailDessert.description}"
-                        </p>
-                      </div>
-
-                      {/* 레시피북의 문장 */}
-                      <div className="px-5 py-4 bg-cabin/5">
-                        <p className="text-xs text-cabin font-semibold mb-1">레시피북의 문장</p>
-                        <p className="text-sm text-brown-light leading-relaxed italic">
-                          "{detailDessert.description}"
+                        <p className="relative font-display text-sm text-ink/80 leading-relaxed mt-4">
+                          &ldquo;{detailDessert.description}&rdquo;
                         </p>
                       </div>
                     </div>
-                  </div>
-                </motion.div>
-              </AnimatePresence>
+                  </motion.div>
+                </AnimatePresence>
 
-              {/* 우측 화살표 */}
-              <motion.button
-                whileHover={{ scale: 1.15 }}
-                whileTap={{ scale: 0.9 }}
-                onClick={() => navigateDetail(1)}
-                className="flex-shrink-0 text-cream/70 text-2xl md:text-3xl
-                           cursor-pointer hover:text-cream transition-colors px-1 md:px-3"
-              >
-                ▶
-              </motion.button>
-            </div>
+                <motion.button
+                  whileHover={{ scale: 1.15 }}
+                  whileTap={{ scale: 0.9 }}
+                  onClick={() => navigateDetail(1)}
+                  aria-label="다음"
+                  className="flex-shrink-0 text-ink/45 text-2xl md:text-3xl
+                             cursor-pointer hover:text-ink transition-colors px-1 md:px-2"
+                >
+                  ▶
+                </motion.button>
+              </div>
 
-            {/* 하단 버튼 */}
-            <div className="flex justify-end gap-3 p-4">
-              <motion.button
-                whileTap={{ scale: 0.95 }}
-                onClick={onRestart}
-                className="bg-white/10 text-cream/80 px-5 py-2.5 rounded-lg
-                           text-sm font-semibold border border-white/10
-                           cursor-pointer"
-              >
-                다시하기
-              </motion.button>
-              <motion.button
-                whileTap={{ scale: 0.95 }}
-                onClick={onExit}
-                className="bg-white/15 text-cream/80 px-5 py-2.5 rounded-lg
-                           text-sm font-semibold border border-white/10
-                           cursor-pointer"
-              >
-                나가기
-              </motion.button>
+              {/* 하단 버튼 */}
+              <div className="flex justify-center items-start gap-5 pt-2">
+                <InkButton size="sm" tone="honey" arrow={false} onClick={onRestart}>
+                  다시하기
+                </InkButton>
+                <InkButton size="sm" onClick={onExit}>
+                  돌아가기
+                </InkButton>
+              </div>
             </div>
           </motion.div>
         )}

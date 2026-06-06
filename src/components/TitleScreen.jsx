@@ -1,12 +1,12 @@
 import { motion } from 'framer-motion'
 import Character from './shared/Character'
+import { InkButton } from './shared/InkButton'
 import {
   PaperGrain,
   Divider,
   Sparkle,
   WheatSprig,
   CornerOrnament,
-  WaxSeal,
   FloatingMotes,
 } from './shared/Decorations'
 
@@ -113,30 +113,19 @@ export default function TitleScreen({ onStart }) {
           </motion.div>
         </motion.div>
 
-        {/* 시작 버튼 - 왁스 씰 형태 */}
-        <motion.button
+        {/* 시작 버튼 - 잉크 알약 버튼 */}
+        <InkButton
           onClick={onStart}
-          initial={{ opacity: 0, scale: 0.6 }}
-          animate={{ opacity: 1, scale: 1 }}
-          transition={{ delay: 1.1, type: 'spring', stiffness: 140, damping: 12 }}
-          whileHover={{ scale: 1.06, rotate: 1 }}
-          whileTap={{ scale: 0.94, rotate: -2 }}
-          className="mt-10 relative group cursor-pointer"
+          size="lg"
+          sub="open the book"
+          initial={{ opacity: 0, y: 14 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ delay: 1.1, type: 'spring', stiffness: 140, damping: 14 }}
+          className="mt-10"
           aria-label="시작하기"
         >
-          {/* 점선 호 (씰 주변 도장 자국) */}
-          <svg viewBox="0 0 140 140" className="absolute inset-0 w-full h-full -m-3 pointer-events-none">
-            <circle cx="70" cy="70" r="66" fill="none"
-                    stroke="rgba(58, 36, 24, 0.35)" strokeWidth="1"
-                    strokeDasharray="2 6" className="origin-center"
-                    style={{ animation: 'spin 22s linear infinite' }} />
-          </svg>
-
-          <WaxSeal size={132} rotate={-4} className="seal-stamp">
-            <span className="block font-display text-2xl leading-tight">시작하기</span>
-            <span className="block font-script text-sm mt-1 opacity-80">open the book</span>
-          </WaxSeal>
-        </motion.button>
+          시작하기
+        </InkButton>
 
         {/* 하단 푸터 */}
         <motion.div
@@ -152,13 +141,6 @@ export default function TitleScreen({ onStart }) {
           </span>
         </motion.div>
       </div>
-
-      <style>{`
-        @keyframes spin {
-          from { transform: rotate(0deg); }
-          to   { transform: rotate(360deg); }
-        }
-      `}</style>
     </div>
   )
 }
