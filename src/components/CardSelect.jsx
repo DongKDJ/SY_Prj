@@ -130,16 +130,17 @@ export default function CardSelect({ stage, onSelect, dark = false, accent = 'ho
         })}
       </div>
 
-      {!selectedId && (
-        <motion.p
-          initial={{ opacity: 0 }}
-          animate={{ opacity: 1 }}
-          transition={{ delay: 0.9 }}
-          className={`mt-10 text-center font-script text-base ${dark ? 'text-cream/70' : 'text-jam/85'}`}
-        >
-          마음에 드는 카드를 탭해주세요
-        </motion.p>
-      )}
+      {/* 항상 마운트해 높이를 고정 — 선택 시 사라지면서 레이아웃이 밀리지 않게 opacity만 변경 */}
+      <motion.p
+        initial={{ opacity: 0 }}
+        animate={{ opacity: selectedId ? 0 : 1 }}
+        transition={selectedId ? { duration: 0.35 } : { delay: 0.9 }}
+        aria-hidden={!!selectedId}
+        className={`mt-10 text-center font-script text-base select-none pointer-events-none
+                    ${dark ? 'text-cream/70' : 'text-jam/85'}`}
+      >
+        마음에 드는 카드를 탭해주세요
+      </motion.p>
     </div>
   )
 }
