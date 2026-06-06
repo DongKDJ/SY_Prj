@@ -60,11 +60,12 @@ Storybook 테마 작업 후 확장된 액센트: `jam`(라즈베리), `honey`(�
 
 ## Storybook Recipe Journal Theme
 
-`experiment/frontend-design` 브랜치에서 진행. 컨셉: **동화책 + 낡은 레시피 노트**.
+**2026-06-07 `main`에 병합 완료 — 이후 main에서 직접 진행** (구 작업 브랜치 `experiment/frontend-design`는 폐기). 컨셉: **동화책 + 낡은 레시피 노트**.
 
-### 브랜치
-- `experiment/frontend-design` — 테마 적용 브랜치 (현재 5/8 화면 완료)
-- 베이스: `review/bounce-animation`에서 분기
+### 브랜치 (2026-06-07 갱신)
+- **`main`** — 현재 작업 + 배포 브랜치. 테마·애니메이션 전부 병합 완료, 직접 작업
+- `experiment/frontend-design` · `preview/dessert-animations` · `review/bounce-animation` — 폐기(stale). 분기·병합 금지
+- 배포: `main` 푸시 → GitHub Actions 자동 배포 (정본: 프로젝트 메모리 `deploy-mechanism`)
 
 ### 폰트 (index.html에 Google Fonts 추가됨)
 - **Display:** Gowun Batang — 한글 명조, 손글씨 느낌 살짝 (`.font-display`)
@@ -107,19 +108,18 @@ Storybook 테마 작업 후 확장된 액센트: `jam`(라즈베리), `honey`(�
 - ✅ ResultScreen — 메달리온 reveal + 펼친 책 양면 detail
 - ⬜ IntroScreen — 인트로 애니메이션 (다음 세션)
 - ⬜ ResultTransition — 결과 진입 전환 (다음 세션)
-- ⬜ DessertBook — 16종 도감 그리드 (다음 세션)
+- ✅ DessertBook — 16종 도감 그리드 (Storybook 톤 재작성, 상세 펼침 뷰, 나가기=결과화면 복귀)
+- ⬜ IntroScreen — 인트로 애니메이션
+- ⬜ ResultTransition — 결과 진입 전환
 
 ### 다음 세션 작업 시 주의
-- preview/dessert-animations에는 이 테마 미적용 — 디저트 애니메이션 튜닝 전용
-- 테마 작업은 `experiment/frontend-design`에서, 디저트 애니메이션 튜닝은 `preview/dessert-animations`에서 분리 진행
-- 확정 후 본 작업 브랜치(`review/bounce-animation` 또는 `main`)에 어떻게 합칠지 사용자와 협의 필요
+- 모든 작업은 `main`에서 직접 (브랜치 분리 안 함). 남은 테마 화면: IntroScreen, ResultTransition
 - 새로운 색/유틸리티 추가 시 반드시 정적 클래스 — Tailwind v4 보간 미감지 주의
 
 ## Dessert Animation System
 
-### 브랜치 구조
-- `review/bounce-animation` — 메인 작업 브랜치 (16종 이미지 + 레이어 적용 완료)
-- `preview/dessert-animations` — 애니메이션 프리뷰 전용 (PREVIEW_MODE=true, App.jsx)
+### 브랜치 구조 (2026-06-07 갱신)
+- 모든 브랜치 `main`으로 통합 완료. 옛 `review/bounce-animation`·`preview/dessert-animations`는 폐기(stale)
 
 ### 핵심 파일
 - `src/data/dessertLayerConfig.js` — 디저트별 애니메이션 설정 (튜닝 작업 시 주로 편집)
