@@ -15,7 +15,28 @@
   --color-night: #2C1810;
   --color-night-text: #F5E6D3;
   --color-dawn: #FFE8D6;
+  /* Storybook accent palette */
+  --color-jam: #8B2E3F;
+  --color-jam-soft: #B85870;
+  --color-honey: #D4A24C;
+  --color-honey-soft: #E8C078;
+  --color-sage: #7A8A6F;
+  --color-sage-soft: #A8B498;
+  --color-ink: #3A2418;
+  --color-paper: #FBF3E3;
+  --color-paper-edge: #E8D7B8;
   --font-family-sans: 'Pretendard', -apple-system, BlinkMacSystemFont, system-ui, sans-serif;
+  --font-family-display: 'Gowun Batang', 'Pretendard', serif;
+  --font-family-script: 'Caveat', 'Pretendard', cursive;
+}
+
+.font-display {
+  font-family: var(--font-family-display);
+  letter-spacing: -0.01em;
+}
+.font-script {
+  font-family: var(--font-family-script);
+  letter-spacing: 0.01em;
 }
 
 html, body, #root {
@@ -127,12 +148,128 @@ body {
   animation: glow-pulse 2s ease-in-out infinite;
 }
 
+/* ===== Storybook Page Aesthetics ===== */
+
+/* 종이 결 — SVG 노이즈 + 미세한 얼룩 */
+.paper-grain {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  background-image:
+    radial-gradient(at 20% 18%, rgba(139, 46, 63, 0.05) 0px, transparent 50%),
+    radial-gradient(at 78% 78%, rgba(58, 36, 24, 0.06) 0px, transparent 60%),
+    radial-gradient(at 65% 30%, rgba(212, 162, 76, 0.05) 0px, transparent 45%);
+  mix-blend-mode: multiply;
+}
+.paper-grain::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='240' height='240'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='2' stitchTiles='stitch'/><feColorMatrix values='0 0 0 0 0.22  0 0 0 0 0.14  0 0 0 0 0.09  0 0 0 0.18 0'/></filter><rect width='100%25' height='100%25' filter='url(%23n)'/></svg>");
+  opacity: 0.55;
+  mix-blend-mode: multiply;
+}
+
+/* 페이지 바닥 — 빛바랜 가장자리 비네팅 */
+.page-vignette {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  background:
+    radial-gradient(ellipse at center, transparent 55%, rgba(58, 36, 24, 0.12) 100%);
+}
+
+/* 잉크 번짐 진입 */
+@keyframes ink-bleed {
+  0%   { opacity: 0; filter: blur(8px); transform: translateY(6px); }
+  60%  { filter: blur(0.5px); }
+  100% { opacity: 1; filter: blur(0); transform: translateY(0); }
+}
+.ink-bleed-in {
+  animation: ink-bleed 0.9s cubic-bezier(0.2, 0.7, 0.2, 1) both;
+}
+
+/* 종이 들림 hover */
+.paper-lift {
+  transition: transform 0.4s cubic-bezier(0.2, 0.8, 0.2, 1),
+              box-shadow 0.4s ease;
+}
+.paper-lift:hover {
+  transform: translateY(-2px) rotate(-0.4deg);
+  box-shadow: 0 18px 28px -16px rgba(58, 36, 24, 0.35);
+}
+
+/* 왁스 씰 스탬프 */
+@keyframes seal-stamp {
+  0%   { transform: scale(1.2) rotate(-8deg); opacity: 0; }
+  60%  { transform: scale(0.95) rotate(-2deg); opacity: 1; }
+  100% { transform: scale(1) rotate(-3deg); opacity: 1; }
+}
+.seal-stamp {
+  animation: seal-stamp 0.7s cubic-bezier(0.3, 1.6, 0.5, 1) both;
+}
+
+/* 마스킹 테이프 살짝 흔들림 */
+@keyframes tape-settle {
+  0%   { transform: rotate(var(--rot, -6deg)) scale(0.9); opacity: 0; }
+  100% { transform: rotate(var(--rot, -6deg)) scale(1);   opacity: 0.85; }
+}
+.tape-settle {
+  animation: tape-settle 0.5s ease-out both;
+}
+
+/* 페이지 넘김 */
+@keyframes page-turn-in {
+  0%   { transform: perspective(1200px) rotateY(-22deg) translateX(-30px); opacity: 0; }
+  100% { transform: perspective(1200px) rotateY(0) translateX(0);          opacity: 1; }
+}
+.page-turn-in {
+  animation: page-turn-in 0.85s cubic-bezier(0.2, 0.8, 0.2, 1) both;
+  transform-origin: left center;
+}
+
+/* 손글씨 깜빡임 (script 캡션 강조용) */
+@keyframes script-shimmer {
+  0%, 100% { opacity: 0.85; }
+  50%      { opacity: 1; }
+}
+.script-shimmer {
+  animation: script-shimmer 3s ease-in-out infinite;
+}
+
+/* 떠있는 작은 별/꽃잎 */
+@keyframes drift-float {
+  0%   { transform: translate(0, 0) rotate(0deg); }
+  50%  { transform: translate(var(--dx, 6px), var(--dy, -8px)) rotate(var(--dr, 10deg)); }
+  100% { transform: translate(0, 0) rotate(0deg); }
+}
+.drift-float {
+  animation: drift-float var(--dur, 5s) ease-in-out infinite;
+}
+
+/* ===== Fox character hand sway ===== */
+/* 분리된 손 이미지(fox-hand.png)에 적용. 말하는 듯 간헐적으로 상하 까딱 */
+@keyframes fox-hand-sway-kf {
+  /* 대부분 정지(0~60%) → 잠깐 두 번 까딱 → 다시 정지 */
+  0%, 60%, 100% { transform: translateY(0); }
+  67%  { transform: translateY(-3px); }
+  74%  { transform: translateY(-0.6px); }
+  81%  { transform: translateY(-2.4px); }
+  88%  { transform: translateY(0); }
+}
+
+.fox-hand-sway {
+  animation: fox-hand-sway-kf 5s ease-in-out infinite;
+  will-change: transform;
+}
+
 /* ===== Dessert Layer Animation System ===== */
 
 .dessert-stage {
   display: flex;
   flex-direction: column;
   align-items: center;
+  height: 100%;
 }
 
 .dessert-wrap {
@@ -151,26 +288,334 @@ body {
   pointer-events: none;
 }
 
-/* ── 단일 이미지용 CSS 흔들림 (레이어 없는 디저트) ── */
+/* ── Boing 바운스: 접시에 바닥이 붙은 느낌 (절제된 squash & stretch) ── */
 .dessert-bounce {
   position: absolute;
   inset: 0;
   transform-origin: center bottom;
-  animation: dessert-sway 2.2s ease-in-out infinite;
+  animation: dessert-boing 2.4s ease-in-out infinite;
 }
 
-@keyframes dessert-sway {
-  0%, 100% { transform: skewX(0deg) scaleY(1); }
-  25%      { transform: skewX(1.2deg) scaleY(1.003); }
-  75%      { transform: skewX(-1.2deg) scaleY(1.003); }
+@keyframes dessert-boing {
+  /* 1단: 늘어남 */
+  0% {
+    transform: scaleX(1) scaleY(1);
+    animation-timing-function: cubic-bezier(0.33, 0, 0.66, 0);
+  }
+  12% {
+    transform: scaleX(0.97) scaleY(1.04);
+  }
+  /* 1단: 눌림 → 원상복귀 (느리게) */
+  22% {
+    transform: scaleX(1.025) scaleY(0.965);
+    animation-timing-function: cubic-bezier(0.25, 0.1, 0.25, 1);
+  }
+  34% {
+    transform: scaleX(0.998) scaleY(1.006);
+  }
+  40% {
+    transform: scaleX(1) scaleY(1);
+  }
+  /* 2단: 늘어남 */
+  48% {
+    transform: scaleX(0.99) scaleY(1.018);
+  }
+  /* 2단: 눌림 → 원상복귀 (느리게) */
+  56% {
+    transform: scaleX(1.012) scaleY(0.985);
+    animation-timing-function: cubic-bezier(0.25, 0.1, 0.25, 1);
+  }
+  66% {
+    transform: scaleX(0.997) scaleY(1.005);
+  }
+  74%, 100% {
+    transform: scaleX(1) scaleY(1);
+  }
 }
 
-/* ── 스프링 물리 레이어: GPU 가속 ── */
-.dessert-layer-spring {
-  will-change: transform;
+/* ── Soft 바운스: 몽글몽글 부풀기 (무스/구름 디저트용) ── */
+.dessert-soft {
+  position: absolute;
+  inset: 0;
+  transform-origin: center bottom;
+  animation: dessert-soft-kf 3.2s ease-in-out infinite;
 }
 
-/* ── 그림자 ── */
+@keyframes dessert-soft-kf {
+  0%, 100% {
+    transform: scaleY(1) scaleX(1);
+  }
+  50% {
+    transform: scaleY(1.025) scaleX(0.99);
+  }
+}
+
+/* ── Wobble 바운스: 말랑 젤리 (scaleY↔scaleX 교차 변형) ── */
+.dessert-wobble {
+  position: absolute;
+  inset: 0;
+  transform-origin: center bottom;
+  animation: dessert-wobble-kf 1.55s ease-in-out infinite;
+}
+
+@keyframes dessert-wobble-kf {
+  0%, 100% {
+    transform: scaleX(1) scaleY(1);
+  }
+  25% {
+    transform: scaleX(0.975) scaleY(1.05);
+  }
+  50% {
+    transform: scaleX(1.025) scaleY(0.975);
+  }
+  75% {
+    transform: scaleX(0.98) scaleY(1.04);
+  }
+}
+
+/* ── Float 바운스: 구름처럼 부유 (translateY + 미세 scaleY) ── */
+.dessert-float {
+  position: absolute;
+  inset: 0;
+  transform-origin: center bottom;
+  animation: dessert-float-kf 3.5s ease-in-out infinite;
+}
+
+@keyframes dessert-float-kf {
+  0%, 100% {
+    transform: translateY(0) scaleY(1);
+  }
+  50% {
+    transform: translateY(-1.8%) scaleY(1.015);
+  }
+}
+
+/* ── Thumb용 부드러운 플로트 ── */
+.dessert-float-sm {
+  position: absolute;
+  inset: 0;
+  transform-origin: center bottom;
+  animation: dessert-float-sm-kf 3s ease-in-out infinite;
+}
+
+@keyframes dessert-float-sm-kf {
+  0%, 100% { transform: translateY(0) scaleY(1); }
+  50% { transform: translateY(-1%) scaleY(1.01); }
+}
+
+/* ── 백 레이어: 메인보다 느린 미세 바운스 ── */
+.dessert-back {
+  transform-origin: center bottom;
+  animation: dessert-back-sway 1.2s ease-in-out infinite;
+}
+
+@keyframes dessert-back-sway {
+  0%, 100% {
+    transform: scaleY(1) scaleX(1);
+  }
+  30% {
+    transform: scaleX(1.012) scaleY(0.988);
+  }
+  60% {
+    transform: scaleX(0.988) scaleY(1.015);
+  }
+}
+
+/* ── 서브 레이어 공통 ── */
+.dessert-sub {
+  transform-origin: center bottom;
+}
+
+/* jelly: scaleY + scaleX + skewX 탱글 (기본) */
+.dessert-sub-jelly {
+  animation: dessert-sub-jelly 2.4s ease-in-out infinite;
+}
+@keyframes dessert-sub-jelly {
+  0%, 100% { transform: scaleY(1) scaleX(1) skewX(0deg); }
+  25% { transform: scaleY(1.022) scaleX(0.984) skewX(0.8deg); }
+  50% { transform: scaleY(0.984) scaleX(1.016) skewX(0deg); }
+  75% { transform: scaleY(1.016) scaleX(0.99) skewX(-0.8deg); }
+}
+
+/* sway: 바닥고정 skewX 찰랑 */
+.dessert-sub-sway {
+  animation: dessert-sub-sway 2.8s ease-in-out infinite;
+}
+@keyframes dessert-sub-sway {
+  0%, 100% { transform: skewX(0deg); }
+  30% { transform: skewX(0.6deg); }
+  70% { transform: skewX(-0.6deg); }
+}
+
+/* drift: 좌우 미세 이동 */
+.dessert-sub-drift {
+  animation: dessert-sub-drift 3s ease-in-out infinite;
+}
+@keyframes dessert-sub-drift {
+  0%, 100% { transform: translateX(0); }
+  30% { transform: translateX(0.8%); }
+  70% { transform: translateX(-0.8%); }
+}
+
+/* drift-scale: 좌우 이동 + 크기 변화 바운스 */
+.dessert-sub-drift-scale {
+  animation: dessert-sub-drift-scale 8.67s ease-in-out infinite;
+}
+@keyframes dessert-sub-drift-scale {
+  0%, 100% { transform: translateX(0) scale(1); }
+  25% { transform: translateX(0.8%) scale(1.04); }
+  50% { transform: translateX(0) scale(0.97); }
+  75% { transform: translateX(-0.8%) scale(1.03); }
+}
+
+/* sway-sm: sway의 20% 적용 */
+.dessert-sub-sway-sm {
+  animation: dessert-sub-sway-sm 2.8s ease-in-out infinite;
+}
+@keyframes dessert-sub-sway-sm {
+  0%, 100% { transform: skewX(0deg); }
+  30% { transform: skewX(0.12deg); }
+  70% { transform: skewX(-0.12deg); }
+}
+
+/* pulse: opacity 반짝 */
+.dessert-sub-pulse {
+  animation: dessert-sub-pulse 2.6s ease-in-out infinite;
+}
+@keyframes dessert-sub-pulse {
+  0%, 100% { opacity: 1; transform: scale(1); }
+  50% { opacity: 0.82; transform: scale(0.98); }
+}
+
+/* hover: translateY 미세 부유 */
+.dessert-sub-hover {
+  animation: dessert-sub-hover 3s ease-in-out infinite;
+}
+@keyframes dessert-sub-hover {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-1.5%); }
+}
+
+/* sync: 메인 바운스와 동기화 (약간 작은 스케일) */
+.dessert-sub-sync {
+  animation: dessert-sub-sync 2.4s ease-in-out infinite;
+}
+@keyframes dessert-sub-sync {
+  0% { transform: scaleY(1) scaleX(1); }
+  12% { transform: scaleY(1.03) scaleX(0.975); }
+  22% { transform: scaleY(0.97) scaleX(1.02); }
+  34% { transform: scaleY(1.005) scaleX(0.998); }
+  40% { transform: scaleY(1) scaleX(1); }
+  48% { transform: scaleY(1.015) scaleX(0.99); }
+  56% { transform: scaleY(0.988) scaleX(1.01); }
+  66% { transform: scaleY(1.004) scaleX(0.998); }
+  74%, 100% { transform: scaleY(1) scaleX(1); }
+}
+
+/* sync-sm: sync의 0.8배 스케일 */
+.dessert-sub-sync-sm {
+  animation: dessert-sub-sync-sm 2.4s ease-in-out infinite;
+}
+@keyframes dessert-sub-sync-sm {
+  0% { transform: scaleY(1) scaleX(1); }
+  12% { transform: scaleY(1.029) scaleX(0.976); }
+  22% { transform: scaleY(0.971) scaleX(1.019); }
+  34% { transform: scaleY(1.005) scaleX(0.998); }
+  40% { transform: scaleY(1) scaleX(1); }
+  48% { transform: scaleY(1.014) scaleX(0.99); }
+  56% { transform: scaleY(0.988) scaleX(1.01); }
+  66% { transform: scaleY(1.004) scaleX(0.998); }
+  74%, 100% { transform: scaleY(1) scaleX(1); }
+}
+
+/* sync-fast: 메인과 동기화, 변형량 0.8배 */
+.dessert-sub-sync-fast {
+  animation: dessert-sub-sync-fast 2.4s ease-in-out infinite;
+}
+@keyframes dessert-sub-sync-fast {
+  0% { transform: scaleY(1) scaleX(1); }
+  12% { transform: scaleY(1.024) scaleX(0.98); }
+  22% { transform: scaleY(0.976) scaleX(1.016); }
+  34% { transform: scaleY(1.004) scaleX(0.998); }
+  40% { transform: scaleY(1) scaleX(1); }
+  48% { transform: scaleY(1.012) scaleX(0.992); }
+  56% { transform: scaleY(0.99) scaleX(1.008); }
+  66% { transform: scaleY(1.003) scaleX(0.998); }
+  74%, 100% { transform: scaleY(1) scaleX(1); }
+}
+
+/* pulse-bounce: opacity 반짝 + scaleY 바운스 복합 */
+.dessert-sub-pulse-bounce {
+  animation: dessert-sub-pulse-bounce 3.6s ease-in-out infinite;
+}
+@keyframes dessert-sub-pulse-bounce {
+  0% { opacity: 1; transform: scaleY(1) scaleX(1); }
+  15% { opacity: 0.88; transform: scaleY(1.02) scaleX(0.985); }
+  25% { opacity: 1; transform: scaleY(0.98) scaleX(1.015); }
+  42% { opacity: 1; transform: scaleY(1) scaleX(1); }
+  55% { opacity: 0.9; transform: scaleY(1.012) scaleX(0.993); }
+  65% { opacity: 1; transform: scaleY(0.99) scaleX(1.008); }
+  85%, 100% { opacity: 1; transform: scaleY(1) scaleX(1); }
+}
+
+/* sway-sm2: rotate 찰랑 (sway-lg의 0.5배) */
+.dessert-sub-sway-sm2 {
+  animation: dessert-sub-sway-sm2 2.8s ease-in-out infinite;
+}
+@keyframes dessert-sub-sway-sm2 {
+  0%, 100% { transform: rotate(0deg); }
+  30% { transform: rotate(-0.576deg); }
+  70% { transform: rotate(0.576deg); }
+}
+
+/* sway-lg: 꽂힌 지점 기준 rotate 찰랑 — 피봇은 config에서 지정 */
+.dessert-sub-sway-lg {
+  animation: dessert-sub-sway-lg 2.8s ease-in-out infinite;
+}
+@keyframes dessert-sub-sway-lg {
+  0%, 100% { transform: rotate(0deg); }
+  30% { transform: rotate(2.4deg); }
+  70% { transform: rotate(-2.4deg); }
+}
+
+/* sway-xl: sway-lg의 1.4배 */
+.dessert-sub-sway-xl {
+  animation: dessert-sub-sway-xl 2.8s ease-in-out infinite;
+}
+@keyframes dessert-sub-sway-xl {
+  0%, 100% { transform: rotate(0deg); }
+  30% { transform: rotate(3.36deg); }
+  70% { transform: rotate(-3.36deg); }
+}
+
+/* hover-lg: hover의 1.3배 */
+.dessert-sub-hover-lg {
+  animation: dessert-sub-hover-lg 3s ease-in-out infinite;
+}
+@keyframes dessert-sub-hover-lg {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-1.95%); }
+}
+
+/* breathe: scaleY 부풀기 */
+.dessert-sub-breathe {
+  animation: dessert-sub-breathe 3s ease-in-out infinite;
+}
+@keyframes dessert-sub-breathe {
+  0%, 100% { transform: scaleY(1); }
+  50% { transform: scaleY(1.025); }
+}
+
+/* breathe-lg: breathe의 1.3배 */
+.dessert-sub-breathe-lg {
+  animation: dessert-sub-breathe-lg 3s ease-in-out infinite;
+}
+@keyframes dessert-sub-breathe-lg {
+  0%, 100% { transform: scaleY(1); }
+  50% { transform: scaleY(1.0325); }
+}
+
+/* ── 바운스와 동기화되는 그림자 ── */
 .dessert-shadow-el {
   width: 55%;
   height: 6px;
@@ -178,11 +623,11 @@ body {
   border-radius: 50%;
   margin-top: -2px;
   flex-shrink: 0;
-  animation: dessert-shadow-pulse 2.2s ease-in-out infinite;
+  animation: dessert-shadow-pulse 2.4s ease-in-out infinite;
 }
 
 @keyframes dessert-shadow-pulse {
-  0%, 100% { transform: scaleX(1) translateX(0); opacity: 0.35; }
-  25%      { transform: scaleX(0.97) translateX(2%); opacity: 0.3; }
-  75%      { transform: scaleX(0.97) translateX(-2%); opacity: 0.3; }
+  0%, 100% { transform: scaleX(1); opacity: 0.35; }
+  35% { transform: scaleX(0.85); opacity: 0.25; }
+  60% { transform: scaleX(1.06); opacity: 0.4; }
 }

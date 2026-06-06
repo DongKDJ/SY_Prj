@@ -93,7 +93,7 @@ function App() {
             <DessertBook
               currentResult={currentResult}
               onRestart={restart}
-              onExit={restart}
+              onExit={() => goToScreen('result')}
             />
           )}
         </motion.div>

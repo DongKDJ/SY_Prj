@@ -1,17 +1,19 @@
 import { motion } from 'framer-motion'
 import { stages } from '../../data/desserts'
 import { getCardImage } from '../../assets/imageMap'
+import { MaskingTape } from './Decorations'
 
+/* 카드 위치 (단계 누적 별) */
 const cardLayouts = [
-  [{ x: 0, y: 0, rotate: -5 }],
+  [{ x: 0,   y: 0,   rotate: -6, tape: 'honey' }],
   [
-    { x: -30, y: 10, rotate: -8 },
-    { x: 30, y: -10, rotate: 12 },
+    { x: -32, y: 10,  rotate: -8, tape: 'honey' },
+    { x: 32,  y: -10, rotate: 9,  tape: 'jam' },
   ],
   [
-    { x: -20, y: -15, rotate: -6 },
-    { x: 25, y: 20, rotate: 14 },
-    { x: 55, y: -8, rotate: -10 },
+    { x: -42, y: -8,  rotate: -7, tape: 'honey' },
+    { x: 12,  y: 14,  rotate: 5,  tape: 'sage' },
+    { x: 56,  y: -16, rotate: -11, tape: 'jam' },
   ],
 ]
 
@@ -38,21 +40,34 @@ export default function IngredientStack({ selections }) {
             animate={{ scale: 1, rotate: pos.rotate, x: pos.x, y: pos.y, opacity: 1 }}
             transition={{ type: 'spring', stiffness: 100, damping: 14, delay: 0.4 + i * 0.25 }}
             className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2
-                       w-24 h-34 md:w-28 md:h-40"
+                       w-24 h-32 md:w-28 md:h-40"
             style={{ zIndex: 10 + i }}
           >
-            <div className="w-full h-full bg-card rounded-xl border-2 border-cabin/20
-                            shadow-xl overflow-hidden flex flex-col">
-              <div className="flex-1 w-full bg-cream-dark/30 flex items-center justify-center overflow-hidden">
+            {/* 폴라로이드 */}
+            <div className="relative w-full h-full bg-[#FBF3E3] p-1.5 pb-7
+                            shadow-[0_10px_18px_-10px_rgba(58,36,24,0.55)]
+                            border border-paper-edge">
+              <MaskingTape
+                className="absolute -top-2 left-1/2 -translate-x-1/2"
+                width={48} rotate={pos.rotate * -0.7} tone={pos.tape}
+              />
+              <div className="w-full h-full bg-[#F3E2C2] overflow-hidden
+                              flex items-center justify-center">
                 {cardImg ? (
-                  <img src={cardImg} alt={card.ingredient} className="w-full h-full object-cover" />
+                  <img src={cardImg} alt={card.ingredient}
+                       className="w-full h-full object-cover" />
                 ) : (
                   <span className="text-3xl md:text-4xl">{card.ingredientEmoji}</span>
                 )}
               </div>
-              <div className="w-full px-2 py-2 bg-white/70 text-center">
-                <p className="text-[9px] text-cabin/70 font-semibold">{card.stageLabel}</p>
-                <p className="text-xs md:text-sm font-bold text-brown leading-tight">{card.ingredient}</p>
+              {/* 폴라로이드 캡션 */}
+              <div className="absolute bottom-1 left-0 right-0 text-center px-1">
+                <p className="font-script text-[10px] text-jam leading-none">
+                  {card.stageLabel}
+                </p>
+                <p className="font-display text-[10px] md:text-xs text-ink font-bold leading-tight mt-0.5">
+                  {card.ingredient}
+                </p>
               </div>
             </div>
           </motion.div>
