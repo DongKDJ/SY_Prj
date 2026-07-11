@@ -247,6 +247,26 @@ body {
   animation: drift-float var(--dur, 5s) ease-in-out infinite;
 }
 
+/* 향기·김 연기 — 잉크 선이 아른아른 피어오름 (IntroScreen/ResultTransition) */
+@keyframes scent-rise {
+  0%   { opacity: 0; transform: translateY(5px); }
+  30%  { opacity: 0.8; }
+  70%  { opacity: 0.45; }
+  100% { opacity: 0; transform: translateY(-9px); }
+}
+.scent-line {
+  animation: scent-rise 3.4s ease-in-out infinite both;
+}
+
+/* 오븐 창 온기 펄스 (ResultTransition) */
+@keyframes oven-glow-pulse {
+  0%, 100% { opacity: 0.5; }
+  50%      { opacity: 0.95; }
+}
+.oven-glow {
+  animation: oven-glow-pulse 2.2s ease-in-out infinite;
+}
+
 /* ===== Fox character hand sway ===== */
 /* 분리된 손 이미지(fox-hand.png)에 적용. 말하는 듯 간헐적으로 상하 까딱 */
 @keyframes fox-hand-sway-kf {

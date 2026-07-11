@@ -98,6 +98,7 @@ Storybook 테마 작업 후 확장된 액센트: `jam`(라즈베리), `honey`(�
 - `.drift-float` — 작은 입자 부유 (CSS var --dur/--dx/--dy/--dr)
 - `.script-shimmer` — 손글씨 opacity 반짝
 - `.paper-lift` — hover 시 종이 살짝 들림
+- `.scent-line` / `.oven-glow` — 향기 연기 잉크선 · 오븐 온기 펄스 (IntroScreen/ResultTransition)
 
 ### 화면 적용 진행
 - [x] TitleScreen — 책 표지 (Vol. I, 큰 타이틀, 여우씨, 왁스 씰 "시작하기")
@@ -106,11 +107,11 @@ Storybook 테마 작업 후 확장된 액센트: `jam`(라즈베리), `honey`(�
 - [x] CardSelect — 양피지 질문 패널 + 손그림 코너 장식 카드
 - [x] ResultScreen — 메달리온 reveal + 펼친 책 양면 detail
 - [x] DessertBook — 16종 도감 그리드 (Storybook 톤 재작성, 상세 펼침 뷰, 나가기=결과화면 복귀)
-- [ ] IntroScreen — 인트로 애니메이션
-- [ ] ResultTransition — 결과 진입 전환
+- [x] IntroScreen — 속표지 프롤로그 (향기 연기 잉크선 + 잉크 번짐 텍스트, 2026-07-11)
+- [x] ResultTransition — 오븐 페이지 (잉크 오븐 + 온기 글로우 + 여우 메모, 이모지 제거, 2026-07-11)
 
 ### 다음 세션 작업 시 주의
-- 모든 작업은 `main`에서 직접 (브랜치 분리 안 함). 남은 테마 화면: IntroScreen, ResultTransition
+- 모든 작업은 `main`에서 직접 (브랜치 분리 안 함). 테마 화면은 전 화면 적용 완료 (2026-07-11)
 - 새로운 색/유틸리티 추가 시 반드시 정적 클래스 — Tailwind v4 보간 미감지 주의
 
 ## Dessert Animation System
