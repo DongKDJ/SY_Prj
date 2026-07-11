@@ -11,8 +11,8 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 - React 19 + Vite 8
 - Tailwind CSS 4 (via @tailwindcss/vite plugin)
 - Framer Motion (page transitions, card animations)
-- Howler.js (sound effects - not yet implemented)
 - Pretendard font (Korean typography)
+- 사운드 없음 — 2026-07-11 스코프 아웃 결정 (howler 의존성 제거, 무음 유지)
 
 ## Commands
 
@@ -60,11 +60,10 @@ Storybook 테마 작업 후 확장된 액센트: `jam`(라즈베리), `honey`(�
 
 ## Storybook Recipe Journal Theme
 
-**2026-06-07 `main`에 병합 완료 — 이후 main에서 직접 진행** (구 작업 브랜치 `experiment/frontend-design`는 폐기). 컨셉: **동화책 + 낡은 레시피 노트**.
+**2026-06-07 `main`에 병합 완료 — 이후 main에서 직접 진행.** 컨셉: **동화책 + 낡은 레시피 노트**.
 
-### 브랜치 (2026-06-07 갱신)
-- **`main`** — 현재 작업 + 배포 브랜치. 테마·애니메이션 전부 병합 완료, 직접 작업
-- `experiment/frontend-design` · `preview/dessert-animations` · `review/bounce-animation` — 폐기(stale). 분기·병합 금지
+### 브랜치
+- **`main`** 단일 — 현재 작업 + 배포 브랜치 (옛 작업 브랜치 전부 병합·폐기, 분기 안 함)
 - 배포: `main` 푸시 → GitHub Actions 자동 배포 (정본: 프로젝트 메모리 `deploy-mechanism`)
 
 ### 폰트 (index.html에 Google Fonts 추가됨)
@@ -101,16 +100,14 @@ Storybook 테마 작업 후 확장된 액센트: `jam`(라즈베리), `honey`(�
 - `.paper-lift` — hover 시 종이 살짝 들림
 
 ### 화면 적용 진행
-- ✅ TitleScreen — 책 표지 (Vol. I, 큰 타이틀, 여우씨, 왁스 씰 "시작하기")
-- ✅ DialogScreen — 오두막 내부 (SVG 창문/잼병/책/꿀단지, 양피지 말풍선)
-- ✅ StageScreen — 챕터 인트로 페이지 + 빈티지 표본 카드 확대
-- ✅ CardSelect — 양피지 질문 패널 + 손그림 코너 장식 카드
-- ✅ ResultScreen — 메달리온 reveal + 펼친 책 양면 detail
-- ⬜ IntroScreen — 인트로 애니메이션 (다음 세션)
-- ⬜ ResultTransition — 결과 진입 전환 (다음 세션)
-- ✅ DessertBook — 16종 도감 그리드 (Storybook 톤 재작성, 상세 펼침 뷰, 나가기=결과화면 복귀)
-- ⬜ IntroScreen — 인트로 애니메이션
-- ⬜ ResultTransition — 결과 진입 전환
+- [x] TitleScreen — 책 표지 (Vol. I, 큰 타이틀, 여우씨, 왁스 씰 "시작하기")
+- [x] DialogScreen — 오두막 내부 (SVG 창문/잼병/책/꿀단지, 양피지 말풍선)
+- [x] StageScreen — 챕터 인트로 페이지 + 빈티지 표본 카드 확대
+- [x] CardSelect — 양피지 질문 패널 + 손그림 코너 장식 카드
+- [x] ResultScreen — 메달리온 reveal + 펼친 책 양면 detail
+- [x] DessertBook — 16종 도감 그리드 (Storybook 톤 재작성, 상세 펼침 뷰, 나가기=결과화면 복귀)
+- [ ] IntroScreen — 인트로 애니메이션
+- [ ] ResultTransition — 결과 진입 전환
 
 ### 다음 세션 작업 시 주의
 - 모든 작업은 `main`에서 직접 (브랜치 분리 안 함). 남은 테마 화면: IntroScreen, ResultTransition
@@ -118,15 +115,12 @@ Storybook 테마 작업 후 확장된 액센트: `jam`(라즈베리), `honey`(�
 
 ## Dessert Animation System
 
-### 브랜치 구조 (2026-06-07 갱신)
-- 모든 브랜치 `main`으로 통합 완료. 옛 `review/bounce-animation`·`preview/dessert-animations`는 폐기(stale)
-
 ### 핵심 파일
 - `src/data/dessertLayerConfig.js` — 디저트별 애니메이션 설정 (튜닝 작업 시 주로 편집)
 - `src/components/shared/AnimatedDessert.jsx` — 레이어 렌더링 컴포넌트
 - `src/assets/imageMap.js` — 이미지 import 및 `getDessertLayers()` (레이어 파일 자동 감지)
 - `src/index.css` — 애니메이션 keyframes 정의 (dessert-boing, dessert-sub-* 등)
-- `src/components/DessertPreview.jsx` — 16종 그리드 프리뷰 페이지
+- 프리뷰 경로: `DessertBook.jsx`(도감 그리드·상세 펼침)와 `ResultScreen.jsx`가 AnimatedDessert 렌더 — 전용 DessertPreview 페이지는 없음 (옛 preview 브랜치에만 존재, main 미병합)
 
 ### 레이어 이미지 규칙 (`src/assets/images/desserts/layers/`)
 - `plate_{NN}.png` — 접시 (정적, 선택)
@@ -176,27 +170,12 @@ Storybook 테마 작업 후 확장된 액센트: `jam`(라즈베리), `honey`(�
 - detach된 서브는 메인 바운스와 독립적으로 움직임
 
 ### 튜닝 진행 현황
-- ✅ #01 별밤 초코애플 푸딩 — 완료
-- 🔧 #02 구름사과 무스케이크 — 튜닝 중 (wobble+drift-scale, pivotY 85% 조정중)
-- ⬜ #03 반짝이는 사과쿠키
-- ⬜ #04 소복한 사과 타르트
-- ⬜ #05 눈덩이 초코 사과 마쉬멜로우
-- ⬜ #06 사과 바람 판나코타
-- ⬜ #07 사과 초코 격자 파이
-- ⬜ #08 따끈한 사과 슈가 팬케이크
-- ⬜ #09 고요한 딸기 초코 파르페
-- ⬜ #10 새벽녘 딸기 젤리 롤
-- ⬜ #11 딸기 퐁당 오 쇼콜라
-- ⬜ #12 설원의 딸기 크럼블
-- ⬜ #13 완화! 딸기 초코 젤리 케이크
-- ⬜ #14 딸기 젤리 와플
-- ⬜ #15 스트로베리 팽 오 쇼콜라
-- ⬜ #16 포근한 딸기우유 케이크
+> 디저트별 16종 튜닝 체크리스트는 `TUNING_TODO.md`로 분리 (휘발성 진행 데이터, 2026-06-13). 현재 #01 완료 / #02 튜닝 중 / #03~16 대기.
 
 ### 튜닝 작업 플로우
-1. `preview/dessert-animations` 브랜치에서 작업
+1. `main`에서 직접 작업 (브랜치 분리 없음)
 2. `npm run dev` → http://localhost:5173/SY_Prj/ 에서 프리뷰
-3. 디저트 클릭하여 크게 보면서 레이어 이미지 확인 (Read tool로 각 서브 확인)
+3. 도감(DessertBook)에서 해당 디저트 클릭하여 크게 보면서 레이어 이미지 확인 (Read tool로 각 서브 확인)
 4. `dessertLayerConfig.js`에 해당 디저트 설정 추가
 5. 필요시 `src/index.css`에 새 애니메이션 타입 추가
 6. 사용자와 실시간으로 수치 조정 반복

@@ -102,3 +102,6 @@ InitTestScene*.unity*
 ait-build/
 node_modules/
 dist/
+
+# 원화 소스 보관 폴더 (레이어 변환본은 src/assets/images/desserts/layers/에 커밋됨)
+여우짱 레시피/
