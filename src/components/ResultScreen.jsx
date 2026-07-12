@@ -197,7 +197,6 @@ export default function ResultScreen({ result, onViewBook }) {
                   name={result.name}
                   variant="full"
                   className="w-40 h-40 md:w-56 md:h-56 relative z-10"
-                  imgClassName="w-40 h-40 md:w-56 md:h-56 object-contain"
                 />
               </motion.div>
 
@@ -322,7 +321,6 @@ export default function ResultScreen({ result, onViewBook }) {
                           name={result.name}
                           variant="card"
                           className="w-48 h-48 md:w-60 md:h-60"
-                          imgClassName="w-48 h-48 md:w-60 md:h-60 object-contain"
                         />
                       </div>
 

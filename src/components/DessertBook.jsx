@@ -21,16 +21,18 @@ function saveUnlocked(ids) {
 }
 
 export default function DessertBook({ currentResult, onRestart, onExit }) {
-  const [unlockedIds, setUnlockedIds] = useState(() => getUnlocked())
+  // 이번 결과를 해금 목록에 합쳐 마운트 시 1회 초기화
+  const [unlockedIds] = useState(() => {
+    const ids = getUnlocked()
+    return currentResult && !ids.includes(currentResult.id)
+      ? [...ids, currentResult.id]
+      : ids
+  })
   const [detailDessert, setDetailDessert] = useState(null)
 
   useEffect(() => {
-    if (currentResult && !unlockedIds.includes(currentResult.id)) {
-      const next = [...unlockedIds, currentResult.id]
-      setUnlockedIds(next)
-      saveUnlocked(next)
-    }
-  }, [currentResult])
+    saveUnlocked(unlockedIds)
+  }, [unlockedIds])
 
   const isUnlocked = (id) => unlockedIds.includes(id)
   const unlockedDesserts = allDesserts.filter(d => isUnlocked(d.id))
@@ -112,7 +114,6 @@ export default function DessertBook({ currentResult, onRestart, onExit }) {
                               name={d.name}
                               variant="thumb"
                               className="w-full h-full"
-                              imgClassName="w-full h-full object-cover"
                             />
                           </div>
                           <div className="px-1.5 py-1.5 text-center border-t border-paper-edge bg-[#FBF3E3]">
@@ -209,7 +210,6 @@ export default function DessertBook({ currentResult, onRestart, onExit }) {
                           name={detailDessert.name}
                           variant="card"
                           className="w-full h-full"
-                          imgClassName="w-full h-full object-contain"
                         />
                       </div>
                     </div>

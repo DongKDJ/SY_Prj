@@ -16,7 +16,6 @@ export default function AnimatedDessert({
   name = '',
   variant = 'full',
   className = '',
-  imgClassName = 'w-full h-full object-contain',
 }) {
   const layers = getDessertLayers(dessertId)
   const fallbackImage = getDessertImage(image)

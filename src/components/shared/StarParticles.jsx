@@ -26,26 +26,25 @@ function createParticle(id) {
 
 export default function StarParticles({ active, count = 18 }) {
   const [particles, setParticles] = useState([])
-  const [wave, setWave] = useState(0)
 
   useEffect(() => {
-    if (active) {
-      // 첫 번째 파동
+    if (!active) return
+    // 첫 번째 파동 — 0ms 타이머 경유: 랜덤 생성·setState를 이펙트 본문 밖(콜백)에서 수행
+    const t1 = setTimeout(() => {
       setParticles(Array.from({ length: count }, (_, i) => createParticle(i)))
-      // 두 번째 파동 (0.5초 후)
-      const t = setTimeout(() => {
-        setWave(1)
-        setParticles(prev => [
-          ...prev,
-          ...Array.from({ length: Math.floor(count / 2) }, (_, i) =>
-            createParticle(count + i)
-          ),
-        ])
-      }, 500)
-      return () => clearTimeout(t)
-    } else {
-      setParticles([])
-      setWave(0)
+    }, 0)
+    // 두 번째 파동 (0.5초 후)
+    const t2 = setTimeout(() => {
+      setParticles(prev => [
+        ...prev,
+        ...Array.from({ length: Math.floor(count / 2) }, (_, i) =>
+          createParticle(count + i)
+        ),
+      ])
+    }, 500)
+    return () => {
+      clearTimeout(t1)
+      clearTimeout(t2)
     }
   }, [active, count])
 

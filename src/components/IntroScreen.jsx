@@ -48,7 +48,7 @@ export default function IntroScreen({ onComplete }) {
       clearTimeout(t2)
       clearTimeout(t3)
     }
-  }, []) // 의존성 비움 — 마운트 시 1회만 실행
+  }, [onComplete]) // onComplete(=nextScreen)는 useCallback([]) 고정 identity — 실질 마운트 1회 실행
 
   return (
     <motion.div

@@ -25,31 +25,24 @@ export default function DialogScreen({ onComplete }) {
   const lines = foxDialogs.intro
   const [lineIndex, setLineIndex] = useState(0)
   const [charIndex, setCharIndex] = useState(0)
-  const [isTyping, setIsTyping] = useState(true)
   const completedRef = useRef(false)
 
   const currentLine = lines[lineIndex] || ''
+  const isTyping = charIndex < currentLine.length
 
   useEffect(() => {
-    setCharIndex(0)
-    setIsTyping(true)
-  }, [lineIndex])
-
-  useEffect(() => {
-    if (!isTyping) return
     if (charIndex < currentLine.length) {
       const timer = setTimeout(() => setCharIndex(prev => prev + 1), 40)
       return () => clearTimeout(timer)
     }
-    setIsTyping(false)
-  }, [charIndex, currentLine, isTyping])
+  }, [charIndex, currentLine])
 
   const handleClick = () => {
     if (isTyping) {
       setCharIndex(currentLine.length)
-      setIsTyping(false)
     } else if (lineIndex < lines.length - 1) {
       setLineIndex(prev => prev + 1)
+      setCharIndex(0)
     } else if (!completedRef.current) {
       completedRef.current = true
       onComplete()

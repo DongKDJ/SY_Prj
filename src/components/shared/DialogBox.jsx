@@ -3,34 +3,31 @@ import { useState, useEffect } from 'react'
 export default function DialogBox({ lines, onComplete, speed = 40, fullscreen = false }) {
   const [lineIndex, setLineIndex] = useState(0)
   const [charIndex, setCharIndex] = useState(0)
-  const [isTyping, setIsTyping] = useState(true)
+  const [prevLines, setPrevLines] = useState(lines)
 
-  const currentLine = lines[lineIndex] || ''
-
-  useEffect(() => {
+  // lines 교체 시 처음부터 다시 타이핑 — 렌더 중 상태 보정 패턴 (이펙트 리셋 대체)
+  if (prevLines !== lines) {
+    setPrevLines(lines)
     setLineIndex(0)
     setCharIndex(0)
-    setIsTyping(true)
-  }, [lines])
+  }
+
+  const currentLine = lines[lineIndex] || ''
+  const isTyping = charIndex < currentLine.length
 
   useEffect(() => {
-    if (!isTyping) return
     if (charIndex < currentLine.length) {
       const timer = setTimeout(() => setCharIndex(prev => prev + 1), speed)
       return () => clearTimeout(timer)
-    } else {
-      setIsTyping(false)
     }
-  }, [charIndex, currentLine, isTyping, speed])
+  }, [charIndex, currentLine, speed])
 
   const handleClick = () => {
     if (isTyping) {
       setCharIndex(currentLine.length)
-      setIsTyping(false)
     } else if (lineIndex < lines.length - 1) {
       setLineIndex(prev => prev + 1)
       setCharIndex(0)
-      setIsTyping(true)
     } else {
       onComplete?.()
     }

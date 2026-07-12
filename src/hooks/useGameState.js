@@ -1,4 +1,4 @@
-import { useState, useCallback, useRef } from 'react'
+import { useState, useCallback, useMemo, useRef } from 'react'
 import { dessertResults } from '../data/desserts'
 
 const SCREENS = [
@@ -17,11 +17,13 @@ const SCREENS = [
 export function useGameState() {
   const [screen, setScreen] = useState('title')
   const [selections, setSelections] = useState([])
-  const [currentResult, setCurrentResult] = useState(null)
-  const selectionsRef = useRef(selections)
   const lockRef = useRef(false)
 
-  selectionsRef.current = selections
+  // 4단계 선택이 모두 모여야 키가 매칭됨 — 미완성 조합은 null
+  const currentResult = useMemo(
+    () => dessertResults[selections.join('-')] || null,
+    [selections],
+  )
 
   const selectCard = useCallback((stageIndex, cardId) => {
     setSelections(prev => {
@@ -39,15 +41,7 @@ export function useGameState() {
 
     setScreen(prev => {
       const idx = SCREENS.indexOf(prev)
-      if (idx < SCREENS.length - 1) {
-        const next = SCREENS[idx + 1]
-        if (next === 'result') {
-          const key = selectionsRef.current.join('-')
-          setCurrentResult(dessertResults[key] || null)
-        }
-        return next
-      }
-      return prev
+      return idx < SCREENS.length - 1 ? SCREENS[idx + 1] : prev
     })
   }, [])
 
@@ -57,17 +51,12 @@ export function useGameState() {
     setTimeout(() => { lockRef.current = false }, 700)
 
     setScreen(screenName)
-    if (screenName === 'result') {
-      const key = selectionsRef.current.join('-')
-      setCurrentResult(dessertResults[key] || null)
-    }
   }, [])
 
   const restart = useCallback(() => {
     lockRef.current = false
     setScreen('title')
     setSelections([])
-    setCurrentResult(null)
   }, [])
 
   return {
