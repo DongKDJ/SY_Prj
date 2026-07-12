@@ -19,6 +19,7 @@ import {
 const timeStyles = {
   morning: {
     bg:    'from-[#FBF3E3] via-[#F5DDB8] to-[#E8C49E]',
+    accent: 'honey',
     accentText: 'text-honey',
     accentBg:   'bg-honey',
     accentBorder: 'border-honey',
@@ -32,6 +33,7 @@ const timeStyles = {
   },
   noon: {
     bg:    'from-[#FCF5E6] via-[#F0E0BE] to-[#D8CFA0]',
+    accent: 'sage',
     accentText: 'text-sage',
     accentBg:   'bg-sage',
     accentBorder: 'border-sage',
@@ -45,6 +47,7 @@ const timeStyles = {
   },
   evening: {
     bg:    'from-[#E8C8A0] via-[#D4A07A] to-[#A87858]',
+    accent: 'jam',
     accentText: 'text-jam',
     accentBg:   'bg-jam',
     accentBorder: 'border-jam',
@@ -58,6 +61,7 @@ const timeStyles = {
   },
   night: {
     bg:    'from-[#1F1410] via-[#2C1810] to-[#0F0805]',
+    accent: 'honey',
     accentText: 'text-honey',
     accentBg:   'bg-honey',
     accentBorder: 'border-honey',
