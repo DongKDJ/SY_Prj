@@ -281,7 +281,7 @@ export default function StageScreen({ stageIndex, selections, onSelect, onComple
             ═══════════════════════════════════ */}
         {phase === 'enlarged' && selectedCardId && (() => {
           const card = stage.cards.find(c => c.id === selectedCardId)
-          const cardImg = getCardImage(card.backImage)
+          const cardImg = getCardImage(card.frontImage)
           return (
             <motion.div
               key="enlarged"

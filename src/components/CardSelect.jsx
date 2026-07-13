@@ -68,6 +68,7 @@ export default function CardSelect({ stage, onSelect, dark = false, accent = 'ho
           const isOther    = selectedId && !isSelected
           const isFlipped  = flippedId === card.id
           const backImg    = getCardImage(card.backImage)
+          const frontImg   = getCardImage(card.frontImage)
 
           return (
             <motion.div
@@ -108,15 +109,15 @@ export default function CardSelect({ stage, onSelect, dark = false, accent = 'ho
                     )}
                   </div>
 
-                  {/* ── 앞면 (선택 후 뒤집힘) — 같은 카드 이미지 + 선택 강조 ── */}
+                  {/* ── 앞면 (선택 후 뒤집힘) — 재료 카드 ── */}
                   <div className="card-face card-face-front bg-[#F3E2C2] relative ring-2 ring-jam/40
                                   shadow-[0_22px_36px_-18px_rgba(58,36,24,0.65)]">
-                    {backImg ? (
-                      <img src={backImg} alt={card.label}
+                    {frontImg ? (
+                      <img src={frontImg} alt={card.ingredient}
                            className="w-full h-full object-cover" />
                     ) : (
                       <div className="w-full h-full flex items-center justify-center bg-[#FCF5E6]">
-                        <span className="text-6xl">{card.emoji}</span>
+                        <span className="text-6xl">{card.ingredientEmoji}</span>
                       </div>
                     )}
                   </div>

@@ -105,3 +105,6 @@ dist/
 
 # 원화 소스 보관 폴더 (레이어 변환본은 src/assets/images/desserts/layers/에 커밋됨)
 여우짱 레시피/
+
+# 카드 원본 이미지 보관 폴더 (뒤집기 전/후 최신본은 src/assets/images/cards/에 반영됨)
+카드/

@@ -1,4 +1,4 @@
-// 카드 이미지
+// 카드 이미지 — 뒷면(선택 전, 선택지 카드)
 import cardBack from './images/cards/card-back.png'
 import cardStage1Sky from './images/cards/card-stage1-sky.png'
 import cardStage1Earth from './images/cards/card-stage1-earth.png'
@@ -8,6 +8,16 @@ import cardStage3Gelatin from './images/cards/card-stage3-gelatin.png'
 import cardStage3Flour from './images/cards/card-stage3-flour.png'
 import cardStage4Sugar from './images/cards/card-stage4-sugar.png'
 import cardStage4Choco from './images/cards/card-stage4-choco.png'
+
+// 카드 이미지 — 앞면(뒤집은 후, 재료 카드)
+import cardStage1SkyFront from './images/cards/card-stage1-sky-front.png'
+import cardStage1EarthFront from './images/cards/card-stage1-earth-front.png'
+import cardStage2ScaleFront from './images/cards/card-stage2-scale-front.png'
+import cardStage2SpatulaFront from './images/cards/card-stage2-spatula-front.png'
+import cardStage3GelatinFront from './images/cards/card-stage3-gelatin-front.png'
+import cardStage3FlourFront from './images/cards/card-stage3-flour-front.png'
+import cardStage4SugarFront from './images/cards/card-stage4-sugar-front.png'
+import cardStage4ChocoFront from './images/cards/card-stage4-choco-front.png'
 
 // 디저트 이미지 (16종 전체)
 import dessert01 from './images/desserts/dessert-01.png'
@@ -30,6 +40,7 @@ import dessert16 from './images/desserts/dessert-16.png'
 export { cardBack }
 
 export const cardImages = {
+  // 뒷면 (선택 전, 선택지 카드)
   'card-stage1-sky.png': cardStage1Sky,
   'card-stage1-earth.png': cardStage1Earth,
   'card-stage2-scale.png': cardStage2Scale,
@@ -38,6 +49,15 @@ export const cardImages = {
   'card-stage3-flour.png': cardStage3Flour,
   'card-stage4-sugar.png': cardStage4Sugar,
   'card-stage4-choco.png': cardStage4Choco,
+  // 앞면 (뒤집은 후, 재료 카드)
+  'card-stage1-sky-front.png': cardStage1SkyFront,
+  'card-stage1-earth-front.png': cardStage1EarthFront,
+  'card-stage2-scale-front.png': cardStage2ScaleFront,
+  'card-stage2-spatula-front.png': cardStage2SpatulaFront,
+  'card-stage3-gelatin-front.png': cardStage3GelatinFront,
+  'card-stage3-flour-front.png': cardStage3FlourFront,
+  'card-stage4-sugar-front.png': cardStage4SugarFront,
+  'card-stage4-choco-front.png': cardStage4ChocoFront,
 }
 
 export const dessertImages = {

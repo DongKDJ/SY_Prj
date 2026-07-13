@@ -32,7 +32,7 @@ export default function IngredientStack({ selections }) {
     <div className="relative w-72 h-52 md:w-96 md:h-64">
       {selected.map((card, i) => {
         const pos = layout[i]
-        const cardImg = getCardImage(card.backImage)
+        const cardImg = getCardImage(card.frontImage)
         return (
           <motion.div
             key={card.id}
