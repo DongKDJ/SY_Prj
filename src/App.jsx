@@ -1,5 +1,7 @@
 import { AnimatePresence, MotionConfig, motion } from 'framer-motion'
 import { useGameState } from './hooks/useGameState'
+import { readKioskFlag, useKioskIdle, useKioskLock } from './hooks/useKiosk'
+import KioskIdlePrompt from './components/shared/KioskIdlePrompt'
 import TitleScreen from './components/TitleScreen'
 import IntroScreen from './components/IntroScreen'
 import DialogScreen from './components/DialogScreen'
@@ -15,6 +17,8 @@ const pageTransition = {
   transition: { duration: 0.5 },
 }
 
+const isKiosk = readKioskFlag()
+
 function App() {
   const {
     screen,
@@ -25,6 +29,13 @@ function App() {
     goToScreen,
     restart,
   } = useGameState()
+
+  useKioskLock(isKiosk)
+  const idleSeconds = useKioskIdle({
+    enabled: isKiosk,
+    armed: screen !== 'title', // 타이틀에서는 되돌릴 진행 상태가 없다
+    onReset: restart,
+  })
 
   return (
     <MotionConfig reducedMotion="user">
@@ -98,6 +109,12 @@ function App() {
               />
             )}
           </motion.div>
+        </AnimatePresence>
+
+        <AnimatePresence>
+          {idleSeconds !== null && (
+            <KioskIdlePrompt key="kiosk-idle" secondsLeft={idleSeconds} />
+          )}
         </AnimatePresence>
       </div>
     </MotionConfig>

@@ -680,3 +680,28 @@ body {
   .paper-lift        { transition: none !important; }
   .paper-lift:hover  { transform: none !important; }
 }
+
+/* ===== 전시장 키오스크 모드 (?kiosk=1) =====
+   클래스는 useKioskLock이 <html>에 붙인다. 관람객 폰·심사 링크에는 붙지 않는다. */
+.kiosk-mode,
+.kiosk-mode body {
+  overflow: hidden;
+  overscroll-behavior: none;
+}
+
+.kiosk-mode {
+  touch-action: manipulation;   /* 더블탭 확대 차단 (핀치 줌은 viewport 메타에서) */
+  user-select: none;
+  -webkit-user-select: none;
+  -webkit-touch-callout: none;  /* iOS 길게 눌러 미리보기 차단 */
+}
+
+.kiosk-mode img {
+  -webkit-user-drag: none;
+}
+
+/* 마우스가 멈추면 커서를 감춘다 — 터치 키오스크에 화살표가 남아 있지 않게 */
+.kiosk-hide-cursor,
+.kiosk-hide-cursor * {
+  cursor: none !important;
+}
