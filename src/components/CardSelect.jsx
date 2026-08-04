@@ -91,9 +91,17 @@ export default function CardSelect({ stage, onSelect, dark = false, accent = 'ho
               transition={{ delay: 0.25 + i * 0.15, type: 'spring' }}
               className="relative flex flex-col items-center"
             >
+              {/* 고르기 전까지 카드가 손에 들린 듯 미세하게 떠 있는다 — 고민하는 5~15초가
+                  이 화면의 실제 체류 시간이라 그 구간이 정지하면 안 된다.
+                  고른 뒤에는 card-glow가 같은 animation 자리를 쓰므로 배타적으로 건다. */}
               <button
                 className={`perspective w-40 md:w-48 aspect-[3/4] cursor-pointer
-                           ${isSelected && !isFlipped ? 'card-glow' : ''}`}
+                           ${isSelected && !isFlipped ? 'card-glow' : ''}
+                           ${selectedId ? '' : 'ambient-bob'}`}
+                style={selectedId ? undefined : {
+                  animationDelay: `${i * 1.7}s`,
+                  '--bob-dir': i === 0 ? 1 : -1,
+                }}
                 onClick={() => handlePick(card)}
                 disabled={!!selectedId}
                 aria-label={card.label}

@@ -653,6 +653,53 @@ body {
   60% { transform: scaleX(1.06); opacity: 0.4; }
 }
 
+/* ===== 앰비언트 모션 — 진입이 끝난 뒤에도 페이지가 살아 있도록 =====
+   스테이지 3단계(책갈피/카드/확대)의 연출은 전부 1회성 진입 애니메이션이라
+   1.5초 안에 자리를 잡고 멈춘다. 그런데 관람객이 실제로 머무는 시간은 그 뒤의
+   정지 구간(질문을 읽고 고르는 5~15초)이고, 4단계를 합치면 플레이의 절반이 넘는다.
+   그 구간을 비워두면 움직임을 다루는 작품이 정지 이미지로 읽힌다.
+
+   --ambient 하나가 세 애니메이션의 진폭을 함께 스케일한다.
+   기본 0.6(은은) / .ambient-strong 1.6(확실) — 실물 보고 고른 뒤 기본값에 반영. */
+:root {
+  --ambient: 0.6;
+}
+
+.ambient-strong {
+  --ambient: 1.6;
+}
+
+/* 장식이 아주 느리게 숨쉰다 — 코너 장식 등 (래퍼에 걸 것: 원본 SVG는 인라인 transform 사용) */
+@keyframes ambient-breathe-kf {
+  0%, 100% { transform: scale(1); opacity: 0.82; }
+  50%      { transform: scale(calc(1 + 0.05 * var(--ambient))); opacity: 1; }
+}
+.ambient-breathe {
+  animation: ambient-breathe-kf 7s ease-in-out infinite;
+}
+
+/* 고르기를 기다리는 카드가 손에 들린 듯 미세하게 뜨고 기운다.
+   --bob-dir로 두 장을 반대로 기울여 한 덩어리로 보이지 않게 한다. */
+@keyframes ambient-bob-kf {
+  0%, 100% { transform: translateY(0) rotate(0deg); }
+  50%      { transform: translateY(calc(-7px * var(--ambient)))
+                        rotate(calc(var(--bob-dir, 1) * 0.5deg * var(--ambient))); }
+}
+.ambient-bob {
+  animation: ambient-bob-kf 4.6s ease-in-out infinite;
+}
+
+/* 테이프로 붙여둔 표본 카드가 제 무게로 조금씩 흔들린다 (지지점 = 위쪽 테이프) */
+@keyframes ambient-pinned-kf {
+  0%, 100% { transform: rotate(0deg); }
+  35%      { transform: rotate(calc(0.5deg * var(--ambient))); }
+  70%      { transform: rotate(calc(-0.4deg * var(--ambient))); }
+}
+.ambient-pinned {
+  animation: ambient-pinned-kf 6.5s ease-in-out infinite;
+  transform-origin: 50% 0;
+}
+
 /* ===== Reduced motion — OS 모션 감소 설정 존중 =====
    전면 정지는 하지 않는다. 이 앱은 움직임 자체가 작품이라 `*` 일괄 차단을 쓰면
    디저트 레이어·여우 캐릭터까지 멈춰 정지 이미지가 되어버린다.
@@ -675,6 +722,9 @@ body {
   /* 지속 장식 — 화면을 떠다니는 이동이라 정지 */
   .drift-float { animation: none !important; }
   .scent-line  { animation: none !important; opacity: 0.45; }
+
+  /* 앰비언트는 진폭만 0으로 — 클래스마다 예외를 두지 않아도 전부 정지한다 */
+  :root, .ambient-strong { --ambient: 0; }
 
   /* hover 시 종이 들림 */
   .paper-lift        { transition: none !important; }

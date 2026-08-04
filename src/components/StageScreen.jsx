@@ -13,6 +13,7 @@ import {
   WheatSprig,
   CornerOrnament,
   MaskingTape,
+  FloatingMotes,
 } from './shared/Decorations'
 
 /* 시간대별 톤 — 종이 페이지의 빛 변화 */
@@ -30,6 +31,7 @@ const timeStyles = {
     dark: false,
     icon: '☀',
     label: '아침의 페이지',
+    motes: ['honey', 'sage'],
   },
   noon: {
     bg:    'from-[#FCF5E6] via-[#F0E0BE] to-[#D8CFA0]',
@@ -44,6 +46,7 @@ const timeStyles = {
     dark: false,
     icon: '◐',
     label: '정오의 페이지',
+    motes: ['sage', 'honey'],
   },
   evening: {
     bg:    'from-[#E8C8A0] via-[#D4A07A] to-[#A87858]',
@@ -58,6 +61,7 @@ const timeStyles = {
     dark: false,
     icon: '◑',
     label: '저녁의 페이지',
+    motes: ['jam', 'honey'],
   },
   night: {
     bg:    'from-[#1F1410] via-[#2C1810] to-[#0F0805]',
@@ -72,6 +76,7 @@ const timeStyles = {
     dark: true,
     icon: '☾',
     label: '밤의 페이지',
+    motes: ['honey', 'jam'],
   },
 }
 
@@ -102,6 +107,8 @@ export default function StageScreen({ stageIndex, selections, onSelect, onComple
                      bg-gradient-to-b ${style.bg}`}>
       <PaperGrain />
       <div className="page-vignette" />
+      {/* 3단계 내내 배경에 남아 페이지가 멈추지 않게 한다 (단계 전환에도 끊기지 않도록 AnimatePresence 바깥) */}
+      <FloatingMotes count={12} palette={style.motes} />
 
       <AnimatePresence mode="wait">
         {/* ═══════════════════════════════════
@@ -116,11 +123,22 @@ export default function StageScreen({ stageIndex, selections, onSelect, onComple
             transition={{ duration: 0.6 }}
             className="min-h-[100dvh] relative flex flex-col"
           >
-            {/* 4 코너 장식 */}
-            <CornerOrnament corner="tl" className={`absolute top-4 left-4 w-10 h-10 ${style.cornerInk}`} />
-            <CornerOrnament corner="tr" className={`absolute top-4 right-4 w-10 h-10 ${style.cornerInk}`} />
-            <CornerOrnament corner="bl" className={`absolute bottom-4 left-4 w-10 h-10 ${style.cornerInk}`} />
-            <CornerOrnament corner="br" className={`absolute bottom-4 right-4 w-10 h-10 ${style.cornerInk}`} />
+            {/* 4 코너 장식 — 래퍼에 숨쉬기를 건다 (SVG 본체는 방향 전환에 inline transform을 쓰므로
+                거기에 애니메이션을 걸면 미러링이 덮인다). 딜레이를 어긋내 한꺼번에 뛰지 않게. */}
+            {[
+              { corner: 'tl', pos: 'top-4 left-4' },
+              { corner: 'tr', pos: 'top-4 right-4' },
+              { corner: 'bl', pos: 'bottom-4 left-4' },
+              { corner: 'br', pos: 'bottom-4 right-4' },
+            ].map(({ corner, pos }, i) => (
+              <span
+                key={corner}
+                className={`absolute ${pos} w-10 h-10 ambient-breathe`}
+                style={{ animationDelay: `${i * 1.4}s` }}
+              >
+                <CornerOrnament corner={corner} className={`w-full h-full ${style.cornerInk}`} />
+              </span>
+            ))}
 
             {/* 좌상단: 시간대 라벨 */}
             <motion.div
@@ -301,8 +319,9 @@ export default function StageScreen({ stageIndex, selections, onSelect, onComple
                 transition={{ type: 'spring', stiffness: 80, damping: 14 }}
                 className="relative z-10 flex flex-col items-center max-w-md"
               >
-                {/* 카드 — 빈티지 표본 카드 */}
-                <div className="relative bg-[#FBF3E3] p-3 md:p-4 pb-12 md:pb-14
+                {/* 카드 — 빈티지 표본 카드. 설명을 읽는 8~12초 동안 정지하지 않도록
+                    위쪽 테이프를 지지점 삼아 아주 느리게 흔들린다. */}
+                <div className="ambient-pinned relative bg-[#FBF3E3] p-3 md:p-4 pb-12 md:pb-14
                                 shadow-[0_30px_50px_-20px_rgba(0,0,0,0.6)]
                                 border border-paper-edge">
                   <PaperGrain />

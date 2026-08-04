@@ -11,4 +11,10 @@ import '@fontsource/caveat/latin-700.css'
 import './index.css'
 import App from './App.jsx'
 
+// ponytail: 앰비언트 모션 강도 비교용 임시 스위치(?ambient=strong).
+// 강도를 확정하면 index.css의 :root --ambient 기본값에 반영하고 이 블록은 제거.
+if (new URLSearchParams(window.location.search).get('ambient') === 'strong') {
+  document.documentElement.classList.add('ambient-strong')
+}
+
 createRoot(document.getElementById('root')).render(<App />)
