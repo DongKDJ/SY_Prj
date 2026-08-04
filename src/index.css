@@ -25,9 +25,10 @@
   --color-ink: #3A2418;
   --color-paper: #FBF3E3;
   --color-paper-edge: #E8D7B8;
-  --font-family-sans: 'Pretendard', -apple-system, BlinkMacSystemFont, system-ui, sans-serif;
-  --font-family-display: 'Gowun Batang', 'Pretendard', serif;
-  --font-family-script: 'Caveat', 'Pretendard', cursive;
+  /* 'Pretendard Variable' = 번들된 가변 폰트(main.jsx), 'Pretendard' = 사용자 로컬 설치본 폴백 */
+  --font-family-sans: 'Pretendard Variable', 'Pretendard', -apple-system, BlinkMacSystemFont, system-ui, sans-serif;
+  --font-family-display: 'Gowun Batang', 'Pretendard Variable', 'Pretendard', serif;
+  --font-family-script: 'Caveat', 'Pretendard Variable', 'Pretendard', cursive;
 }
 
 .font-display {
