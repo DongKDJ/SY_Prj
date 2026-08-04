@@ -292,7 +292,7 @@ export default function StageScreen({ stageIndex, selections, onSelect, onComple
               className="min-h-[100dvh] flex flex-col items-center justify-center px-4 relative"
             >
               {/* 배경 오버레이 — 종이 위 부드러운 비네팅 */}
-              <div className="absolute inset-0 bg-gradient-radial from-transparent to-black/50" />
+              <div className="absolute inset-0 bg-radial from-transparent to-black/50" />
               <div className="absolute inset-0 backdrop-blur-md bg-ink/20" />
 
               <motion.div

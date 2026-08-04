@@ -171,6 +171,13 @@ export function PaperGrain({ className = '' }) {
 }
 
 /* ── 떠있는 작은 별/꽃잎 (배경 장식용) ── */
+/* 정적 클래스 맵 — `text-${color}/30` 동적 보간은 Tailwind v4가 클래스를 생성하지 못함 */
+const moteColorClasses = {
+  jam:   'text-jam/30',
+  honey: 'text-honey/30',
+  sage:  'text-sage/30',
+}
+
 export function FloatingMotes({ count = 14, palette = ['jam', 'honey', 'sage'] }) {
   const shapes = ['star', 'floret', 'dot']
   // 결정적 난수
@@ -194,7 +201,7 @@ export function FloatingMotes({ count = 14, palette = ['jam', 'honey', 'sage'] }
         return (
           <span
             key={i}
-            className={`absolute text-${color}/30 drift-float`}
+            className={`absolute ${moteColorClasses[color] || 'text-ink/30'} drift-float`}
             style={{
               left:  `${left}%`,
               top:   `${top}%`,

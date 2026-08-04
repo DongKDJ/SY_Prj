@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import { motion } from 'framer-motion'
 import StarParticles from './shared/StarParticles'
 import { getCardImage } from '../assets/imageMap'
@@ -21,6 +21,14 @@ export default function CardSelect({ stage, onSelect, dark = false, accent = 'ho
 
   const a = accentMap[accent] || accentMap.honey
   const stageNum = String(stage.id).padStart(2, '0')
+
+  // 앞면(재료 카드) 이미지 선로딩 — 뒤집히는 순간 빈 카드가 보이지 않게
+  useEffect(() => {
+    stage.cards.forEach(card => {
+      const src = getCardImage(card.frontImage)
+      if (src) new Image().src = src
+    })
+  }, [stage])
 
   const handlePick = (card) => {
     if (selectedId) return

@@ -651,3 +651,31 @@ body {
   35% { transform: scaleX(0.85); opacity: 0.25; }
   60% { transform: scaleX(1.06); opacity: 0.4; }
 }
+
+/* ===== Reduced motion — OS 모션 감소 설정 존중 =====
+   전면 정지는 하지 않는다. 이 앱은 움직임 자체가 작품이라 `*` 일괄 차단을 쓰면
+   디저트 레이어·여우 캐릭터까지 멈춰 정지 이미지가 되어버린다.
+   기준: 화면을 가로지르는 이동·큰 회전·날아다니는 입자만 끄고,
+   진폭이 작고 국소적인 것(디저트 squash&stretch 최대 5%, 여우 손 3px)과
+   opacity만 변하는 것은 유지한다.
+   framer-motion 쪽은 App.jsx의 <MotionConfig reducedMotion="user">가 담당. */
+@media (prefers-reduced-motion: reduce) {
+  /* 1회성 진입 연출 — 최종 상태로 즉시 스냅 (fill-mode 유지가 필요해 duration만 축소) */
+  .ink-bleed-in,
+  .animate-fade-in-up,
+  .seal-stamp,
+  .tape-settle,
+  .page-turn-in,
+  .star-particle {
+    animation-duration: 0.01ms !important;
+    animation-delay: 0ms !important;
+  }
+
+  /* 지속 장식 — 화면을 떠다니는 이동이라 정지 */
+  .drift-float { animation: none !important; }
+  .scent-line  { animation: none !important; opacity: 0.45; }
+
+  /* hover 시 종이 들림 */
+  .paper-lift        { transition: none !important; }
+  .paper-lift:hover  { transform: none !important; }
+}

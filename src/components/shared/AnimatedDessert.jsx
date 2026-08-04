@@ -24,6 +24,9 @@ export default function AnimatedDessert({
   const bounceType = config?.bounce || 'bounce'
   const bounceClass = isThumb ? 'dessert-float-sm' : `dessert-${bounceType}`
   const pivotY = config?.pivotY || 'bottom'
+  /* 도감 그리드(썸네일 16종 × 레이어 다수)는 lazy가 이득이지만,
+     결과 화면 히어로는 리빌 순간에 레이어가 늦게 뜨면 연출이 무너지므로 eager */
+  const loadingMode = isThumb ? 'lazy' : 'eager'
 
   /* ── 레이어 없음: 단일 이미지에도 바운스 적용 ── */
   if (!layers) {
@@ -32,7 +35,7 @@ export default function AnimatedDessert({
         <div className={`dessert-stage ${className}`}>
           <div className="dessert-wrap">
             <div className={bounceClass}>
-              <img src={fallbackImage} alt={name} className="dessert-layer" draggable={false} />
+              <img src={fallbackImage} alt={name} className="dessert-layer" loading={loadingMode} draggable={false} />
             </div>
           </div>
           {!isThumb && <div className="dessert-shadow-el" />}
@@ -62,6 +65,7 @@ export default function AnimatedDessert({
               alt=""
               className={`dessert-layer dessert-sub dessert-sub-${type}`}
               style={{ animationDelay: `${delay}s` }}
+              loading={loadingMode}
               draggable={false}
             />
           )
@@ -73,6 +77,7 @@ export default function AnimatedDessert({
             src={layers.plate}
             alt=""
             className="dessert-layer"
+            loading={loadingMode}
             draggable={false}
           />
         )}
@@ -85,6 +90,7 @@ export default function AnimatedDessert({
               src={layers.back}
               alt=""
               className="dessert-layer dessert-back"
+              loading={loadingMode}
               draggable={false}
             />
           )}
@@ -95,12 +101,13 @@ export default function AnimatedDessert({
               src={main}
               alt={i === 0 ? name : ''}
               className="dessert-layer"
+              loading={loadingMode}
               draggable={false}
             />
           ))}
-          {/* 서브 레이어 (바운스 그룹 안): 메인과 함께 움직임 */}
+          {/* 서브 레이어 (바운스 그룹 안): 메인과 함께 움직임 — behind 서브는 위에서 이미 렌더됨 */}
           {layers.subs.map((sub, i) => {
-            if (config?.subDetach?.[i]) return null
+            if (config?.subDetach?.[i] || config?.subBehind?.[i]) return null
             const type = config?.subs?.[i] || 'jelly'
             const subPivot = config?.subPivots?.[i]
             const subDelay = config?.subDelays?.[i]
@@ -115,6 +122,7 @@ export default function AnimatedDessert({
                   animationDelay: `${delay}s`,
                   ...(subPivot && { transformOrigin: subPivot.includes(' ') ? subPivot : `center ${subPivot}` }),
                 }}
+                loading={loadingMode}
                 draggable={false}
               />
             )
@@ -138,6 +146,7 @@ export default function AnimatedDessert({
                 animationDelay: `${delay}s`,
                 ...(subPivot && { transformOrigin: subPivot.includes(' ') ? subPivot : `center ${subPivot}` }),
               }}
+              loading={loadingMode}
               draggable={false}
             />
           )

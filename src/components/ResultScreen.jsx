@@ -84,7 +84,7 @@ export default function ResultScreen({ result, onViewBook }) {
               transition={{ duration: 1.6, ease: 'easeOut' }}
               className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2
                          w-[640px] h-[640px] rounded-full pointer-events-none
-                         bg-gradient-radial from-honey-soft/70 via-cream/30 to-transparent blur-2xl"
+                         bg-radial from-honey-soft/70 via-cream/30 to-transparent blur-2xl"
             />
 
             {/* 방사형 점선 헤일로 */}
@@ -456,10 +456,14 @@ export default function ResultScreen({ result, onViewBook }) {
                         const text =
                           `나의 디저트는 "${result.name}"!\n성격: ${result.personality}\n\n${result.description}\n\n여우씨의 디저트 레시피에서 확인해보세요!`
                         if (navigator.share) {
-                          navigator.share({ title: '여우씨의 디저트 레시피', text })
-                        } else {
+                          // 공유 시트를 닫으면 AbortError로 reject — 조용히 무시
+                          navigator.share({ title: '여우씨의 디저트 레시피', text }).catch(() => {})
+                        } else if (navigator.clipboard) {
                           navigator.clipboard.writeText(text)
-                          alert('결과가 클립보드에 복사되었습니다!')
+                            .then(() => alert('결과가 클립보드에 복사되었습니다!'))
+                            .catch(() => alert('복사하지 못했어요. 화면을 캡처해 주세요.'))
+                        } else {
+                          alert('이 브라우저에서는 공유를 지원하지 않아요. 화면을 캡처해 주세요.')
                         }
                       }}
                       aria-label="결과 공유하기"

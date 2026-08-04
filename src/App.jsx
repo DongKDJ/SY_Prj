@@ -1,4 +1,4 @@
-import { AnimatePresence, motion } from 'framer-motion'
+import { AnimatePresence, MotionConfig, motion } from 'framer-motion'
 import { useGameState } from './hooks/useGameState'
 import TitleScreen from './components/TitleScreen'
 import IntroScreen from './components/IntroScreen'
@@ -27,78 +27,80 @@ function App() {
   } = useGameState()
 
   return (
-    <div className="min-h-[100dvh] bg-cream overflow-x-hidden">
-      <AnimatePresence mode="wait">
-        <motion.div key={screen} {...pageTransition}>
-          {screen === 'title' && (
-            <TitleScreen onStart={nextScreen} />
-          )}
+    <MotionConfig reducedMotion="user">
+      <div className="min-h-[100dvh] bg-cream overflow-x-hidden">
+        <AnimatePresence mode="wait">
+          <motion.div key={screen} {...pageTransition}>
+            {screen === 'title' && (
+              <TitleScreen onStart={nextScreen} />
+            )}
 
-          {screen === 'intro' && (
-            <IntroScreen onComplete={nextScreen} />
-          )}
+            {screen === 'intro' && (
+              <IntroScreen onComplete={nextScreen} />
+            )}
 
-          {screen === 'dialog' && (
-            <DialogScreen onComplete={nextScreen} />
-          )}
+            {screen === 'dialog' && (
+              <DialogScreen onComplete={nextScreen} />
+            )}
 
-          {screen === 'stage1' && (
-            <StageScreen
-              stageIndex={0}
-              selections={selections.slice(0, 0)}
-              onSelect={selectCard}
-              onComplete={nextScreen}
-            />
-          )}
+            {screen === 'stage1' && (
+              <StageScreen
+                stageIndex={0}
+                selections={selections.slice(0, 0)}
+                onSelect={selectCard}
+                onComplete={nextScreen}
+              />
+            )}
 
-          {screen === 'stage2' && (
-            <StageScreen
-              stageIndex={1}
-              selections={selections.slice(0, 1)}
-              onSelect={selectCard}
-              onComplete={nextScreen}
-            />
-          )}
+            {screen === 'stage2' && (
+              <StageScreen
+                stageIndex={1}
+                selections={selections.slice(0, 1)}
+                onSelect={selectCard}
+                onComplete={nextScreen}
+              />
+            )}
 
-          {screen === 'stage3' && (
-            <StageScreen
-              stageIndex={2}
-              selections={selections.slice(0, 2)}
-              onSelect={selectCard}
-              onComplete={nextScreen}
-            />
-          )}
+            {screen === 'stage3' && (
+              <StageScreen
+                stageIndex={2}
+                selections={selections.slice(0, 2)}
+                onSelect={selectCard}
+                onComplete={nextScreen}
+              />
+            )}
 
-          {screen === 'stage4' && (
-            <StageScreen
-              stageIndex={3}
-              selections={selections.slice(0, 3)}
-              onSelect={selectCard}
-              onComplete={nextScreen}
-            />
-          )}
+            {screen === 'stage4' && (
+              <StageScreen
+                stageIndex={3}
+                selections={selections.slice(0, 3)}
+                onSelect={selectCard}
+                onComplete={nextScreen}
+              />
+            )}
 
-          {screen === 'resultTransition' && (
-            <ResultTransition onComplete={nextScreen} />
-          )}
+            {screen === 'resultTransition' && (
+              <ResultTransition onComplete={nextScreen} result={currentResult} />
+            )}
 
-          {screen === 'result' && (
-            <ResultScreen
-              result={currentResult}
-              onViewBook={() => goToScreen('dessertBook')}
-            />
-          )}
+            {screen === 'result' && (
+              <ResultScreen
+                result={currentResult}
+                onViewBook={() => goToScreen('dessertBook')}
+              />
+            )}
 
-          {screen === 'dessertBook' && (
-            <DessertBook
-              currentResult={currentResult}
-              onRestart={restart}
-              onExit={() => goToScreen('result')}
-            />
-          )}
-        </motion.div>
-      </AnimatePresence>
-    </div>
+            {screen === 'dessertBook' && (
+              <DessertBook
+                currentResult={currentResult}
+                onRestart={restart}
+                onExit={() => goToScreen('result')}
+              />
+            )}
+          </motion.div>
+        </AnimatePresence>
+      </div>
+    </MotionConfig>
   )
 }
 

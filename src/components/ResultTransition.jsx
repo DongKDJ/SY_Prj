@@ -1,5 +1,6 @@
 import { useState, useRef, useEffect } from 'react'
 import { motion } from 'framer-motion'
+import { getDessertImage, getDessertLayers } from '../assets/imageMap'
 import { InkButton } from './shared/InkButton'
 import {
   PaperGrain,
@@ -70,7 +71,7 @@ function StoryOven({ className = '' }) {
   )
 }
 
-export default function ResultTransition({ onComplete }) {
+export default function ResultTransition({ onComplete, result }) {
   const [showButton, setShowButton] = useState(false)
   const calledRef = useRef(false)
 
@@ -78,6 +79,16 @@ export default function ResultTransition({ onComplete }) {
     const timer = setTimeout(() => setShowButton(true), 3000)
     return () => clearTimeout(timer)
   }, [])
+
+  // 오븐 대기 동안 결과 디저트 이미지 선로딩 (레이어 우선, 없으면 단일 폴백)
+  useEffect(() => {
+    if (!result) return
+    const layers = getDessertLayers(result.id)
+    const sources = layers
+      ? [layers.plate, layers.back, ...layers.mains, ...layers.subs]
+      : [getDessertImage(result.image)]
+    sources.filter(Boolean).forEach(src => { new Image().src = src })
+  }, [result])
 
   const handleComplete = () => {
     if (calledRef.current) return
