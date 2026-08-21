@@ -1,49 +1,23 @@
-import { useState, useEffect } from 'react'
+import { useState } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
 import { dessertResults } from '../data/desserts'
-import { cardBack } from '../assets/imageMap'
 import AnimatedDessert from './shared/AnimatedDessert'
 import { InkButton } from './shared/InkButton'
 import { PaperGrain, Divider } from './shared/Decorations'
 
 const allDesserts = Object.values(dessertResults).sort((a, b) => a.id - b.id)
 
-function getUnlocked() {
-  try {
-    const saved = localStorage.getItem('fox-dessert-unlocked')
-    return saved ? JSON.parse(saved) : []
-  } catch { return [] }
-}
-
-function saveUnlocked(ids) {
-  try { localStorage.setItem('fox-dessert-unlocked', JSON.stringify(ids)) }
-  catch { /* ignore */ }
-}
-
+// 전시용: 도감은 처음부터 16종 전부 열람 가능 (2026-08-21 잠금 시스템 제거)
 export default function DessertBook({ currentResult, onRestart, onExit }) {
-  // 이번 결과를 해금 목록에 합쳐 마운트 시 1회 초기화
-  const [unlockedIds] = useState(() => {
-    const ids = getUnlocked()
-    return currentResult && !ids.includes(currentResult.id)
-      ? [...ids, currentResult.id]
-      : ids
-  })
   const [detailDessert, setDetailDessert] = useState(null)
-
-  useEffect(() => {
-    saveUnlocked(unlockedIds)
-  }, [unlockedIds])
-
-  const isUnlocked = (id) => unlockedIds.includes(id)
-  const unlockedDesserts = allDesserts.filter(d => isUnlocked(d.id))
 
   const navigateDetail = (dir) => {
     if (!detailDessert) return
-    const idx = unlockedDesserts.findIndex(d => d.id === detailDessert.id)
+    const idx = allDesserts.findIndex(d => d.id === detailDessert.id)
     let next = idx + dir
-    if (next < 0) next = unlockedDesserts.length - 1
-    if (next >= unlockedDesserts.length) next = 0
-    setDetailDessert(unlockedDesserts[next])
+    if (next < 0) next = allDesserts.length - 1
+    if (next >= allDesserts.length) next = 0
+    setDetailDessert(allDesserts[next])
   }
 
   return (
@@ -82,7 +56,7 @@ export default function DessertBook({ currentResult, onRestart, onExit }) {
                 </div>
                 <span className="font-display text-xs md:text-sm text-ink/55 tracking-wider
                                  min-w-9 text-right">
-                  {unlockedIds.length}/{allDesserts.length}
+                  {allDesserts.length}종
                 </span>
               </div>
 
@@ -90,55 +64,38 @@ export default function DessertBook({ currentResult, onRestart, onExit }) {
 
               {/* 카드 그리드 */}
               <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-3 md:gap-4 items-start">
-                {allDesserts.map(d => {
-                  const unlocked = isUnlocked(d.id)
-                  return (
-                    <motion.button
-                      key={d.id}
-                      whileHover={unlocked ? { scale: 1.03 } : {}}
-                      whileTap={unlocked ? { scale: 0.97 } : {}}
-                      onClick={() => unlocked && setDetailDessert(d)}
-                      className={`aspect-[3/4] rounded-xl border overflow-hidden
-                                 flex flex-col relative
-                                 ${unlocked
-                                   ? 'border-paper-edge bg-[#FBF3E3] shadow-md cursor-pointer'
-                                   : 'border-ink/10 bg-[#EFE2C4] cursor-default'
-                                 }`}
-                    >
-                      {unlocked ? (
-                        <>
-                          <div className="flex-1 overflow-hidden flex items-center justify-center bg-[#F3E2C2]">
-                            <AnimatedDessert
-                              dessertId={d.id}
-                              image={d.image}
-                              name={d.name}
-                              variant="thumb"
-                              className="w-full h-full"
-                            />
-                          </div>
-                          <div className="px-1.5 py-1.5 text-center border-t border-paper-edge bg-[#FBF3E3]">
-                            <p className="font-display text-[10px] md:text-xs text-ink/80 font-semibold truncate">
-                              {d.combo}
-                            </p>
-                          </div>
-                          {currentResult?.id === d.id && (
-                            <div className="absolute top-1.5 right-1.5 w-5 h-5 bg-jam rounded-full
-                                            flex items-center justify-center shadow">
-                              <span className="text-[9px] text-cream">★</span>
-                            </div>
-                          )}
-                        </>
-                      ) : (
-                        <div className="w-full h-full relative flex items-center justify-center
-                                        bg-[#F2DBE6]">
-                          <img src={cardBack} alt="미해금"
-                               className="w-full h-full object-contain" />
-                          <div className="absolute inset-0 bg-ink/12" />
-                        </div>
-                      )}
-                    </motion.button>
-                  )
-                })}
+                {allDesserts.map(d => (
+                  <motion.button
+                    key={d.id}
+                    whileHover={{ scale: 1.03 }}
+                    whileTap={{ scale: 0.97 }}
+                    onClick={() => setDetailDessert(d)}
+                    className="aspect-[3/4] rounded-xl border overflow-hidden
+                               flex flex-col relative
+                               border-paper-edge bg-[#FBF3E3] shadow-md cursor-pointer"
+                  >
+                    <div className="flex-1 overflow-hidden flex items-center justify-center bg-[#F3E2C2]">
+                      <AnimatedDessert
+                        dessertId={d.id}
+                        image={d.image}
+                        name={d.name}
+                        variant="thumb"
+                        className="w-full h-full"
+                      />
+                    </div>
+                    <div className="px-1.5 py-1.5 text-center border-t border-paper-edge bg-[#FBF3E3]">
+                      <p className="font-display text-[10px] md:text-xs text-ink/80 font-semibold truncate">
+                        {d.combo}
+                      </p>
+                    </div>
+                    {currentResult?.id === d.id && (
+                      <div className="absolute top-1.5 right-1.5 w-5 h-5 bg-jam rounded-full
+                                      flex items-center justify-center shadow">
+                        <span className="text-[9px] text-cream">★</span>
+                      </div>
+                    )}
+                  </motion.button>
+                ))}
               </div>
 
               {/* 하단 버튼 */}

@@ -324,7 +324,7 @@ export default function StageScreen({ stageIndex, selections, onSelect, onComple
                 initial={{ scale: 0.6, opacity: 0, rotateZ: -3 }}
                 animate={{ scale: 1, opacity: 1, rotateZ: 0 }}
                 transition={{ type: 'spring', stiffness: 80, damping: 14 }}
-                className="relative z-10 flex flex-col items-center max-w-md"
+                className="relative z-10 flex flex-col items-center max-w-md mt-[5vh]"
               >
                 {/* 카드 — 빈티지 표본 카드. 설명을 읽는 8~12초 동안 정지하지 않도록
                     위쪽 테이프를 지지점 삼아 아주 느리게 흔들린다. */}
@@ -372,7 +372,7 @@ export default function StageScreen({ stageIndex, selections, onSelect, onComple
                   initial={{ opacity: 0, y: 10 }}
                   animate={{ opacity: 1, y: 0 }}
                   transition={{ delay: 0.25 }}
-                  className="relative mt-5 w-64 md:w-80"
+                  className="relative mt-2 w-64 md:w-80"
                 >
                   <img
                     src={cardPlate}
