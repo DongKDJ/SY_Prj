@@ -93,6 +93,8 @@ export default function ResultTransition({ onComplete, result }) {
   const handleComplete = () => {
     if (calledRef.current) return
     calledRef.current = true
+    // 영구 래치 금지 — 전환이 무산돼도 다시 누를 수 있게 재무장 (이중 전진은 700ms 락이 방어)
+    setTimeout(() => { calledRef.current = false }, 1000)
     onComplete()
   }
 

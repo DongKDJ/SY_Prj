@@ -3,7 +3,6 @@ import { dessertResults } from '../data/desserts'
 
 const SCREENS = [
   'title',
-  'intro',
   'dialog',
   'stage1',
   'stage2',

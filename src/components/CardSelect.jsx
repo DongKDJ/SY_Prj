@@ -15,7 +15,7 @@ const accentMap = {
   jam:   { text: 'text-jam',   bg: 'bg-jam',   border: 'border-jam',   soft: 'bg-jam-soft/40' },
 }
 
-export default function CardSelect({ stage, onSelect, dark = false, accent = 'honey' }) {
+export default function CardSelect({ stage, onSelect, accent = 'honey' }) {
   const [selectedId, setSelectedId] = useState(null)
   const [flippedId, setFlippedId] = useState(null)
 
@@ -153,8 +153,8 @@ export default function CardSelect({ stage, onSelect, dark = false, accent = 'ho
         animate={{ opacity: selectedId ? 0 : 1 }}
         transition={selectedId ? { duration: 0.35 } : { delay: 0.9 }}
         aria-hidden={!!selectedId}
-        className={`mt-10 text-center font-script text-base select-none pointer-events-none
-                    ${dark ? 'text-cream/70' : 'text-jam/85'}`}
+        className="mt-10 text-center font-script text-base select-none pointer-events-none
+                   text-paper"
       >
         마음에 드는 카드를 탭해주세요
       </motion.p>

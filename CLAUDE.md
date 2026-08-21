@@ -24,7 +24,8 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 ## Architecture
 
 Screen flow managed by `useGameState` hook:
-`title → intro → dialog → stage1 → stage2 → stage3 → stage4 → resultTransition → result → dessertBook`
+`title → dialog → stage1 → stage2 → stage3 → stage4 → resultTransition → result → dessertBook`
+(intro 속표지 프롤로그는 2026-08-21 원화 적용과 함께 제거 — IntroScreen.jsx 삭제)
 
 Key data in `src/data/desserts.js`: stages (4 questions), dessertResults (16 combinations keyed by card IDs), foxDialogs.
 
@@ -40,7 +41,18 @@ All image placeholders in `src/assets/images/`. Replace PNG files with same file
 - `character/` — fox-body.png, fox-blink-01~04.png, fox-hand.png
 - `cards/` — card-stage{1-4}-{id}.png, ingredient-{name}.png
 - `desserts/` — dessert-01.png through dessert-16.png
-- `backgrounds/` — morning.png, noon.png, evening.png, night.png, dawn.png
+- `screens/` — 원화 화면 레이어 (아래 "원화 화면 레이어 시스템" 참조)
+
+### 원화 화면 레이어 시스템 (2026-08-21 적용)
+
+타이틀·대화(오프닝)·책갈피 3개 화면은 3840x2160 정렬 투명 PNG 레이어(원본: 작가 4K 원화, 무손실 복사 — 사용자 결정)로 구성.
+- 임포트 정본: `src/assets/screenImages.js` (금장 5장·풀 4장·책갈피 타이틀 4장·재료 8장 등 매핑)
+- 스테이지: `src/components/shared/ArtStage.jsx` — 16:9 cover 스테이지(세로 화면 = 중앙 크롭, 사용자 결정). `ArtLayer`(풀캔버스 레이어) · `GoldFrame`(금장) · `ArtBandCrop`(세로 화면용 가로 밴드 크롭: 타이틀 로고·책갈피 배너)
+- 세로(QR 모바일) 보조: 로고·배너는 ArtBandCrop 밴드로, 대사는 하단 양피지 스트립으로 대체 (`portrait:` variant)
+- 책갈피 페이지: 선택 누적 재료가 `ingredientLayers[cardId]` 풀캔버스 레이어로 책상 위에 쌓임 (원화에서 재료별 자리가 서로 다름 — 1단계 중앙 위 / 2단계 중앙 아래 / 3단계 오른쪽 / 4단계 왼쪽)
+- 여우씨 배치 튜닝: `DialogScreen.jsx` 상단 `FOX` · `BUBBLE_TEXT` 상수 (스테이지 % 좌표)
+- 앰비언트: `index.css`의 `art-zoom`(배경 켄번즈) · `art-sway`(풀) · `art-bob`(로고·말풍선·배너) — 진폭이 `--ambient`를 타서 reduced-motion 시 자동 정지
+- 커스텀 커서: `index.css` 말미, `screens/cursor.png` 32x32, 핫스팟 (15,1) = 위 꼭짓점
 
 ### Fox Character Layer System
 `Character.jsx`가 동적 임포트로 자동 인식. 다음 파일이 모두 있으면 레이어 모드로 동작:
@@ -98,16 +110,17 @@ Storybook 테마 작업 후 확장된 액센트: `jam`(라즈베리), `honey`(�
 - `.drift-float` — 작은 입자 부유 (CSS var --dur/--dx/--dy/--dr)
 - `.script-shimmer` — 손글씨 opacity 반짝
 - `.paper-lift` — hover 시 종이 살짝 들림
-- `.scent-line` / `.oven-glow` — 향기 연기 잉크선 · 오븐 온기 펄스 (IntroScreen/ResultTransition)
+- `.scent-line` / `.oven-glow` — 향기 연기 잉크선 · 오븐 온기 펄스 (ResultTransition)
+- `.art-zoom` / `.art-sway` / `.art-bob` — 원화 화면 앰비언트 (2026-08-21)
 
 ### 화면 적용 진행
-- [x] TitleScreen — 책 표지 (Vol. I, 큰 타이틀, 여우씨, 왁스 씰 "시작하기")
-- [x] DialogScreen — 오두막 내부 (SVG 창문/잼병/책/꿀단지, 양피지 말풍선)
-- [x] StageScreen — 챕터 인트로 페이지 + 빈티지 표본 카드 확대
-- [x] CardSelect — 양피지 질문 패널 + 손그림 코너 장식 카드
+- [x] TitleScreen — **원화 교체 (2026-08-21)**: 배경 + 뼈다귀 타이틀 명판 + 금장, 전체 탭으로 시작
+- [x] DialogScreen — **원화 교체 (2026-08-21)**: 주방 배경 + 여우씨(레이어 캐릭터) + 잼병 + 구름 말풍선(대사 타이핑 내장)
+- [x] StageScreen — **책갈피 페이즈 원화 교체 (2026-08-21)**: 책상 배경 + 풀 + "N번째 책갈피" 배너 + 선택 재료 누적. 카드 선택·확대 페이즈는 Storybook 톤 유지
+- [x] CardSelect — 양피지 질문 패널 + 손그림 코너 장식 카드 (실물 카드 원화는 2026-07-13 적용)
 - [x] ResultScreen — 메달리온 reveal + 펼친 책 양면 detail
 - [x] DessertBook — 16종 도감 그리드 (Storybook 톤 재작성, 상세 펼침 뷰, 나가기=결과화면 복귀)
-- [x] IntroScreen — 속표지 프롤로그 (향기 연기 잉크선 + 잉크 번짐 텍스트, 2026-07-11)
+- ~~IntroScreen~~ — 속표지 프롤로그, 2026-08-21 흐름에서 제거 (파일 삭제, git 이력에 잔존)
 - [x] ResultTransition — 오븐 페이지 (잉크 오븐 + 온기 글로우 + 여우 메모, 이모지 제거, 2026-07-11)
 
 ### 다음 세션 작업 시 주의

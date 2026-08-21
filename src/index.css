@@ -700,6 +700,37 @@ body {
   transform-origin: 50% 0;
 }
 
+/* ===== 원화 화면 레이어 앰비언트 (타이틀/오프닝/책갈피 — 2026-08-21 원화 적용) =====
+   진폭은 전부 --ambient 를 타므로 reduced-motion 에서 자동으로 0이 된다. */
+
+/* 배경 아주 느린 줌 (Ken Burns) */
+@keyframes art-zoom-kf {
+  0%, 100% { transform: scale(1); }
+  50%      { transform: scale(calc(1 + 0.022 * var(--ambient))); }
+}
+.art-zoom {
+  animation: art-zoom-kf 26s ease-in-out infinite;
+}
+
+/* 풀·잎 장식 미세 흔들림 */
+@keyframes art-sway-kf {
+  0%, 100% { transform: translateX(0) rotate(0deg); }
+  50%      { transform: translateX(calc(0.25% * var(--ambient)))
+                        rotate(calc(0.25deg * var(--ambient))); }
+}
+.art-sway {
+  animation: art-sway-kf 9s ease-in-out infinite;
+}
+
+/* 로고·말풍선·배너 부유 */
+@keyframes art-bob-kf {
+  0%, 100% { transform: translateY(0); }
+  50%      { transform: translateY(calc(-1% * var(--ambient))); }
+}
+.art-bob {
+  animation: art-bob-kf 5.5s ease-in-out infinite;
+}
+
 /* ===== Reduced motion — OS 모션 감소 설정 존중 =====
    전면 정지는 하지 않는다. 이 앱은 움직임 자체가 작품이라 `*` 일괄 차단을 쓰면
    디저트 레이어·여우 캐릭터까지 멈춰 정지 이미지가 되어버린다.
@@ -754,4 +785,16 @@ body {
 .kiosk-hide-cursor,
 .kiosk-hide-cursor * {
   cursor: none !important;
+}
+
+/* ===== 커스텀 커서 — 딸기 스페이드 원화 (32x32, 핫스팟 = 위 꼭짓점 15,1) ===== */
+html,
+body {
+  cursor: url('./assets/images/screens/cursor.png') 15 1, auto;
+}
+button,
+a,
+[role='button'],
+.cursor-pointer {
+  cursor: url('./assets/images/screens/cursor.png') 15 1, pointer;
 }

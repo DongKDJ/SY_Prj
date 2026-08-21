@@ -1,16 +1,14 @@
-import { useState, useRef } from 'react'
+import { useState, useEffect, useRef } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
-import IngredientStack from './shared/IngredientStack'
 import { getCardImage } from '../assets/imageMap'
 import CardSelect from './CardSelect'
 import { stages } from '../data/desserts'
 import { InkButton } from './shared/InkButton'
+import { ArtStage, ArtLayer, GoldFrame, ArtBandCrop } from './shared/ArtStage'
+import { bookmarkBg, grassLayers, bookmarkTitles, ingredientLayers } from '../assets/screenImages'
 import {
   PaperGrain,
-  Divider,
-  Sparkle,
   Floret,
-  WheatSprig,
   CornerOrnament,
   MaskingTape,
   FloatingMotes,
@@ -86,9 +84,37 @@ export default function StageScreen({ stageIndex, selections, onSelect, onComple
   const [selectedCardId, setSelectedCardId] = useState(null)
   const proceedRef = useRef(false)
 
+  // 스테이지 4개가 한 마운트를 공유하므로(App.jsx pageKey='stages') 스테이지가 바뀌면
+  // 렌더 단계에서 즉시 리셋 — 이전 스테이지의 enlarged 상태가 새 스테이지로 새어들지 않게.
+  const [prevStageIndex, setPrevStageIndex] = useState(stageIndex)
+  if (prevStageIndex !== stageIndex) {
+    setPrevStageIndex(stageIndex)
+    setPhase('bookmark')
+    setSelectedCardId(null)
+  }
+
+  // 전환 잠금 해제는 렌더 밖에서 (ref는 렌더 중 접근 금지)
+  useEffect(() => {
+    proceedRef.current = false
+  }, [stageIndex])
+
   const stage = stages[stageIndex]
   const style = timeStyles[stage.timeOfDay]
   const stageNum = String(stage.id).padStart(2, '0')
+
+  // 확대 화면을 읽는 동안 다음 책갈피에 새로 등장할 레이어를 선로딩 (4K 디코드 끊김 방지)
+  useEffect(() => {
+    if (phase !== 'enlarged') return
+    const next = stages[stageIndex + 1]
+    const warm = [
+      selectedCardId ? ingredientLayers[selectedCardId] : null,
+      next ? bookmarkTitles[next.id] : null,
+    ].filter(Boolean)
+    warm.forEach(src => {
+      const img = new Image()
+      img.src = src
+    })
+  }, [phase, stageIndex, selectedCardId])
 
   const handleCardSelected = (cardId) => {
     setSelectedCardId(cardId)
@@ -98,6 +124,9 @@ export default function StageScreen({ stageIndex, selections, onSelect, onComple
   const handleProceed = () => {
     if (proceedRef.current) return
     proceedRef.current = true
+    // 영구 래치 금지 — 전환이 무산되는 경로(퇴장 중 유령 클릭 등)가 있어도 버튼이 죽지 않게 재무장.
+    // 이중 전진 자체는 useGameState의 700ms 락이 막는다.
+    setTimeout(() => { proceedRef.current = false }, 1000)
     onSelect(stageIndex, selectedCardId)
     onComplete()
   }
@@ -107,6 +136,41 @@ export default function StageScreen({ stageIndex, selections, onSelect, onComple
                      bg-gradient-to-b ${style.bg}`}>
       <PaperGrain />
       <div className="page-vignette" />
+
+      {/* 책갈피 원화 배경 — 페이즈·스테이지 전환과 무관하게 상주 (책상·풀·금장·누적 재료).
+          다음 책갈피로 넘어가도 배경과 테두리는 "이미 있는" 상태이고, 배너 등만 새로 채워진다. */}
+      <ArtStage>
+        <ArtLayer src={bookmarkBg} className="art-zoom" />
+
+        {/* 풀·잎 장식 — 딜레이를 어긋내 미세하게 흔들림 */}
+        {grassLayers.map((src, i) => (
+          <div
+            key={i}
+            className="absolute inset-0 art-sway"
+            style={{ animationDelay: `${i * 1.1}s` }}
+          >
+            <ArtLayer src={src} />
+          </div>
+        ))}
+
+        {/* 이전 선택 재료 — 책상 위 누적 (원화에 자리가 서로 다르게 그려져 있다) */}
+        {selections.map((cardId, i) => (
+          ingredientLayers[cardId] && (
+            <motion.div
+              key={cardId}
+              initial={{ opacity: 0, scale: 1.05 }}
+              animate={{ opacity: 1, scale: 1 }}
+              transition={{ delay: 0.5 + i * 0.18, type: 'spring', stiffness: 110, damping: 15 }}
+              className="absolute inset-0"
+            >
+              <ArtLayer src={ingredientLayers[cardId]} />
+            </motion.div>
+          )
+        ))}
+
+        <GoldFrame />
+      </ArtStage>
+
       {/* 3단계 내내 배경에 남아 페이지가 멈추지 않게 한다 (단계 전환에도 끊기지 않도록 AnimatePresence 바깥) */}
       <FloatingMotes count={12} palette={style.motes} />
 
@@ -119,40 +183,34 @@ export default function StageScreen({ stageIndex, selections, onSelect, onComple
             key="bookmark"
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
-            exit={{ opacity: 0 }}
+            exit={{ opacity: 0, pointerEvents: 'none' }}
             transition={{ duration: 0.6 }}
-            className="min-h-[100dvh] relative flex flex-col"
+            className="absolute inset-0"
           >
-            {/* 4 코너 장식 — 래퍼에 숨쉬기를 건다 (SVG 본체는 방향 전환에 inline transform을 쓰므로
-                거기에 애니메이션을 걸면 미러링이 덮인다). 딜레이를 어긋내 한꺼번에 뛰지 않게. */}
-            {[
-              { corner: 'tl', pos: 'top-4 left-4' },
-              { corner: 'tr', pos: 'top-4 right-4' },
-              { corner: 'bl', pos: 'bottom-4 left-4' },
-              { corner: 'br', pos: 'bottom-4 right-4' },
-            ].map(({ corner, pos }, i) => (
-              <span
-                key={corner}
-                className={`absolute ${pos} w-10 h-10 ambient-breathe`}
-                style={{ animationDelay: `${i * 1.4}s` }}
+            <ArtStage>
+              {/* "N번째 책갈피" 배너 (세로 화면에서는 아래 밴드로 대체) — 배경·테두리는 상주 레이어가 담당 */}
+              <motion.div
+                initial={{ opacity: 0, y: -30 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ duration: 0.9, ease: [0.16, 1, 0.3, 1], delay: 0.25 }}
+                className="absolute inset-0 portrait:hidden"
               >
-                <CornerOrnament corner={corner} className={`w-full h-full ${style.cornerInk}`} />
-              </span>
-            ))}
+                <div className="absolute inset-0 art-bob">
+                  <ArtLayer src={bookmarkTitles[stage.id]} />
+                </div>
+              </motion.div>
+            </ArtStage>
 
-            {/* 좌상단: 시간대 라벨 */}
+            {/* 세로 화면: 배너를 캔버스 밴드에서 잘라 화면 폭에 맞춰 표시 */}
             <motion.div
-              initial={{ opacity: 0, y: -8 }}
+              initial={{ opacity: 0, y: -20 }}
               animate={{ opacity: 1, y: 0 }}
-              transition={{ delay: 0.2 }}
-              className="absolute top-12 left-12 flex items-center gap-2 z-10"
+              transition={{ duration: 0.9, ease: [0.16, 1, 0.3, 1], delay: 0.25 }}
+              className="hidden portrait:block absolute top-[5%] left-1/2 -translate-x-1/2 w-[94vw] z-10"
             >
-              <span className={`text-xl ${style.accentText}`}>
-                {style.icon}
-              </span>
-              <span className={`font-script text-lg ${style.accentText}`}>
-                {style.label}
-              </span>
+              <div className="art-bob">
+                <ArtBandCrop src={bookmarkTitles[stage.id]} top={14} bottom={76} />
+              </div>
             </motion.div>
 
             {/* 우상단: 진행도 */}
@@ -160,106 +218,34 @@ export default function StageScreen({ stageIndex, selections, onSelect, onComple
               initial={{ opacity: 0, y: -8 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ delay: 0.3 }}
-              className="absolute top-12 right-12 flex items-center gap-2 z-10"
+              className="absolute top-8 right-8 flex items-center gap-2 z-10"
             >
               {[0, 1, 2, 3].map(i => (
                 <span
                   key={i}
-                  className={`inline-block transition-all ${
+                  className={`inline-block transition-all drop-shadow-[0_1px_3px_rgba(255,248,240,0.8)] ${
                     i < stageIndex
                       ? `w-3 h-3 rounded-full ${style.accentBg}`
                       : i === stageIndex
                         ? `w-6 h-3 rounded-full ${style.accentBg}`
-                        : `w-3 h-3 rounded-full border ${style.dark ? 'border-cream/30' : 'border-ink/30'}`
+                        : 'w-3 h-3 rounded-full border border-ink/40'
                   }`}
                 />
               ))}
             </motion.div>
-
-            {/* 중앙: 챕터 정보 */}
-            <div className="flex-1 flex items-center justify-center px-6 pt-20 pb-32">
-              <motion.div
-                initial={{ opacity: 0, y: 20 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ duration: 0.9, ease: [0.16, 1, 0.3, 1] }}
-                className="text-center max-w-xl relative"
-              >
-                {/* 양옆 밀이삭 */}
-                <WheatSprig className={`absolute -left-10 md:-left-20 top-8 w-10 md:w-14 h-auto ${style.dark ? 'text-sage/40' : 'text-sage/60'}`} />
-                <WheatSprig flip className={`absolute -right-10 md:-right-20 top-8 w-10 md:w-14 h-auto ${style.dark ? 'text-sage/40' : 'text-sage/60'}`} />
-
-                {/* 챕터 라벨 */}
-                <p className={`font-script text-2xl ${style.accentText} mb-2`}>
-                  Chapter {stageNum}
-                </p>
-
-                {/* 큰 단계 숫자 */}
-                <p className={`font-display font-bold text-[5rem] md:text-[7rem] leading-none
-                               ${style.inkClass} relative inline-block`}>
-                  {stageNum}
-                  <Sparkle className={`absolute -top-2 -right-6 w-6 h-6 ${style.accentText}`} />
-                </p>
-
-                {/* 책갈피 이름 */}
-                <p className={`font-display text-xl md:text-2xl font-bold ${style.inkClass} mt-3`}>
-                  {stage.bookmark}
-                </p>
-
-                {/* 디바이더 */}
-                <div className="flex justify-center my-5">
-                  <Divider className={`w-36 h-3 ${style.accentDivider}`} />
-                </div>
-
-                {/* 타이틀 (질문) */}
-                <p className={`font-display italic text-base md:text-lg ${style.softInk}
-                                leading-relaxed px-4`}>
-                  {stage.title}
-                </p>
-
-                {/* 카테고리 + 엘리먼트 */}
-                <div className="flex justify-center items-center gap-3 mt-5 flex-wrap">
-                  <span className={`font-display text-xs tracking-[0.25em] px-3 py-1
-                                    border ${style.dark ? 'border-cream/30 text-cream/80' : 'border-ink/30 text-ink/80'}
-                                    rounded-full`}>
-                    {stage.category}
-                  </span>
-                  <span className="font-script text-base text-jam">×</span>
-                  <span className={`font-display text-xs tracking-[0.25em] px-3 py-1
-                                    bg-honey-soft/30 rounded-full ${style.inkClass}`}>
-                    {stage.element}
-                  </span>
-                </div>
-              </motion.div>
-            </div>
-
-            {/* 누적된 이전 선택 카드들 (왼쪽 하단 핀업) */}
-            {selections.length > 0 && (
-              <motion.div
-                initial={{ opacity: 0, x: -20 }}
-                animate={{ opacity: 1, x: 0 }}
-                transition={{ delay: 0.8 }}
-                className="absolute bottom-16 left-4 md:left-8 z-10"
-              >
-                <p className={`font-script text-sm mb-1 ${style.dark ? 'text-cream/70' : 'text-ink/70'}`}>
-                  지금까지의 선택
-                </p>
-                <div className="scale-75 md:scale-90 origin-bottom-left">
-                  <IngredientStack selections={selections} />
-                </div>
-              </motion.div>
-            )}
 
             {/* 하단 안내 */}
             <motion.div
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
               transition={{ delay: 1.4 }}
-              className="absolute bottom-8 left-0 right-0 flex flex-col items-center gap-1 z-10 pointer-events-none"
+              className="absolute bottom-6 left-0 right-0 flex flex-col items-center gap-1 z-10 pointer-events-none"
             >
-              <span className={`font-script text-xl ${style.accentText}`}>
+              <span className="font-script text-xl text-jam drop-shadow-[0_1px_4px_rgba(255,248,240,0.9)]">
                 turn the page
               </span>
-              <span className={`font-display text-xs tracking-widest ${style.softInk}`}>
+              <span className="font-display text-xs tracking-widest text-ink/80
+                               drop-shadow-[0_1px_4px_rgba(255,248,240,0.9)]">
                 탭하여 계속 →
               </span>
             </motion.div>
@@ -281,14 +267,21 @@ export default function StageScreen({ stageIndex, selections, onSelect, onComple
             key="cards"
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
-            exit={{ opacity: 0 }}
+            exit={{ opacity: 0, pointerEvents: 'none' }}
             transition={{ duration: 0.5 }}
             className="min-h-[100dvh] flex flex-col items-center justify-center px-4 py-8 relative"
           >
+            {/* 카드·질문이 배경 원화에 묻히지 않게 화면 중앙만 살짝 어둡게 */}
+            <div
+              className="absolute inset-0 pointer-events-none"
+              style={{
+                background:
+                  'radial-gradient(ellipse 58% 66% at 50% 52%, rgba(58,36,24,0.52), rgba(58,36,24,0.26) 55%, transparent 82%)',
+              }}
+            />
             <CardSelect
               stage={stage}
               onSelect={handleCardSelected}
-              dark={style.dark}
               accent={style.accent}
             />
           </motion.div>
@@ -299,19 +292,31 @@ export default function StageScreen({ stageIndex, selections, onSelect, onComple
             ═══════════════════════════════════ */}
         {phase === 'enlarged' && selectedCardId && (() => {
           const card = stage.cards.find(c => c.id === selectedCardId)
+          if (!card) return null // 스테이지 전환 직후의 일시 렌더 방어
           const cardImg = getCardImage(card.frontImage)
           return (
             <motion.div
               key="enlarged"
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
-              exit={{ opacity: 0 }}
+              exit={{ opacity: 0, pointerEvents: 'none' }}
               transition={{ duration: 0.4 }}
               className="min-h-[100dvh] flex flex-col items-center justify-center px-4 relative"
             >
-              {/* 배경 오버레이 — 종이 위 부드러운 비네팅 */}
+              {/* 배경 흐림+어둡기 — backdrop-filter는 페이드 중 화면 모퉁이 깜빡임을 만들어서
+                  실시간 블러 대신 미리 흐린 배경 사본을 페이드시킨다 */}
+              <div className="absolute inset-0 overflow-hidden">
+                <img
+                  src={bookmarkBg}
+                  alt=""
+                  aria-hidden="true"
+                  draggable={false}
+                  className="absolute -inset-[3%] w-[106%] h-[106%] object-cover select-none"
+                  style={{ filter: 'blur(16px)' }}
+                />
+              </div>
+              <div className="absolute inset-0 bg-ink/30" />
               <div className="absolute inset-0 bg-radial from-transparent to-black/50" />
-              <div className="absolute inset-0 backdrop-blur-md bg-ink/20" />
 
               <motion.div
                 initial={{ scale: 0.6, opacity: 0, rotateZ: -3 }}

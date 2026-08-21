@@ -23,9 +23,12 @@ const handSource = getFoxLayer('fox-hand.png')
 
 export default function Character({ variant = 'half', size = 'normal', className = '' }) {
   const isHalf = variant === 'half'
-  const sizeClass = isHalf && size === 'large'
-    ? 'w-60 h-72 md:w-auto md:h-[65vh]'
-    : 'w-44 h-56 md:w-52 md:h-64'
+  // 'free' = 크기를 호출부(className)에 위임 — ArtStage % 좌표 배치용
+  const sizeClass = size === 'free'
+    ? ''
+    : isHalf && size === 'large'
+      ? 'w-60 h-72 md:w-auto md:h-[65vh]'
+      : 'w-44 h-56 md:w-52 md:h-64'
 
   const [blinkFrame, setBlinkFrame] = useState(0)
 
