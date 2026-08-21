@@ -314,7 +314,9 @@ export default function StageScreen({ stageIndex, selections, onSelect, onComple
               animate={{ opacity: 1 }}
               exit={{ opacity: 0, pointerEvents: 'none' }}
               transition={{ duration: 0.4 }}
-              className="min-h-[100dvh] flex flex-col items-center justify-center px-4 relative"
+              // z-40: 전역 금장 테두리(z-30)보다 위 — 확대 화면에서는 테두리도
+              // 다른 배경 요소처럼 흐림·어둡기 아래에 묻힌다
+              className="min-h-[100dvh] flex flex-col items-center justify-center px-4 relative z-40"
             >
               {/* 배경 흐림+어둡기 — backdrop-filter는 페이드 중 화면 모퉁이 깜빡임을 만들어서
                   실시간 블러 대신 미리 흐린 배경 사본을 페이드시킨다 */}
