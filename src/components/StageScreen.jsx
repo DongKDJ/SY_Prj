@@ -4,7 +4,7 @@ import { getCardImage } from '../assets/imageMap'
 import CardSelect from './CardSelect'
 import { stages } from '../data/desserts'
 import { InkButton } from './shared/InkButton'
-import { ArtStage, ArtLayer, GoldFrame, ArtBandCrop, LoadingCover } from './shared/ArtStage'
+import { ArtStage, ArtLayer, ArtBandCrop, LoadingCover } from './shared/ArtStage'
 import { bookmarkBg, grassLayers, bookmarkTitles, ingredientLayers, goldFrames } from '../assets/screenImages'
 import { useImagesReady } from '../hooks/useImagesReady'
 import {
@@ -175,8 +175,6 @@ export default function StageScreen({ stageIndex, selections, onSelect, onComple
             </motion.div>
           )
         ))}
-
-        <GoldFrame />
       </ArtStage>
 
       {/* 3단계 내내 배경에 남아 페이지가 멈추지 않게 한다 (단계 전환에도 끊기지 않도록 AnimatePresence 바깥) */}

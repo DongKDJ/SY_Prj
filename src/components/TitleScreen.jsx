@@ -1,6 +1,6 @@
 import { useEffect } from 'react'
 import { motion } from 'framer-motion'
-import { ArtStage, ArtLayer, GoldFrame, ArtBandCrop, LoadingCover } from './shared/ArtStage'
+import { ArtStage, ArtLayer, ArtBandCrop, LoadingCover } from './shared/ArtStage'
 import {
   titleBg, titleLogo, goldFrames,
   openingBg, openingBubble, openingObject,
@@ -43,8 +43,6 @@ export default function TitleScreen({ onStart }) {
             <ArtLayer src={titleLogo} />
           </div>
         </motion.div>
-
-        <GoldFrame />
       </ArtStage>
 
       {/* 세로 화면: 로고를 캔버스 상단 밴드에서 잘라 화면 폭에 맞춰 표시 */}

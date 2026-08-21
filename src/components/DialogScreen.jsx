@@ -2,7 +2,7 @@ import { useState, useEffect, useRef } from 'react'
 import { motion } from 'framer-motion'
 import Character from './shared/Character'
 import { foxLayerSources } from '../assets/foxLayers'
-import { ArtStage, ArtLayer, GoldFrame, LoadingCover } from './shared/ArtStage'
+import { ArtStage, ArtLayer, LoadingCover } from './shared/ArtStage'
 import {
   openingBg, openingBubble, openingObject, goldFrames,
   bookmarkBg, grassLayers, bookmarkTitles,
@@ -96,8 +96,6 @@ export default function DialogScreen({ onComplete }) {
 
         {/* 책상 위 잼병 — 여우 앞 전경 */}
         <ArtLayer src={openingObject} />
-
-        <GoldFrame />
 
         {/* 말풍선 + 대사 */}
         <motion.div
