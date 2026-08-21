@@ -1,25 +1,5 @@
 import { useState, useEffect } from 'react'
-
-// 캐릭터 레이어 이미지 동적 임포트
-// fox-body / fox-blink-01~04 / fox-hand 가 폴더에 있으면 자동 인식
-const foxLayerModules = import.meta.glob(
-  '../../assets/images/character/fox-*.png',
-  { eager: true }
-)
-
-function getFoxLayer(filename) {
-  const key = `../../assets/images/character/${filename}`
-  return foxLayerModules[key]?.default || null
-}
-
-const bodySource = getFoxLayer('fox-body.png')
-const blinkSources = [
-  getFoxLayer('fox-blink-01.png'),
-  getFoxLayer('fox-blink-02.png'),
-  getFoxLayer('fox-blink-03.png'),
-  getFoxLayer('fox-blink-04.png'),
-]
-const handSource = getFoxLayer('fox-hand.png')
+import { bodySource, blinkSources, handSource } from '../../assets/foxLayers'
 
 export default function Character({ variant = 'half', size = 'normal', className = '' }) {
   const isHalf = variant === 'half'

@@ -1,8 +1,28 @@
+import { useEffect } from 'react'
 import { motion } from 'framer-motion'
-import { ArtStage, ArtLayer, GoldFrame, ArtBandCrop } from './shared/ArtStage'
-import { titleBg, titleLogo } from '../assets/screenImages'
+import { ArtStage, ArtLayer, GoldFrame, ArtBandCrop, LoadingCover } from './shared/ArtStage'
+import {
+  titleBg, titleLogo, goldFrames,
+  openingBg, openingBubble, openingObject,
+} from '../assets/screenImages'
+import { foxLayerSources } from '../assets/foxLayers'
+import { useImagesReady } from '../hooks/useImagesReady'
+
+const TITLE_SRCS = [titleBg, titleLogo, ...goldFrames]
 
 export default function TitleScreen({ onStart }) {
+  const ready = useImagesReady(TITLE_SRCS)
+
+  // 타이틀에 머무는 동안 다음 화면(대화) 원화·여우 레이어 선로딩
+  useEffect(() => {
+    ;[openingBg, openingBubble, openingObject, ...foxLayerSources].forEach(src => {
+      const img = new Image()
+      img.src = src
+    })
+  }, [])
+
+  if (!ready) return <LoadingCover />
+
   return (
     <button
       onClick={onStart}

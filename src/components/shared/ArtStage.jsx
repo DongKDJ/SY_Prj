@@ -36,6 +36,17 @@ export function GoldFrame() {
   return goldFrames.map((src, i) => <ArtLayer key={i} src={src} />)
 }
 
+/* 원화 로딩 대기 화면 — 레이어가 낱장으로 뜨는 대신 종이색에서 잠깐 멈췄다가 완성된 화면을 연다 */
+export function LoadingCover() {
+  return (
+    <div className="h-[100dvh] w-full bg-paper flex items-center justify-center">
+      <span className="font-script text-xl text-ink/50 script-shimmer">
+        여우씨가 페이지를 준비하고 있어요…
+      </span>
+    </div>
+  )
+}
+
 /* 세로 화면 보조 — 원화 캔버스의 가로 밴드(top%~bottom%)만 잘라 보여준다.
    중앙 크롭으로 잘려나가는 타이틀 로고·책갈피 배너를 세로에서 따로 띄울 때 사용. */
 export function ArtBandCrop({ src, top, bottom, className = '' }) {

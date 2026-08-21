@@ -1,12 +1,16 @@
 import { useState, useEffect, useRef } from 'react'
 import { motion } from 'framer-motion'
 import Character from './shared/Character'
-import { ArtStage, ArtLayer, GoldFrame } from './shared/ArtStage'
+import { foxLayerSources } from '../assets/foxLayers'
+import { ArtStage, ArtLayer, GoldFrame, LoadingCover } from './shared/ArtStage'
 import {
-  openingBg, openingBubble, openingObject,
+  openingBg, openingBubble, openingObject, goldFrames,
   bookmarkBg, grassLayers, bookmarkTitles,
 } from '../assets/screenImages'
 import { foxDialogs } from '../data/desserts'
+import { useImagesReady } from '../hooks/useImagesReady'
+
+const DIALOG_SRCS = [openingBg, openingBubble, openingObject, ...goldFrames, ...foxLayerSources]
 
 /* ── 배치 튜닝 상수 (스테이지 % 좌표, 3840x2160 원화 기준) ── */
 // 책상 윗선: 이 높이에서 여우를 잘라 책상 뒤에 걸친 것처럼 보이게 한다
@@ -28,12 +32,16 @@ export default function DialogScreen({ onComplete }) {
   const currentLine = lines[lineIndex] || ''
   const isTyping = charIndex < currentLine.length
 
+  // 원화·여우 레이어가 다 준비된 뒤에 화면을 연다 (타자기도 그때부터 시작)
+  const ready = useImagesReady(DIALOG_SRCS)
+
   useEffect(() => {
+    if (!ready) return
     if (charIndex < currentLine.length) {
       const timer = setTimeout(() => setCharIndex(prev => prev + 1), 40)
       return () => clearTimeout(timer)
     }
-  }, [charIndex, currentLine])
+  }, [ready, charIndex, currentLine])
 
   // 다음 화면(책갈피) 원화 선로딩 — 전환 시 4K 디코드로 화면이 끊기지 않게
   useEffect(() => {
@@ -58,6 +66,8 @@ export default function DialogScreen({ onComplete }) {
   }
 
   const hintText = lineIndex < lines.length - 1 ? '탭하여 계속 →' : '탭하여 시작 →'
+
+  if (!ready) return <LoadingCover />
 
   return (
     <button

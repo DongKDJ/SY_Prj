@@ -4,8 +4,9 @@ import { getCardImage } from '../assets/imageMap'
 import CardSelect from './CardSelect'
 import { stages } from '../data/desserts'
 import { InkButton } from './shared/InkButton'
-import { ArtStage, ArtLayer, GoldFrame, ArtBandCrop } from './shared/ArtStage'
-import { bookmarkBg, grassLayers, bookmarkTitles, ingredientLayers } from '../assets/screenImages'
+import { ArtStage, ArtLayer, GoldFrame, ArtBandCrop, LoadingCover } from './shared/ArtStage'
+import { bookmarkBg, grassLayers, bookmarkTitles, ingredientLayers, goldFrames } from '../assets/screenImages'
+import { useImagesReady } from '../hooks/useImagesReady'
 import {
   PaperGrain,
   Floret,
@@ -78,6 +79,9 @@ const timeStyles = {
   },
 }
 
+// 로딩 게이트 대상 — 상주 배경·테두리·첫 배너. 재료 레이어는 제외(놓이는 팝인이 의도된 연출)
+const STAGE_SRCS = [bookmarkBg, ...grassLayers, ...goldFrames, bookmarkTitles[1]]
+
 // Phase: 'bookmark' → 'cards' → 'enlarged'
 export default function StageScreen({ stageIndex, selections, onSelect, onComplete }) {
   const [phase, setPhase] = useState('bookmark')
@@ -130,6 +134,10 @@ export default function StageScreen({ stageIndex, selections, onSelect, onComple
     onSelect(stageIndex, selectedCardId)
     onComplete()
   }
+
+  // 상주 배경이 준비된 뒤에 화면을 연다 (보통은 대화 화면의 선로딩으로 이미 준비돼 있다)
+  const ready = useImagesReady(STAGE_SRCS)
+  if (!ready) return <LoadingCover />
 
   return (
     <div className={`min-h-[100dvh] w-full relative overflow-hidden
