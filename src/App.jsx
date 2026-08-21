@@ -7,7 +7,7 @@ import { LoadingCover } from './components/shared/ArtStage'
 import {
   titleBg, titleLogo, goldFrames,
   openingBg, openingBubble, openingObject,
-  bookmarkBg, grassLayers, bookmarkTitles, ingredientLayers,
+  bookmarkBg, grassLayers, bookmarkTitles, ingredientLayers, cardPlate,
 } from './assets/screenImages'
 import { cardImages, cardBack } from './assets/imageMap'
 import { foxLayerSources } from './assets/foxLayers'
@@ -35,7 +35,7 @@ const ALL_ART_SRCS = [
   openingBg, openingBubble, openingObject, ...foxLayerSources,
   bookmarkBg, ...grassLayers,
   ...Object.values(bookmarkTitles), ...Object.values(ingredientLayers),
-  ...Object.values(cardImages), cardBack,
+  ...Object.values(cardImages), cardBack, cardPlate,
 ]
 
 function App() {

@@ -5,7 +5,7 @@ import CardSelect from './CardSelect'
 import { stages } from '../data/desserts'
 import { InkButton } from './shared/InkButton'
 import { ArtStage, ArtLayer, GoldFrame, ArtBandCrop, LoadingCover } from './shared/ArtStage'
-import { bookmarkBg, grassLayers, bookmarkTitles, ingredientLayers, goldFrames } from '../assets/screenImages'
+import { bookmarkBg, grassLayers, bookmarkTitles, ingredientLayers, goldFrames, cardPlate } from '../assets/screenImages'
 import { useImagesReady } from '../hooks/useImagesReady'
 import {
   PaperGrain,
@@ -87,6 +87,7 @@ const STAGE_SRCS = [
   ...goldFrames,
   ...Object.values(bookmarkTitles),
   ...Object.values(cardImages),
+  cardPlate,
 ]
 
 // Phase: 'bookmark' → 'cards' → 'enlarged'
@@ -327,7 +328,7 @@ export default function StageScreen({ stageIndex, selections, onSelect, onComple
               >
                 {/* 카드 — 빈티지 표본 카드. 설명을 읽는 8~12초 동안 정지하지 않도록
                     위쪽 테이프를 지지점 삼아 아주 느리게 흔들린다. */}
-                <div className="ambient-pinned relative bg-[#FBF3E3] p-3 md:p-4 pb-12 md:pb-14
+                <div className="ambient-pinned relative bg-[#FBF3E3] p-3 md:p-4
                                 shadow-[0_30px_50px_-20px_rgba(0,0,0,0.6)]
                                 border border-paper-edge">
                   <PaperGrain />
@@ -364,16 +365,28 @@ export default function StageScreen({ stageIndex, selections, onSelect, onComple
                     <div className="absolute inset-0 bg-gradient-to-t from-transparent to-white/15 pointer-events-none" />
                   </div>
 
-                  {/* 카드 캡션 (폴라로이드 영역) */}
-                  <div className="absolute bottom-3 left-0 right-0 text-center px-3">
-                    <p className="font-display text-lg md:text-xl font-bold text-ink leading-tight">
-                      {card.ingredient}
-                    </p>
-                    <p className="font-script text-base text-jam mt-0.5">
+                </div>
+
+                {/* 해설 명판 — 원화 뼈다귀 프레임 안에 성격 유형 (재료 이름은 카드에 이미 있음) */}
+                <motion.div
+                  initial={{ opacity: 0, y: 10 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  transition={{ delay: 0.25 }}
+                  className="relative mt-5 w-64 md:w-80"
+                >
+                  <img
+                    src={cardPlate}
+                    alt=""
+                    aria-hidden="true"
+                    draggable={false}
+                    className="w-full h-auto select-none"
+                  />
+                  <div className="absolute inset-0 flex items-center justify-center pt-[5%] px-12">
+                    <p className="font-display text-lg md:text-xl font-bold text-ink text-center leading-tight">
                       {card.brief}
                     </p>
                   </div>
-                </div>
+                </motion.div>
 
                 {/* 설명 텍스트 */}
                 <motion.div

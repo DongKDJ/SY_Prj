@@ -27,8 +27,10 @@ import ingGelatin from './images/screens/ing-gelatin.png'
 import ingFlour from './images/screens/ing-flour.png'
 import ingSugar from './images/screens/ing-sugar.png'
 import ingChoco from './images/screens/ing-choco.png'
+import cardPlate from './images/screens/card-plate.png'
 
-export { titleBg, titleLogo, openingBg, openingBubble, openingObject, bookmarkBg }
+// cardPlate: 카드 확대 화면의 해설 명판 (뼈다귀 프레임, 680x268)
+export { titleBg, titleLogo, openingBg, openingBubble, openingObject, bookmarkBg, cardPlate }
 
 // 금장 프레임 (1=좌상 2=상중앙 3=우상 4=좌하 5=우하 — 세 화면 공통 동일 원본)
 export const goldFrames = [gold1, gold2, gold3, gold4, gold5]

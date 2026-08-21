@@ -95,7 +95,7 @@ export default function CardSelect({ stage, onSelect, accent = 'honey' }) {
                   이 화면의 실제 체류 시간이라 그 구간이 정지하면 안 된다.
                   고른 뒤에는 card-glow가 같은 animation 자리를 쓰므로 배타적으로 건다. */}
               <button
-                className={`perspective w-40 md:w-48 aspect-[3/4] cursor-pointer
+                className={`perspective w-52 md:w-64 aspect-[3/4] cursor-pointer
                            ${isSelected && !isFlipped ? 'card-glow' : ''}
                            ${selectedId ? '' : 'ambient-bob'}`}
                 style={selectedId ? undefined : {
