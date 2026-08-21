@@ -8,6 +8,7 @@ import {
   bookmarkBg, grassLayers, bookmarkTitles,
 } from '../assets/screenImages'
 import { foxDialogs } from '../data/desserts'
+import { cardImages } from '../assets/imageMap'
 import { useImagesReady } from '../hooks/useImagesReady'
 
 const DIALOG_SRCS = [openingBg, openingBubble, openingObject, ...goldFrames, ...foxLayerSources]
@@ -43,9 +44,14 @@ export default function DialogScreen({ onComplete }) {
     }
   }, [ready, charIndex, currentLine])
 
-  // 다음 화면(책갈피) 원화 선로딩 — 전환 시 4K 디코드로 화면이 끊기지 않게
+  // 다음 화면(책갈피·카드) 자산 선로딩 — 대사를 읽는 동안 스테이지 게이트 대기가 끝나 있게
   useEffect(() => {
-    ;[bookmarkBg, ...grassLayers, bookmarkTitles[1]].forEach(src => {
+    ;[
+      bookmarkBg,
+      ...grassLayers,
+      ...Object.values(bookmarkTitles),
+      ...Object.values(cardImages),
+    ].forEach(src => {
       const img = new Image()
       img.src = src
     })
@@ -75,7 +81,7 @@ export default function DialogScreen({ onComplete }) {
       className="relative block h-[100dvh] w-full overflow-hidden cursor-pointer text-left"
       aria-label="대화 진행"
     >
-      <ArtStage>
+      <ArtStage className="art-reveal">
         <ArtLayer src={openingBg} />
 
         {/* 여우씨 — 책상 윗선(DESK_TOP)에서 잘라 책상 뒤에 걸친 것처럼 */}

@@ -1,6 +1,6 @@
 import { useState, useEffect, useRef } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
-import { getCardImage } from '../assets/imageMap'
+import { getCardImage, cardImages } from '../assets/imageMap'
 import CardSelect from './CardSelect'
 import { stages } from '../data/desserts'
 import { InkButton } from './shared/InkButton'
@@ -79,8 +79,15 @@ const timeStyles = {
   },
 }
 
-// 로딩 게이트 대상 — 상주 배경·테두리·첫 배너. 재료 레이어는 제외(놓이는 팝인이 의도된 연출)
-const STAGE_SRCS = [bookmarkBg, ...grassLayers, ...goldFrames, bookmarkTitles[1]]
+// 로딩 게이트 대상 — 상주 배경·테두리·배너 4종·카드 전량 (스테이지 흐름에서 낱장 로딩이 안 보이게).
+// 재료 레이어만 제외(놓이는 팝인이 의도된 연출)
+const STAGE_SRCS = [
+  bookmarkBg,
+  ...grassLayers,
+  ...goldFrames,
+  ...Object.values(bookmarkTitles),
+  ...Object.values(cardImages),
+]
 
 // Phase: 'bookmark' → 'cards' → 'enlarged'
 export default function StageScreen({ stageIndex, selections, onSelect, onComplete }) {
@@ -147,7 +154,7 @@ export default function StageScreen({ stageIndex, selections, onSelect, onComple
 
       {/* 책갈피 원화 배경 — 페이즈·스테이지 전환과 무관하게 상주 (책상·풀·금장·누적 재료).
           다음 책갈피로 넘어가도 배경과 테두리는 "이미 있는" 상태이고, 배너 등만 새로 채워진다. */}
-      <ArtStage>
+      <ArtStage className="art-reveal">
         <ArtLayer src={bookmarkBg} className="art-zoom" />
 
         {/* 풀·잎 장식 — 딜레이를 어긋내 미세하게 흔들림 */}

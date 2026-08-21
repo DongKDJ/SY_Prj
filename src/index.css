@@ -722,6 +722,15 @@ body {
   animation: art-sway-kf 9s ease-in-out infinite;
 }
 
+/* 로딩 게이트가 열릴 때 화면 전체가 부드럽게 나타남 */
+@keyframes art-reveal-kf {
+  from { opacity: 0; }
+  to   { opacity: 1; }
+}
+.art-reveal {
+  animation: art-reveal-kf 0.45s ease-out both;
+}
+
 /* 로고·말풍선·배너 부유 */
 @keyframes art-bob-kf {
   0%, 100% { transform: translateY(0); }

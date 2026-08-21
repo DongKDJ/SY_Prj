@@ -29,10 +29,15 @@ export function useImagesReady(srcs) {
         remaining -= 1
         if (!cancelled && remaining === 0) setReady(true)
       }
-      img.onload = done
-      img.onerror = done
       img.src = src
-      if (img.complete) done() // 캐시 히트는 onload가 안 불릴 수 있다
+      // decode()는 다운로드+디코드까지 기다린다 — 공개 순간 4K 레이어가
+      // 한 장씩 그려지는 것을 막는다. 실패(디코드 불가 등)해도 화면은 연다.
+      if (img.decode) img.decode().then(done, done)
+      else {
+        img.onload = done
+        img.onerror = done
+        if (img.complete) done()
+      }
     })
     return () => { cancelled = true }
     // eslint-disable-next-line react-hooks/exhaustive-deps

@@ -29,7 +29,7 @@ export default function TitleScreen({ onStart }) {
       className="relative block h-[100dvh] w-full overflow-hidden cursor-pointer"
       aria-label="시작하기"
     >
-      <ArtStage>
+      <ArtStage className="art-reveal">
         <ArtLayer src={titleBg} className="art-zoom" />
 
         {/* 타이틀 로고 — 가로 화면에서는 원화 좌표 그대로 (세로에서는 아래 밴드로 대체) */}
