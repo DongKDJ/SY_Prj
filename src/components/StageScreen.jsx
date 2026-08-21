@@ -113,20 +113,6 @@ export default function StageScreen({ stageIndex, selections, onSelect, onComple
   const style = timeStyles[stage.timeOfDay]
   const stageNum = String(stage.id).padStart(2, '0')
 
-  // 확대 화면을 읽는 동안 다음 책갈피에 새로 등장할 레이어를 선로딩 (4K 디코드 끊김 방지)
-  useEffect(() => {
-    if (phase !== 'enlarged') return
-    const next = stages[stageIndex + 1]
-    const warm = [
-      selectedCardId ? ingredientLayers[selectedCardId] : null,
-      next ? bookmarkTitles[next.id] : null,
-    ].filter(Boolean)
-    warm.forEach(src => {
-      const img = new Image()
-      img.src = src
-    })
-  }, [phase, stageIndex, selectedCardId])
-
   const handleCardSelected = (cardId) => {
     setSelectedCardId(cardId)
     setPhase('enlarged')
@@ -142,8 +128,8 @@ export default function StageScreen({ stageIndex, selections, onSelect, onComple
     onComplete()
   }
 
-  // 상주 배경이 준비된 뒤에 화면을 연다 (보통은 대화 화면의 선로딩으로 이미 준비돼 있다)
-  const ready = useImagesReady(STAGE_SRCS)
+  // App 전역 게이트가 전 자산을 선로드하므로 보통 즉시 통과하는 안전망
+  const { ready } = useImagesReady(STAGE_SRCS)
   if (!ready) return <LoadingCover />
 
   return (

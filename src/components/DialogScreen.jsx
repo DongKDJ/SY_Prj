@@ -3,12 +3,8 @@ import { motion } from 'framer-motion'
 import Character from './shared/Character'
 import { foxLayerSources } from '../assets/foxLayers'
 import { ArtStage, ArtLayer, GoldFrame, LoadingCover } from './shared/ArtStage'
-import {
-  openingBg, openingBubble, openingObject, goldFrames,
-  bookmarkBg, grassLayers, bookmarkTitles,
-} from '../assets/screenImages'
+import { openingBg, openingBubble, openingObject, goldFrames } from '../assets/screenImages'
 import { foxDialogs } from '../data/desserts'
-import { cardImages } from '../assets/imageMap'
 import { useImagesReady } from '../hooks/useImagesReady'
 
 const DIALOG_SRCS = [openingBg, openingBubble, openingObject, ...goldFrames, ...foxLayerSources]
@@ -34,7 +30,7 @@ export default function DialogScreen({ onComplete }) {
   const isTyping = charIndex < currentLine.length
 
   // 원화·여우 레이어가 다 준비된 뒤에 화면을 연다 (타자기도 그때부터 시작)
-  const ready = useImagesReady(DIALOG_SRCS)
+  const { ready } = useImagesReady(DIALOG_SRCS)
 
   useEffect(() => {
     if (!ready) return
@@ -43,19 +39,6 @@ export default function DialogScreen({ onComplete }) {
       return () => clearTimeout(timer)
     }
   }, [ready, charIndex, currentLine])
-
-  // 다음 화면(책갈피·카드) 자산 선로딩 — 대사를 읽는 동안 스테이지 게이트 대기가 끝나 있게
-  useEffect(() => {
-    ;[
-      bookmarkBg,
-      ...grassLayers,
-      ...Object.values(bookmarkTitles),
-      ...Object.values(cardImages),
-    ].forEach(src => {
-      const img = new Image()
-      img.src = src
-    })
-  }, [])
 
   const handleClick = () => {
     if (isTyping) {

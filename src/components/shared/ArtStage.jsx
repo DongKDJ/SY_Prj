@@ -36,13 +36,21 @@ export function GoldFrame() {
   return goldFrames.map((src, i) => <ArtLayer key={i} src={src} />)
 }
 
-/* 원화 로딩 대기 화면 — 레이어가 낱장으로 뜨는 대신 종이색에서 잠깐 멈췄다가 완성된 화면을 연다 */
-export function LoadingCover() {
+/* 원화 로딩 대기 화면 — 레이어가 낱장으로 뜨는 대신 종이색에서 멈췄다가 완성된 화면을 연다 */
+export function LoadingCover({ progress }) {
   return (
-    <div className="h-[100dvh] w-full bg-paper flex items-center justify-center">
+    <div className="h-[100dvh] w-full bg-paper flex flex-col items-center justify-center gap-5">
       <span className="font-script text-xl text-ink/50 script-shimmer">
-        여우씨가 페이지를 준비하고 있어요…
+        여우씨가 레시피 재료를 준비하고 있어요…
       </span>
+      {progress != null && (
+        <div className="w-56 h-1.5 rounded-full bg-ink/10 overflow-hidden">
+          <div
+            className="h-full bg-honey rounded-full transition-[width] duration-300 ease-out"
+            style={{ width: `${Math.round(progress * 100)}%` }}
+          />
+        </div>
+      )}
     </div>
   )
 }

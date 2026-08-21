@@ -1,7 +1,16 @@
 import { AnimatePresence, MotionConfig, motion } from 'framer-motion'
 import { useGameState } from './hooks/useGameState'
 import { readKioskFlag, useKioskIdle, useKioskLock } from './hooks/useKiosk'
+import { useImagesReady } from './hooks/useImagesReady'
 import KioskIdlePrompt from './components/shared/KioskIdlePrompt'
+import { LoadingCover } from './components/shared/ArtStage'
+import {
+  titleBg, titleLogo, goldFrames,
+  openingBg, openingBubble, openingObject,
+  bookmarkBg, grassLayers, bookmarkTitles, ingredientLayers,
+} from './assets/screenImages'
+import { cardImages, cardBack } from './assets/imageMap'
+import { foxLayerSources } from './assets/foxLayers'
 import TitleScreen from './components/TitleScreen'
 import DialogScreen from './components/DialogScreen'
 import StageScreen from './components/StageScreen'
@@ -18,6 +27,16 @@ const pageTransition = {
 }
 
 const isKiosk = readKioskFlag()
+
+// 시작 시 전 흐름 자산을 한 번에 로드 — 이후 어떤 화면에서도 요소가 낱장으로 뜨지 않는다.
+// (결과 디저트 이미지는 오븐 대기 중 선로딩되는 기존 경로 유지)
+const ALL_ART_SRCS = [
+  titleBg, titleLogo, ...goldFrames,
+  openingBg, openingBubble, openingObject, ...foxLayerSources,
+  bookmarkBg, ...grassLayers,
+  ...Object.values(bookmarkTitles), ...Object.values(ingredientLayers),
+  ...Object.values(cardImages), cardBack,
+]
 
 function App() {
   const {
@@ -41,6 +60,16 @@ function App() {
   // 4K 레이어 리마운트가 끼지 않도록 key를 묶는다. 전환은 StageScreen 내부 페이즈가 담당.
   const stageNo = screen.startsWith('stage') ? parseInt(screen.slice(5), 10) : null
   const pageKey = stageNo ? 'stages' : screen
+
+  // 전 자산 로드 완료 후에야 앱을 연다
+  const { ready: assetsReady, progress } = useImagesReady(ALL_ART_SRCS)
+  if (!assetsReady) {
+    return (
+      <MotionConfig reducedMotion="user">
+        <LoadingCover progress={progress} />
+      </MotionConfig>
+    )
+  }
 
   return (
     <MotionConfig reducedMotion="user">

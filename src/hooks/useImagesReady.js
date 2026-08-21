@@ -4,17 +4,20 @@ import { useEffect, useState } from 'react'
 const loadedSet = new Set()
 
 /**
- * 이미지 전부가 로드된 뒤 true — 화면을 "완성된 상태로" 등장시키는 로딩 게이트용.
- * 실패한 이미지도 완료로 취급해 화면이 영영 안 열리는 일은 없다.
+ * 이미지 전부가 로드된 뒤 ready=true — 화면을 "완성된 상태로" 등장시키는 로딩 게이트용.
+ * progress(0~1)로 진행률도 준다. 실패한 이미지도 완료로 취급해 화면이 영영 안 열리는 일은 없다.
  * srcs는 화면별 상수 배열이어야 한다 (마운트 시 1회만 검사).
  */
 export function useImagesReady(srcs) {
-  const [ready, setReady] = useState(() => srcs.every(s => loadedSet.has(s)))
+  const [state, setState] = useState(() => {
+    const loaded = srcs.filter(s => loadedSet.has(s)).length
+    return { ready: loaded === srcs.length, progress: srcs.length ? loaded / srcs.length : 1 }
+  })
 
   useEffect(() => {
     const pending = srcs.filter(s => !loadedSet.has(s))
     if (pending.length === 0) {
-      setReady(true)
+      setState({ ready: true, progress: 1 })
       return
     }
     let cancelled = false
@@ -27,7 +30,9 @@ export function useImagesReady(srcs) {
         counted = true
         loadedSet.add(src)
         remaining -= 1
-        if (!cancelled && remaining === 0) setReady(true)
+        if (cancelled) return
+        const loaded = srcs.length - remaining
+        setState({ ready: remaining === 0, progress: loaded / srcs.length })
       }
       img.src = src
       // decode()는 다운로드+디코드까지 기다린다 — 공개 순간 4K 레이어가
@@ -43,5 +48,5 @@ export function useImagesReady(srcs) {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [])
 
-  return ready
+  return state
 }

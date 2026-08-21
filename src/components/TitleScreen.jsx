@@ -1,26 +1,13 @@
-import { useEffect } from 'react'
 import { motion } from 'framer-motion'
 import { ArtStage, ArtLayer, GoldFrame, ArtBandCrop, LoadingCover } from './shared/ArtStage'
-import {
-  titleBg, titleLogo, goldFrames,
-  openingBg, openingBubble, openingObject,
-} from '../assets/screenImages'
-import { foxLayerSources } from '../assets/foxLayers'
+import { titleBg, titleLogo, goldFrames } from '../assets/screenImages'
 import { useImagesReady } from '../hooks/useImagesReady'
 
+// App 전역 게이트가 전 자산을 선로드하므로 보통 즉시 통과하는 안전망
 const TITLE_SRCS = [titleBg, titleLogo, ...goldFrames]
 
 export default function TitleScreen({ onStart }) {
-  const ready = useImagesReady(TITLE_SRCS)
-
-  // 타이틀에 머무는 동안 다음 화면(대화) 원화·여우 레이어 선로딩
-  useEffect(() => {
-    ;[openingBg, openingBubble, openingObject, ...foxLayerSources].forEach(src => {
-      const img = new Image()
-      img.src = src
-    })
-  }, [])
-
+  const { ready } = useImagesReady(TITLE_SRCS)
   if (!ready) return <LoadingCover />
 
   return (
