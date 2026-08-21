@@ -4,7 +4,7 @@ import { getCardImage, cardImages } from '../assets/imageMap'
 import CardSelect from './CardSelect'
 import { stages } from '../data/desserts'
 import { InkButton } from './shared/InkButton'
-import { ArtStage, ArtLayer, ArtBandCrop, LoadingCover } from './shared/ArtStage'
+import { ArtStage, ArtLayer, GoldFrame, ArtBandCrop, LoadingCover } from './shared/ArtStage'
 import { bookmarkBg, grassLayers, bookmarkTitles, ingredientLayers, goldFrames } from '../assets/screenImages'
 import { useImagesReady } from '../hooks/useImagesReady'
 import {
@@ -182,6 +182,8 @@ export default function StageScreen({ stageIndex, selections, onSelect, onComple
             </motion.div>
           )
         ))}
+
+        <GoldFrame />
       </ArtStage>
 
       {/* 3단계 내내 배경에 남아 페이지가 멈추지 않게 한다 (단계 전환에도 끊기지 않도록 AnimatePresence 바깥) */}
@@ -314,9 +316,7 @@ export default function StageScreen({ stageIndex, selections, onSelect, onComple
               animate={{ opacity: 1 }}
               exit={{ opacity: 0, pointerEvents: 'none' }}
               transition={{ duration: 0.4 }}
-              // z-40: 전역 금장 테두리(z-30)보다 위 — 확대 화면에서는 테두리도
-              // 다른 배경 요소처럼 흐림·어둡기 아래에 묻힌다
-              className="min-h-[100dvh] flex flex-col items-center justify-center px-4 relative z-40"
+              className="min-h-[100dvh] flex flex-col items-center justify-center px-4 relative"
             >
               {/* 배경 흐림+어둡기 — backdrop-filter는 페이드 중 화면 모퉁이 깜빡임을 만들어서
                   실시간 블러 대신 미리 흐린 배경 사본을 페이드시킨다 */}

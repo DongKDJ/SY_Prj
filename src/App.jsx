@@ -2,7 +2,6 @@ import { AnimatePresence, MotionConfig, motion } from 'framer-motion'
 import { useGameState } from './hooks/useGameState'
 import { readKioskFlag, useKioskIdle, useKioskLock } from './hooks/useKiosk'
 import KioskIdlePrompt from './components/shared/KioskIdlePrompt'
-import { ArtFrameOverlay } from './components/shared/ArtStage'
 import TitleScreen from './components/TitleScreen'
 import DialogScreen from './components/DialogScreen'
 import StageScreen from './components/StageScreen'
@@ -84,13 +83,6 @@ function App() {
               />
             )}
           </motion.div>
-        </AnimatePresence>
-
-        {/* 금장 테두리 — 원화 화면(타이틀·대화·스테이지) 동안 화면 전환과 무관하게 상주 */}
-        <AnimatePresence>
-          {(screen === 'title' || screen === 'dialog' || stageNo) && (
-            <ArtFrameOverlay key="art-frame" />
-          )}
         </AnimatePresence>
 
         <AnimatePresence>

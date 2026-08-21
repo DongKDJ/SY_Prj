@@ -1,6 +1,4 @@
-import { motion } from 'framer-motion'
-import { goldFrames, titleBg } from '../../assets/screenImages'
-import { useImagesReady } from '../../hooks/useImagesReady'
+import { goldFrames } from '../../assets/screenImages'
 
 /* 3840x2160 원화 레이어 화면용 16:9 스테이지.
    화면을 cover 로 채우고(세로 화면 = 중앙 크롭) 자식은 스테이지 기준 % 좌표로 배치한다.
@@ -36,29 +34,6 @@ export function ArtLayer({ src, className = '', style }) {
 /* 금장 프레임 5장 (전 화면 공통) */
 export function GoldFrame() {
   return goldFrames.map((src, i) => <ArtLayer key={i} src={src} />)
-}
-
-/* 금장 프레임 전역 오버레이 — 개별 화면이 아니라 App 레벨에 상주시켜
-   화면 전환 페이드 때마다 테두리가 사라졌다 다시 뜨지 않게 한다.
-   titleBg를 게이트에 포함해 첫 등장이 타이틀 리빌보다 앞서지 않게 맞춘다. */
-const FRAME_SRCS = [...goldFrames, titleBg]
-
-export function ArtFrameOverlay() {
-  const ready = useImagesReady(FRAME_SRCS)
-  if (!ready) return null
-  return (
-    <motion.div
-      initial={{ opacity: 0 }}
-      animate={{ opacity: 1 }}
-      exit={{ opacity: 0 }}
-      transition={{ duration: 0.5 }}
-      className="fixed inset-0 z-30 pointer-events-none"
-    >
-      <ArtStage>
-        <GoldFrame />
-      </ArtStage>
-    </motion.div>
-  )
 }
 
 /* 원화 로딩 대기 화면 — 레이어가 낱장으로 뜨는 대신 종이색에서 잠깐 멈췄다가 완성된 화면을 연다 */
