@@ -31,7 +31,10 @@ Key data in `src/data/desserts.js`: stages (4 questions), dessertResults (16 com
 
 ### 이전 버튼 (2026-08-25)
 
-타이틀을 뺀 전 화면 좌상단에 원화 사과 버튼(`src/components/shared/BackButton.jsx`, `images/ui/back-button.png`).
+타이틀을 뺀 전 화면 좌하단에 원화 사과 버튼(`src/components/shared/BackButton.jsx`, `images/ui/back-button.png`).
+- 자리·크기 모두 작가 지정: 3840x2160 캔버스에 놓아준 위치(좌하단)와 크기(385px = 폭의 10% → `w-[clamp(104px,10vw,208px)]`)
+- **세로 화면에서만 좌상단** (`portrait:top-4`) — 대화 화면의 하단 대사 스트립과 겹쳐서. 원화 좌표를 그대로 쓰면 세로에서는 화면 밖으로 잘려나간다
+- `fixed` — 도감처럼 화면보다 긴 페이지에서 `absolute`는 버튼을 문서 맨 아래로 밀어낸다
 - 화면 간 이동은 `useGameState`의 `prevScreen` + `BACK_TO` 맵. 결과 → 오븐은 건너뛰고 stage4로 (되돌아가도 곧장 다시 구워지는 자동 화면이라)
 - 화면 안에 페이즈가 있으면 페이즈부터 되짚는다: StageScreen(확대→카드→책갈피), ResultScreen(펼친 책→메달리온), DessertBook(상세→그리드)
 - 뒤로 와서 스테이지가 바뀌면 책갈피를 건너뛰고 카드 선택 페이즈로 (StageScreen의 `goingBack`)

@@ -2,7 +2,9 @@ import { motion } from 'framer-motion'
 import backButtonImg from '../../assets/images/ui/back-button.png'
 
 /**
- * 이전으로 — 원화 사과 버튼. 전 화면 공통으로 좌상단에 고정.
+ * 이전으로 — 원화 사과 버튼. 전 화면 공통으로 좌하단에 고정 (작가가 원화 캔버스에 놓은 자리).
+ * 단 세로 화면에서는 좌상단 — 대화 화면의 대사 스트립이 하단을 쓰기 때문.
+ * fixed 인 이유: 도감처럼 화면보다 긴 페이지에서 absolute 로 두면 버튼이 문서 맨 아래로 밀려난다.
  *
  * 폭 10vw = 작가가 3840x2160 캔버스에 그려준 크기(385px = 캔버스 폭의 10%) 그대로.
  * 폰에서는 104px, 큰 모니터에서는 208px에서 멈춘다.
@@ -21,7 +23,8 @@ export default function BackButton({ onClick, label = '이전으로', className 
       transition={{ delay: 0.5, duration: 0.5, ease: [0.16, 1, 0.3, 1] }}
       whileHover={{ scale: 1.08, rotate: -4 }}
       whileTap={{ scale: 0.93 }}
-      className={`absolute top-4 left-4 md:top-6 md:left-6 z-50 cursor-pointer
+      className={`fixed left-4 md:left-6 z-50 cursor-pointer
+                  landscape:bottom-4 landscape:md:bottom-6 portrait:top-4
                   w-[clamp(104px,10vw,208px)]
                   drop-shadow-[0_6px_14px_rgba(58,36,24,0.5)] ${className}`}
     >
