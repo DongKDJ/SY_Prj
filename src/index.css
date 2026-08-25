@@ -713,15 +713,18 @@ body {
 }
 
 /* 타이틀 스푼·포크 — 배경에서 떼어낸 레이어가 제자리에서 둥실.
-   원래 자리는 title-bg-patch 가 메우고 있으므로 진폭이 그 여유(캔버스 31px)를
-   넘으면 원본이 새어 나온다. translateY 1.1% + rotate 0.6deg 가 상한. */
+   title-bg-patch 는 이 움직임이 훑고 지나가는 범위(스윕)만큼만 메워져 있다.
+   그래서 아래 두 수치를 키우면 원본 스푼이 새어 나온다 — 키우려면 patch 재생성 먼저. */
 @keyframes art-drift-kf {
   0%, 100% { transform: translateY(0) rotate(0deg); }
-  50%      { transform: translateY(calc(-1.1% * var(--ambient)))
-                        rotate(calc(var(--drift-dir, 1) * 0.6deg * var(--ambient))); }
+  50%      { transform: translateY(calc(-3.6% * var(--drift-amp)))
+                        rotate(calc(var(--drift-dir, 1) * 1.6deg * var(--drift-amp))); }
 }
 .art-drift {
-  animation: art-drift-kf 7.2s ease-in-out infinite;
+  /* 진폭은 --ambient 를 타되 0.6에서 자른다 — ?ambient=strong(1.6)으로 키우면
+     patch 범위를 넘기 때문. reduced-motion(--ambient:0)에서는 그대로 정지. */
+  --drift-amp: min(var(--ambient), 0.6);
+  animation: art-drift-kf 6.4s ease-in-out infinite;
 }
 
 /* 로딩 게이트가 열릴 때 화면 전체가 부드럽게 나타남 */
