@@ -41,9 +41,8 @@ export default function TitleScreen({ onStart }) {
           transition={{ duration: 1.1, ease: [0.16, 1, 0.3, 1], delay: 0.2 }}
           className="absolute inset-0 portrait:hidden"
         >
-          <div className="absolute inset-0 art-bob">
-            <ArtLayer src={titleLogo} />
-          </div>
+          {/* 명판은 고정 — 스푼·포크만 움직인다 (2026-08-25) */}
+          <ArtLayer src={titleLogo} />
         </motion.div>
 
         <GoldFrame />
@@ -56,9 +55,7 @@ export default function TitleScreen({ onStart }) {
         transition={{ duration: 1, ease: [0.16, 1, 0.3, 1], delay: 0.2 }}
         className="hidden portrait:block absolute top-[6%] left-1/2 -translate-x-1/2 w-[94vw] z-10"
       >
-        <div className="art-bob">
-          <ArtBandCrop src={titleLogo} top={1} bottom={49} />
-        </div>
+        <ArtBandCrop src={titleLogo} top={1} bottom={49} />
       </motion.div>
 
       {/* 하단 시작 안내 — 뷰포트 기준(세로 크롭에서도 항상 보이게) */}
