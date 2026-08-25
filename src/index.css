@@ -713,16 +713,16 @@ body {
 }
 
 /* 타이틀 스푼·포크 — 배경에서 떼어낸 레이어가 제자리에서 둥실.
-   title-bg-patch 는 이 움직임이 훑고 지나가는 범위(스윕)만큼만 메워져 있다.
-   그래서 아래 두 수치를 키우면 원본 스푼이 새어 나온다 — 키우려면 patch 재생성 먼저. */
+   title-bg-patch 가 원본 실루엣을 통째로 덮고 있어 진폭을 키워도 원본이 새지는 않는다.
+   대신 움직인 만큼 '비워둔 자리'(메운 배경)가 드러나므로 진폭이 곧 그 노출 폭이다. */
 @keyframes art-drift-kf {
   0%, 100% { transform: translateY(0) rotate(0deg); }
   50%      { transform: translateY(calc(-3.6% * var(--drift-amp)))
                         rotate(calc(var(--drift-dir, 1) * 1.6deg * var(--drift-amp))); }
 }
 .art-drift {
-  /* 진폭은 --ambient 를 타되 0.6에서 자른다 — ?ambient=strong(1.6)으로 키우면
-     patch 범위를 넘기 때문. reduced-motion(--ambient:0)에서는 그대로 정지. */
+  /* 진폭은 --ambient 를 타되 0.6에서 자른다 — ?ambient=strong(1.6)까지 가면
+     비워둔 자리가 눈에 띄게 넓어진다. reduced-motion(--ambient:0)에서는 그대로 정지. */
   --drift-amp: min(var(--ambient), 0.6);
   animation: art-drift-kf 6.4s ease-in-out infinite;
 }

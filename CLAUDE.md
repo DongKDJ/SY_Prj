@@ -66,10 +66,12 @@ All image placeholders in `src/assets/images/`. Replace PNG files with same file
 
 원화 `title-bg.png`에 그려져 있던 좌우 스푼·포크를 떼어내 따로 띄운다. 작가 원본은 그대로 두고 파생 3장을 추가:
 - `title-spoon.png` / `title-fork.png` — 실루엣만 남긴 컷아웃 (GrabCut + 색 정리, 스크래치패드 스크립트)
-- `title-bg-patch.png` — 떼어낸 자리를 메운 배경 조각. **배경 바로 위에 깔아야** 원본 스푼이 비치지 않는다
+- `title-bg-patch.png` — 떼어낸 자리를 메운 배경 조각. **배경 바로 위에 깔아야** 원본 스푼이 비치지 않는다.
+  **실루엣에 딱 붙여서(10px 여유) 팔 것** — 넓게 파면 그만큼 진짜 배경이 지워지고, 형태학 연산의 사각 경계가
+  각진 얼룩으로 드러난다 (2026-08-25 실측·수정). 인페인트는 TELEA + 안쪽으로 갈수록 블러 (빛줄기 자국 제거)
 - 셋 다 `art-zoom` 컨테이너 **안**에 넣을 것 — 배경만 켄번즈 줌이 걸리면 메운 자리와 어긋난다
 - 흔들림은 `.art-drift` (index.css). 현재 유효 진폭 translateY 47px + rotate 0.96deg (캔버스 기준)
-- **patch는 그 움직임이 훑는 범위(스윕)만큼만 메워져 있다** — 진폭을 키우려면 patch 재생성이 먼저다. `--drift-amp`가 `min(--ambient, 0.6)`인 것도 `?ambient=strong`으로 진폭이 patch를 넘지 않게 하기 위함
+- 진폭을 키워도 원본이 새지는 않지만(patch가 실루엣을 통째로 덮으므로) **움직인 만큼 메운 배경이 드러난다** — 진폭 = 노출 폭. `--drift-amp`가 `min(--ambient, 0.6)`인 것도 `?ambient=strong`에서 그 폭이 커지지 않게 하기 위함
 
 ### Fox Character Layer System
 `Character.jsx`가 동적 임포트로 자동 인식. 다음 파일이 모두 있으면 레이어 모드로 동작:
