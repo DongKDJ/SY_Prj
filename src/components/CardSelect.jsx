@@ -93,10 +93,9 @@ export default function CardSelect({ stage, onSelect, accent = 'honey' }) {
             >
               {/* 고르기 전까지 카드가 손에 들린 듯 미세하게 떠 있는다 — 고민하는 5~15초가
                   이 화면의 실제 체류 시간이라 그 구간이 정지하면 안 된다.
-                  고른 뒤에는 card-glow가 같은 animation 자리를 쓰므로 배타적으로 건다. */}
+                  고른 뒤에는 뒤집기 연출이 주가 되므로 떨림을 멈춘다. */}
               <button
-                className={`perspective w-52 md:w-64 aspect-[3/4] cursor-pointer
-                           ${isSelected && !isFlipped ? 'card-glow' : ''}
+                className={`perspective w-52 md:w-64 aspect-[16/21] cursor-pointer
                            ${selectedId ? '' : 'ambient-bob'}`}
                 style={selectedId ? undefined : {
                   animationDelay: `${i * 1.7}s`,
@@ -108,9 +107,8 @@ export default function CardSelect({ stage, onSelect, accent = 'honey' }) {
               >
                 <div className={`card-inner ${isFlipped ? 'flipped' : ''}`}>
 
-                  {/* ── 뒷면 (선택 전 보이는 면) — 완성형 카드 이미지 ── */}
-                  <div className="card-face bg-[#F3E2C2] relative
-                                  shadow-[0_18px_30px_-16px_rgba(58,36,24,0.55)]">
+                  {/* ── 뒷면 (선택 전 보이는 면) — 완성형 카드 이미지 (테두리까지 원화에 포함) ── */}
+                  <div className="card-face">
                     {backImg ? (
                       <img src={backImg} alt={card.label}
                            className="w-full h-full object-cover" />
@@ -126,8 +124,7 @@ export default function CardSelect({ stage, onSelect, accent = 'honey' }) {
                   </div>
 
                   {/* ── 앞면 (선택 후 뒤집힘) — 재료 카드 ── */}
-                  <div className="card-face card-face-front bg-[#F3E2C2] relative ring-2 ring-jam/40
-                                  shadow-[0_22px_36px_-18px_rgba(58,36,24,0.65)]">
+                  <div className="card-face card-face-front">
                     {frontImg ? (
                       <img src={frontImg} alt={card.ingredient}
                            className="w-full h-full object-cover" />

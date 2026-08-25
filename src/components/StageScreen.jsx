@@ -10,8 +10,6 @@ import { useImagesReady } from '../hooks/useImagesReady'
 import {
   PaperGrain,
   Floret,
-  CornerOrnament,
-  MaskingTape,
   FloatingMotes,
 } from './shared/Decorations'
 
@@ -112,7 +110,6 @@ export default function StageScreen({ stageIndex, selections, onSelect, onComple
 
   const stage = stages[stageIndex]
   const style = timeStyles[stage.timeOfDay]
-  const stageNum = String(stage.id).padStart(2, '0')
 
   const handleCardSelected = (cardId) => {
     setSelectedCardId(cardId)
@@ -326,45 +323,19 @@ export default function StageScreen({ stageIndex, selections, onSelect, onComple
                 transition={{ type: 'spring', stiffness: 80, damping: 14 }}
                 className="relative z-10 flex flex-col items-center max-w-md mt-[5vh]"
               >
-                {/* 카드 — 빈티지 표본 카드. 설명을 읽는 8~12초 동안 정지하지 않도록
-                    위쪽 테이프를 지지점 삼아 아주 느리게 흔들린다. */}
-                <div className="ambient-pinned relative bg-[#FBF3E3] p-3 md:p-4
-                                shadow-[0_30px_50px_-20px_rgba(0,0,0,0.6)]
-                                border border-paper-edge">
-                  <PaperGrain />
-
-                  {/* 마스킹 테이프 */}
-                  <MaskingTape className="absolute -top-3 left-8" width={80} rotate={-10} tone="honey" />
-                  <MaskingTape className="absolute -top-3 right-8" width={80} rotate={8} tone="jam" />
-
-                  <CornerOrnament corner="tl" className="absolute top-2 left-2 w-8 h-8 text-ink/40" />
-                  <CornerOrnament corner="tr" className="absolute top-2 right-2 w-8 h-8 text-ink/40" />
-                  <CornerOrnament corner="bl" className="absolute bottom-2 left-2 w-8 h-8 text-ink/40" />
-                  <CornerOrnament corner="br" className="absolute bottom-2 right-2 w-8 h-8 text-ink/40" />
-
-                  {/* 카드 헤더 */}
-                  <div className="relative flex items-center justify-between mb-2 px-1">
-                    <span className="font-script text-base text-jam">
-                      Ingredient №{stageNum}
-                    </span>
-                    <span className="font-display text-[10px] text-ink/50 tracking-[0.25em]">
-                      {stage.element.toUpperCase()}
-                    </span>
-                  </div>
-
-                  {/* 카드 메인 이미지 */}
-                  <div className="w-56 h-72 md:w-72 md:h-[22rem] bg-[#F3E2C2]
-                                  overflow-hidden flex items-center justify-center relative">
-                    {cardImg ? (
-                      <img src={cardImg} alt={card.ingredient}
-                           className="w-full h-full object-cover" />
-                    ) : (
+                {/* 카드 — 테두리·명패까지 원화 한 장에 그려져 있어 별도 액자를 두르지 않는다.
+                    설명을 읽는 8~12초 동안 정지하지 않도록 아주 느리게 흔들린다. */}
+                <div className="ambient-pinned w-56 md:w-72 aspect-[16/21]
+                                shadow-[0_30px_50px_-20px_rgba(0,0,0,0.6)]">
+                  {cardImg ? (
+                    <img src={cardImg} alt={card.ingredient}
+                         draggable={false}
+                         className="w-full h-full object-contain select-none" />
+                  ) : (
+                    <div className="w-full h-full flex items-center justify-center bg-[#F3E2C2]">
                       <span className="text-7xl">{card.ingredientEmoji}</span>
-                    )}
-                    {/* 광택 */}
-                    <div className="absolute inset-0 bg-gradient-to-t from-transparent to-white/15 pointer-events-none" />
-                  </div>
-
+                    </div>
+                  )}
                 </div>
 
                 {/* 해설 명판 — 원화 뼈다귀 프레임 안에 성격 유형 (재료 이름은 카드에 이미 있음) */}

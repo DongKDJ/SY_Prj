@@ -139,16 +139,6 @@ body {
   animation: fadeInUp 0.8s cubic-bezier(0.16, 1, 0.3, 1) forwards;
 }
 
-/* Glow effect for selected card */
-@keyframes glow-pulse {
-  0%, 100% { box-shadow: 0 0 20px rgba(232, 168, 124, 0.4); }
-  50% { box-shadow: 0 0 40px rgba(232, 168, 124, 0.7); }
-}
-
-.card-glow {
-  animation: glow-pulse 2s ease-in-out infinite;
-}
-
 /* ===== Storybook Page Aesthetics ===== */
 
 /* 종이 결 — SVG 노이즈 + 미세한 얼룩 */
