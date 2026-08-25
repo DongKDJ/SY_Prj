@@ -2,6 +2,9 @@
 // 전부 3840x2160 정렬 투명 PNG — ArtStage 안에 겹치면 좌표가 서로 맞는다.
 import titleBg from './images/screens/title-bg.png'
 import titleLogo from './images/screens/title-logo.png'
+import titleSpoon from './images/screens/title-spoon.png'
+import titleFork from './images/screens/title-fork.png'
+import titleBgPatch from './images/screens/title-bg-patch.png'
 import gold1 from './images/screens/gold-1.png'
 import gold2 from './images/screens/gold-2.png'
 import gold3 from './images/screens/gold-3.png'
@@ -30,7 +33,10 @@ import ingChoco from './images/screens/ing-choco.png'
 import cardPlate from './images/screens/card-plate.png'
 
 // cardPlate: 카드 확대 화면의 해설 명판 (뼈다귀 프레임, 680x268)
-export { titleBg, titleLogo, openingBg, openingBubble, openingObject, bookmarkBg, cardPlate }
+// titleSpoon/titleFork: 타이틀 배경에 그려져 있던 스푼·포크를 떼어낸 레이어.
+// titleBgPatch: 그 자리를 메운 배경 조각 — 배경 바로 위에 깔아야 원본 스푼이 비치지 않는다.
+export { titleBg, titleLogo, titleSpoon, titleFork, titleBgPatch,
+         openingBg, openingBubble, openingObject, bookmarkBg, cardPlate }
 
 // 금장 프레임 (1=좌상 2=상중앙 3=우상 4=좌하 5=우하 — 세 화면 공통 동일 원본)
 export const goldFrames = [gold1, gold2, gold3, gold4, gold5]

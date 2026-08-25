@@ -11,6 +11,8 @@
  * pivotY: 바운스 그룹의 transform-origin Y값 (기본 'bottom')
  *         디저트 바닥이 접시에 닿는 위치를 %로 지정
  *
+ * subUnderMain: 그 서브를 메인 레이어보다 뒤(접시 위)에 렌더링
+ *
  * 배열 순서 = sub_XX_01, sub_XX_02, ...
  * 설정이 없는 디저트는 전부 jelly 기본 적용
  */
@@ -125,7 +127,8 @@ export const dessertLayerConfig = {
   },
   11: {
     // 딸기 퐁당 오 쇼콜라
-    // sub1: 크림 소스, sub2: 잎, sub3: 딸기+반쪽(접시), sub4: 블루베리(접시)
+    // sub1: 아이스크림 스쿱, sub2: 잎, sub3: 딸기+반쪽(접시), sub4: 블루베리(접시)
+    // 원화 레이어 순서(2026-08-25 수정본): 접시 > 스쿱 > 잎 > 케이크 > 딸기 > 블루베리
     bounce: 'soft',      // 겉은 구워진 케이크 — 흐르는 건 속
     pivotY: 'bottom',
     subs: ['breathe', 'sway-lg', 'sway-sm2', 'sway-sm2'],
@@ -133,16 +136,19 @@ export const dessertLayerConfig = {
     subDelays: [0.1, 0.4, 0.6, 0.9],
     subDetach: [false, false, true, true],
     subBehind: [false, false, false, false],
+    subUnderMain: [true, true, false, false], // 스쿱·잎은 케이크 뒤
   },
   12: {
     // 설원의 딸기 크럼블
-    // sub1: 아이스크림 스쿱, sub2: 딸기, sub3: 잎, sub4: 캐러멜 조각(접시)
+    // 원화 레이어 순서(2026-08-25 수정본): 접시 > 크럼블 > 부스러기 > 스쿱 > 딸기 > 잎
+    // — 서브 번호를 그 순서로 다시 매겼다 (구 sub4 부스러기가 sub1로)
+    // sub1: 부스러기 조각(접시), sub2: 아이스크림 스쿱, sub3: 딸기, sub4: 잎
     bounce: 'soft',      // 크럼블 = 바삭한 구움
     pivotY: 'bottom',
-    subs: ['breathe', 'sway-sm2', 'sway-lg', 'sway-sm2'],
-    subPivots: ['49% 62%', '49% 33%', '42% 37%', '75% 80%'],
-    subDelays: [0.2, 0.35, 0.5, 0.85],
-    subDetach: [true, false, false, true],   // 스쿱은 크럼블과 별개
+    subs: ['sway-sm2', 'breathe', 'sway-sm2', 'sway-lg'],
+    subPivots: ['75% 80%', '49% 62%', '49% 33%', '42% 37%'],
+    subDelays: [0.85, 0.2, 0.35, 0.5],
+    subDetach: [true, true, false, false],   // 스쿱은 크럼블과 별개
     subBehind: [false, false, false, false],
   },
   13: {

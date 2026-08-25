@@ -2,6 +2,7 @@ import { useState, useMemo } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
 import AnimatedDessert from './shared/AnimatedDessert'
 import { InkButton } from './shared/InkButton'
+import BackButton from './shared/BackButton'
 import {
   PaperGrain,
   Divider,
@@ -41,7 +42,7 @@ function createMote(id) {
   }
 }
 
-export default function ResultScreen({ result, onViewBook }) {
+export default function ResultScreen({ result, onViewBook, onBack }) {
   const [phase, setPhase] = useState('reveal')
   const motes = useMemo(() =>
     Array.from({ length: 44 }, (_, i) => createMote(i)), []
@@ -496,6 +497,9 @@ export default function ResultScreen({ result, onViewBook }) {
           </motion.div>
         )}
       </AnimatePresence>
+
+      {/* 펼친 책에서는 메달리온 페이지로, 메달리온에서는 마지막 선택으로 */}
+      <BackButton onClick={() => (phase === 'detail' ? setPhase('reveal') : onBack())} />
     </div>
   )
 }

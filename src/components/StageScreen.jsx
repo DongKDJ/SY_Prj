@@ -4,6 +4,7 @@ import { getCardImage, cardImages } from '../assets/imageMap'
 import CardSelect from './CardSelect'
 import { stages } from '../data/desserts'
 import { InkButton } from './shared/InkButton'
+import BackButton from './shared/BackButton'
 import { ArtStage, ArtLayer, GoldFrame, ArtBandCrop, LoadingCover } from './shared/ArtStage'
 import { bookmarkBg, grassLayers, bookmarkTitles, ingredientLayers, goldFrames, cardPlate } from '../assets/screenImages'
 import { useImagesReady } from '../hooks/useImagesReady'
@@ -89,7 +90,7 @@ const STAGE_SRCS = [
 ]
 
 // Phase: 'bookmark' → 'cards' → 'enlarged'
-export default function StageScreen({ stageIndex, selections, onSelect, onComplete }) {
+export default function StageScreen({ stageIndex, selections, onSelect, onComplete, onBack }) {
   const [phase, setPhase] = useState('bookmark')
   const [selectedCardId, setSelectedCardId] = useState(null)
   const proceedRef = useRef(false)
@@ -98,8 +99,10 @@ export default function StageScreen({ stageIndex, selections, onSelect, onComple
   // 렌더 단계에서 즉시 리셋 — 이전 스테이지의 enlarged 상태가 새 스테이지로 새어들지 않게.
   const [prevStageIndex, setPrevStageIndex] = useState(stageIndex)
   if (prevStageIndex !== stageIndex) {
+    // 뒤로 온 경우엔 책갈피를 다시 보여줄 이유가 없다 — 곧장 카드를 다시 고르는 자리로.
+    const goingBack = stageIndex < prevStageIndex
     setPrevStageIndex(stageIndex)
-    setPhase('bookmark')
+    setPhase(goingBack ? 'cards' : 'bookmark')
     setSelectedCardId(null)
   }
 
@@ -114,6 +117,18 @@ export default function StageScreen({ stageIndex, selections, onSelect, onComple
   const handleCardSelected = (cardId) => {
     setSelectedCardId(cardId)
     setPhase('enlarged')
+  }
+
+  // 페이즈가 곧 페이지 — 스테이지 안에서 한 칸씩 되짚고, 첫 페이즈에서만 이전 스테이지로.
+  const handleBack = () => {
+    if (phase === 'enlarged') {
+      setSelectedCardId(null)
+      setPhase('cards')
+    } else if (phase === 'cards') {
+      setPhase('bookmark')
+    } else {
+      onBack()
+    }
   }
 
   const handleProceed = () => {
@@ -390,6 +405,8 @@ export default function StageScreen({ stageIndex, selections, onSelect, onComple
           )
         })()}
       </AnimatePresence>
+
+      <BackButton onClick={handleBack} />
     </div>
   )
 }

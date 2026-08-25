@@ -1,10 +1,10 @@
 import { motion } from 'framer-motion'
 import { ArtStage, ArtLayer, GoldFrame, ArtBandCrop, LoadingCover } from './shared/ArtStage'
-import { titleBg, titleLogo, goldFrames } from '../assets/screenImages'
+import { titleBg, titleLogo, titleSpoon, titleFork, titleBgPatch, goldFrames } from '../assets/screenImages'
 import { useImagesReady } from '../hooks/useImagesReady'
 
 // App 전역 게이트가 전 자산을 선로드하므로 보통 즉시 통과하는 안전망
-const TITLE_SRCS = [titleBg, titleLogo, ...goldFrames]
+const TITLE_SRCS = [titleBg, titleBgPatch, titleSpoon, titleFork, titleLogo, ...goldFrames]
 
 export default function TitleScreen({ onStart }) {
   const { ready } = useImagesReady(TITLE_SRCS)
@@ -17,7 +17,22 @@ export default function TitleScreen({ onStart }) {
       aria-label="시작하기"
     >
       <ArtStage className="art-reveal">
-        <ArtLayer src={titleBg} className="art-zoom" />
+        {/* 배경 켄번즈 줌 안에 스푼·포크까지 넣어야 메운 자리(patch)와 어긋나지 않는다 */}
+        <div className="absolute inset-0 art-zoom">
+          <ArtLayer src={titleBg} />
+          <ArtLayer src={titleBgPatch} />
+
+          {/* 배경에서 떼어낸 스푼·포크 — 제자리에서 서로 어긋나게 둥실 */}
+          <div className="absolute inset-0 art-drift" style={{ transformOrigin: '10.9% 66.4%' }}>
+            <ArtLayer src={titleSpoon} />
+          </div>
+          <div
+            className="absolute inset-0 art-drift"
+            style={{ transformOrigin: '89.1% 63.4%', animationDelay: '-3.1s', '--drift-dir': -1 }}
+          >
+            <ArtLayer src={titleFork} />
+          </div>
+        </div>
 
         {/* 타이틀 로고 — 가로 화면에서는 원화 좌표 그대로 (세로에서는 아래 밴드로 대체) */}
         <motion.div

@@ -7,7 +7,7 @@ import { dessertLayerConfig } from '../../data/dessertLayerConfig'
  * 레이어 이미지가 있으면 → 접시(static) + 백(static) + 메인·서브(boing + 흔들림)
  * 레이어 이미지가 없으면 → 단일 이미지에도 바운스 애니메이션 적용
  *
- * 레이어 순서 (뒤→앞): 접시 > 백 > 메인 > 서브
+ * 레이어 순서 (뒤→앞): 접시 > 백 > (subUnderMain 서브) > 메인 > 서브
  * 같은 종류 내에서는 숫자가 높을수록 앞에 렌더링
  */
 export default function AnimatedDessert({
@@ -27,6 +27,13 @@ export default function AnimatedDessert({
   /* 도감 그리드(썸네일 16종 × 레이어 다수)는 lazy가 이득이지만,
      결과 화면 히어로는 리빌 순간에 레이어가 늦게 뜨면 연출이 무너지므로 eager */
   const loadingMode = isThumb ? 'lazy' : 'eager'
+
+  /* 서브 레이어가 들어갈 자리 — 원화 레이어 순서를 그대로 따른다.
+     behind(접시 뒤) > under(접시 위·메인 뒤) > detach(바운스 그룹 밖) > group(메인과 함께) */
+  const subSlot = (i) =>
+    config?.subBehind?.[i] ? 'behind'
+      : config?.subUnderMain?.[i] ? 'under'
+        : config?.subDetach?.[i] ? 'detach' : 'group'
 
   /* ── 레이어 없음: 단일 이미지에도 바운스 적용 ── */
   if (!layers) {
@@ -54,7 +61,7 @@ export default function AnimatedDessert({
       <div className="dessert-wrap">
         {/* 서브 레이어 (접시 뒤): 맨 뒤에 렌더링 */}
         {layers.subs.map((sub, i) => {
-          if (!config?.subBehind?.[i]) return null
+          if (subSlot(i) !== 'behind') return null
           const type = config?.subs?.[i] || 'jelly'
           const subDelay = config?.subDelays?.[i]
           const delay = subDelay !== undefined && subDelay !== null ? subDelay : (i + 1) * 0.15
@@ -94,6 +101,28 @@ export default function AnimatedDessert({
               draggable={false}
             />
           )}
+          {/* 서브 레이어 (메인 뒤): 접시 위·메인 아래 — 원화에서 메인보다 뒤에 그려진 장식 */}
+          {layers.subs.map((sub, i) => {
+            if (subSlot(i) !== 'under') return null
+            const type = config?.subs?.[i] || 'jelly'
+            const subPivot = config?.subPivots?.[i]
+            const subDelay = config?.subDelays?.[i]
+            const delay = subDelay !== undefined && subDelay !== null ? subDelay : (i + 1) * 0.15
+            return (
+              <img
+                key={`sub-under-${i}`}
+                src={sub}
+                alt=""
+                className={`dessert-layer dessert-sub dessert-sub-${type}`}
+                style={{
+                  animationDelay: `${delay}s`,
+                  ...(subPivot && { transformOrigin: subPivot.includes(' ') ? subPivot : `center ${subPivot}` }),
+                }}
+                loading={loadingMode}
+                draggable={false}
+              />
+            )
+          })}
           {/* 메인 레이어 (복수 가능, 숫자 높을수록 앞) */}
           {layers.mains.map((main, i) => (
             <img
@@ -107,7 +136,7 @@ export default function AnimatedDessert({
           ))}
           {/* 서브 레이어 (바운스 그룹 안): 메인과 함께 움직임 — behind 서브는 위에서 이미 렌더됨 */}
           {layers.subs.map((sub, i) => {
-            if (config?.subDetach?.[i] || config?.subBehind?.[i]) return null
+            if (subSlot(i) !== 'group') return null
             const type = config?.subs?.[i] || 'jelly'
             const subPivot = config?.subPivots?.[i]
             const subDelay = config?.subDelays?.[i]
@@ -131,7 +160,7 @@ export default function AnimatedDessert({
 
         {/* 서브 레이어 (바운스 그룹 밖): 독립 움직임 */}
         {layers.subs.map((sub, i) => {
-          if (!config?.subDetach?.[i] || config?.subBehind?.[i]) return null
+          if (subSlot(i) !== 'detach') return null
           const type = config?.subs?.[i] || 'jelly'
           const subPivot = config?.subPivots?.[i]
           const subDelay = config?.subDelays?.[i]

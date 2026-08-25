@@ -5,12 +5,13 @@ import { useImagesReady } from './hooks/useImagesReady'
 import KioskIdlePrompt from './components/shared/KioskIdlePrompt'
 import { LoadingCover } from './components/shared/ArtStage'
 import {
-  titleBg, titleLogo, goldFrames,
+  titleBg, titleLogo, titleSpoon, titleFork, titleBgPatch, goldFrames,
   openingBg, openingBubble, openingObject,
   bookmarkBg, grassLayers, bookmarkTitles, ingredientLayers, cardPlate,
 } from './assets/screenImages'
 import { cardImages, cardBack } from './assets/imageMap'
 import { foxLayerSources } from './assets/foxLayers'
+import backButtonImg from './assets/images/ui/back-button.png'
 import TitleScreen from './components/TitleScreen'
 import DialogScreen from './components/DialogScreen'
 import StageScreen from './components/StageScreen'
@@ -31,11 +32,12 @@ const isKiosk = readKioskFlag()
 // 시작 시 전 흐름 자산을 한 번에 로드 — 이후 어떤 화면에서도 요소가 낱장으로 뜨지 않는다.
 // (결과 디저트 이미지는 오븐 대기 중 선로딩되는 기존 경로 유지)
 const ALL_ART_SRCS = [
-  titleBg, titleLogo, ...goldFrames,
+  titleBg, titleBgPatch, titleSpoon, titleFork, titleLogo, ...goldFrames,
   openingBg, openingBubble, openingObject, ...foxLayerSources,
   bookmarkBg, ...grassLayers,
   ...Object.values(bookmarkTitles), ...Object.values(ingredientLayers),
   ...Object.values(cardImages), cardBack, cardPlate,
+  backButtonImg,
 ]
 
 function App() {
@@ -45,6 +47,7 @@ function App() {
     currentResult,
     selectCard,
     nextScreen,
+    prevScreen,
     goToScreen,
     restart,
   } = useGameState()
@@ -81,7 +84,7 @@ function App() {
             )}
 
             {screen === 'dialog' && (
-              <DialogScreen onComplete={nextScreen} />
+              <DialogScreen onComplete={nextScreen} onBack={prevScreen} />
             )}
 
             {stageNo && (
@@ -90,17 +93,19 @@ function App() {
                 selections={selections.slice(0, stageNo - 1)}
                 onSelect={selectCard}
                 onComplete={nextScreen}
+                onBack={prevScreen}
               />
             )}
 
             {screen === 'resultTransition' && (
-              <ResultTransition onComplete={nextScreen} result={currentResult} />
+              <ResultTransition onComplete={nextScreen} result={currentResult} onBack={prevScreen} />
             )}
 
             {screen === 'result' && (
               <ResultScreen
                 result={currentResult}
                 onViewBook={() => goToScreen('dessertBook')}
+                onBack={prevScreen}
               />
             )}
 

@@ -3,6 +3,7 @@ import { motion, AnimatePresence } from 'framer-motion'
 import { dessertResults } from '../data/desserts'
 import AnimatedDessert from './shared/AnimatedDessert'
 import { InkButton } from './shared/InkButton'
+import BackButton from './shared/BackButton'
 import { PaperGrain, Divider } from './shared/Decorations'
 
 const allDesserts = Object.values(dessertResults).sort((a, b) => a.id - b.id)
@@ -220,6 +221,9 @@ export default function DessertBook({ currentResult, onRestart, onExit }) {
           </motion.div>
         )}
       </AnimatePresence>
+
+      {/* 상세를 보고 있으면 도감 그리드로, 그리드에서는 결과 화면으로 */}
+      <BackButton onClick={() => (detailDessert ? setDetailDessert(null) : onExit())} />
     </div>
   )
 }

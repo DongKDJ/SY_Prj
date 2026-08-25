@@ -2,6 +2,7 @@ import { useState, useRef, useEffect } from 'react'
 import { motion } from 'framer-motion'
 import { getDessertImage, getDessertLayers } from '../assets/imageMap'
 import { InkButton } from './shared/InkButton'
+import BackButton from './shared/BackButton'
 import {
   PaperGrain,
   CornerOrnament,
@@ -71,7 +72,7 @@ function StoryOven({ className = '' }) {
   )
 }
 
-export default function ResultTransition({ onComplete, result }) {
+export default function ResultTransition({ onComplete, result, onBack }) {
   const [showButton, setShowButton] = useState(false)
   const calledRef = useRef(false)
 
@@ -195,6 +196,8 @@ export default function ResultTransition({ onComplete, result }) {
           </InkButton>
         )}
       </div>
+
+      <BackButton onClick={onBack} />
     </div>
   )
 }

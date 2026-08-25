@@ -29,6 +29,14 @@ Screen flow managed by `useGameState` hook:
 
 Key data in `src/data/desserts.js`: stages (4 questions), dessertResults (16 combinations keyed by card IDs), foxDialogs.
 
+### 이전 버튼 (2026-08-25)
+
+타이틀을 뺀 전 화면 좌상단에 원화 사과 버튼(`src/components/shared/BackButton.jsx`, `images/ui/back-button.png`).
+- 화면 간 이동은 `useGameState`의 `prevScreen` + `BACK_TO` 맵. 결과 → 오븐은 건너뛰고 stage4로 (되돌아가도 곧장 다시 구워지는 자동 화면이라)
+- 화면 안에 페이즈가 있으면 페이즈부터 되짚는다: StageScreen(확대→카드→책갈피), ResultScreen(펼친 책→메달리온), DessertBook(상세→그리드)
+- 뒤로 와서 스테이지가 바뀌면 책갈피를 건너뛰고 카드 선택 페이즈로 (StageScreen의 `goingBack`)
+- z-50 고정 — 화면 전체가 탭 영역인 화면(대화·책갈피·결과 메달리온)의 탭 버튼보다 위여야 클릭이 먹는다. **버튼 안에 버튼을 넣을 수 없으므로 항상 형제로 배치**
+
 ## File Permission Rules
 
 - 읽기/쓰기가 허용된 파일 확장자: `.jsx`, `.js`, `.css`, `.html`, `.json`, `.md`
@@ -53,6 +61,14 @@ All image placeholders in `src/assets/images/`. Replace PNG files with same file
 - 여우씨 배치 튜닝: `DialogScreen.jsx` 상단 `FOX` · `BUBBLE_TEXT` 상수 (스테이지 % 좌표)
 - 앰비언트: `index.css`의 `art-zoom`(배경 켄번즈) · `art-sway`(풀) · `art-bob`(로고·말풍선·배너) — 진폭이 `--ambient`를 타서 reduced-motion 시 자동 정지
 - 커스텀 커서: `index.css` 말미, `screens/cursor.png` 32x32, 핫스팟 (15,1) = 위 꼭짓점
+
+#### 타이틀 스푼·포크 둥실 (2026-08-25)
+
+원화 `title-bg.png`에 그려져 있던 좌우 스푼·포크를 떼어내 따로 띄운다. 작가 원본은 그대로 두고 파생 3장을 추가:
+- `title-spoon.png` / `title-fork.png` — 실루엣만 남긴 컷아웃 (GrabCut + 색 정리, 스크래치패드 스크립트)
+- `title-bg-patch.png` — 떼어낸 자리를 메운 배경 조각. **배경 바로 위에 깔아야** 원본 스푼이 비치지 않는다
+- 셋 다 `art-zoom` 컨테이너 **안**에 넣을 것 — 배경만 켄번즈 줌이 걸리면 메운 자리와 어긋난다
+- 흔들림은 `.art-drift` (index.css). 진폭 상한 = 패치 여유(캔버스 31px). translateY 1.1% + rotate 0.6deg를 넘기면 원본이 새어 나온다
 
 ### Fox Character Layer System
 `Character.jsx`가 동적 임포트로 자동 인식. 다음 파일이 모두 있으면 레이어 모드로 동작:
@@ -141,7 +157,10 @@ Storybook 테마 작업 후 확장된 액센트: `jam`(라즈베리), `honey`(�
 - `back_{NN}.png` — 백 레이어 (선택)
 - `main_{NN}.png` 또는 `main_{NN}_01.png~02.png` — 메인 (필수, 복수 가능)
 - `sub_{NN}_01.png~10.png` — 서브 장식 (선택)
-- 레이어 순서 (뒤→앞): 접시 > 백 > 메인 > 서브, 같은 종류 내 숫자 높을수록 앞
+- 레이어 순서 (뒤→앞): 접시 > 백 > (subUnderMain 서브) > 메인 > 서브, 같은 종류 내 숫자 높을수록 앞
+- **작가 수정본 반영법** (`여우짱 레시피/디저트_레이아웃_분리/수정)…` 폴더 = 파일명 번호가 곧 뒤→앞 순서):
+  서브끼리의 순서 문제면 `sub_NN_XX` 번호를 그 순서로 다시 매기고(config 배열도 같이 치환),
+  서브가 메인보다 뒤여야 하면 `subUnderMain`. 2026-08-25 #11(스쿱·잎이 케이크 뒤)·#12(부스러기가 맨 뒤) 적용
 
 ### dessertLayerConfig.js 설정 옵션
 ```js
@@ -153,6 +172,7 @@ Storybook 테마 작업 후 확장된 액센트: `jam`(라즈베리), `honey`(�
   subDelays: [0.1, ...],      // 서브별 딜레이 초 (null=자동 스태거)
   subDetach: [true, ...],     // true=바운스 그룹 밖 독립 움직임
   subBehind: [true, ...],     // true=접시보다 뒤에 렌더링
+  subUnderMain: [true, ...],  // true=접시 위·메인 뒤 (바운스 그룹 안)
 }
 ```
 

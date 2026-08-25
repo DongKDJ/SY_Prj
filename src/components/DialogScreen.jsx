@@ -3,6 +3,7 @@ import { motion } from 'framer-motion'
 import Character from './shared/Character'
 import { foxLayerSources } from '../assets/foxLayers'
 import { ArtStage, ArtLayer, GoldFrame, LoadingCover } from './shared/ArtStage'
+import BackButton from './shared/BackButton'
 import { openingBg, openingBubble, openingObject, goldFrames } from '../assets/screenImages'
 import { foxDialogs } from '../data/desserts'
 import { useImagesReady } from '../hooks/useImagesReady'
@@ -20,7 +21,7 @@ const BUBBLE_TEXT = { left: '55%', top: '25%', width: '32%', height: '31%' }
 // 말풍선 전체 축소 배율 — 말풍선 중심(71% 43%) 기준, 안의 텍스트·안내도 같이 줄어든다
 const BUBBLE_SCALE = 0.92
 
-export default function DialogScreen({ onComplete }) {
+export default function DialogScreen({ onComplete, onBack }) {
   const lines = foxDialogs.intro
   const [lineIndex, setLineIndex] = useState(0)
   const [charIndex, setCharIndex] = useState(0)
@@ -59,11 +60,7 @@ export default function DialogScreen({ onComplete }) {
   if (!ready) return <LoadingCover />
 
   return (
-    <button
-      onClick={handleClick}
-      className="relative block h-[100dvh] w-full overflow-hidden cursor-pointer text-left"
-      aria-label="대화 진행"
-    >
+    <div className="relative h-[100dvh] w-full overflow-hidden">
       <ArtStage className="art-reveal">
         <ArtLayer src={openingBg} />
 
@@ -143,6 +140,15 @@ export default function DialogScreen({ onComplete }) {
           </p>
         </div>
       </div>
-    </button>
+
+      {/* 화면 전체 탭 — 원화 레이어 위를 덮는다 (이전 버튼보다는 아래) */}
+      <button
+        onClick={handleClick}
+        className="absolute inset-0 z-30 cursor-pointer"
+        aria-label="대화 진행"
+      />
+
+      <BackButton onClick={onBack} label="타이틀로" />
+    </div>
   )
 }

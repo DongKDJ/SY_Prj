@@ -712,6 +712,18 @@ body {
   animation: art-sway-kf 9s ease-in-out infinite;
 }
 
+/* 타이틀 스푼·포크 — 배경에서 떼어낸 레이어가 제자리에서 둥실.
+   원래 자리는 title-bg-patch 가 메우고 있으므로 진폭이 그 여유(캔버스 31px)를
+   넘으면 원본이 새어 나온다. translateY 1.1% + rotate 0.6deg 가 상한. */
+@keyframes art-drift-kf {
+  0%, 100% { transform: translateY(0) rotate(0deg); }
+  50%      { transform: translateY(calc(-1.1% * var(--ambient)))
+                        rotate(calc(var(--drift-dir, 1) * 0.6deg * var(--ambient))); }
+}
+.art-drift {
+  animation: art-drift-kf 7.2s ease-in-out infinite;
+}
+
 /* 로딩 게이트가 열릴 때 화면 전체가 부드럽게 나타남 */
 @keyframes art-reveal-kf {
   from { opacity: 0; }
