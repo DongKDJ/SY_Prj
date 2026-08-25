@@ -18,7 +18,7 @@ export default function BackButton({ onClick, label = '이전으로', className 
       transition={{ delay: 0.5, duration: 0.5, ease: [0.16, 1, 0.3, 1] }}
       whileHover={{ scale: 1.08, rotate: -4 }}
       whileTap={{ scale: 0.93 }}
-      className={`absolute top-4 left-4 md:top-6 md:left-6 z-50 w-20 md:w-24 cursor-pointer
+      className={`absolute top-4 left-4 md:top-6 md:left-6 z-50 w-26 md:w-31 cursor-pointer
                   drop-shadow-[0_6px_14px_rgba(58,36,24,0.5)] ${className}`}
     >
       <img
