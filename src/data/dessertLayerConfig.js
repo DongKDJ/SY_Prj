@@ -143,12 +143,14 @@ export const dessertLayerConfig = {
     // 원화 레이어 순서(2026-08-25 수정본): 접시 > 크럼블 > 부스러기 > 스쿱 > 딸기 > 잎
     // — 서브 번호를 그 순서로 다시 매겼다 (구 sub4 부스러기가 sub1로)
     // sub1: 부스러기 조각(접시), sub2: 아이스크림 스쿱, sub3: 딸기, sub4: 잎
+    // 딸기·잎은 스쿱 위에 얹힌 것 — 스쿱이 detach라 이 둘도 detach여야 스쿱보다 앞에 그려진다
+    // (detach 서브는 바운스 그룹 뒤에 렌더되므로, 그룹 안에 두면 번호와 상관없이 스쿱에 덮인다. 2026-08-26 실측)
     bounce: 'soft',      // 크럼블 = 바삭한 구움
     pivotY: 'bottom',
     subs: ['sway-sm2', 'breathe', 'sway-sm2', 'sway-lg'],
     subPivots: ['75% 80%', '49% 62%', '49% 33%', '42% 37%'],
     subDelays: [0.85, 0.2, 0.35, 0.5],
-    subDetach: [true, true, false, false],   // 스쿱은 크럼블과 별개
+    subDetach: [true, true, true, true],     // 스쿱은 크럼블과 별개, 딸기·잎은 스쿱을 따른다
     subBehind: [false, false, false, false],
   },
   13: {
