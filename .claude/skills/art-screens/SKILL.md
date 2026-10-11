@@ -1,6 +1,6 @@
 ---
 name: art-screens
-description: "원화 화면·UI 아트 — 3840x2160 원화 레이어(ArtStage·ArtLayer·GoldFrame·ArtBandCrop), 타이틀 스푼·포크 둥실, 이전 버튼, 여우씨 레이어 캐릭터·깜빡임, Storybook 테마 장식 컴포넌트·색 톤·CSS 유틸리티. 키워드: 원화, 타이틀, 책갈피, 대화 화면, 세로 화면, 이전 버튼, 여우씨, 깜빡임, 장식, 팔레트, 폰트, 앰비언트, 커서."
+description: "원화 화면·UI 아트 — 3840x2160 원화 레이어(ArtStage·ArtLayer·GoldFrame·ArtBandCrop), 타이틀 스푼·포크 둥실, 이전 버튼, 여우씨 레이어 캐릭터·깜빡임, Storybook 테마 장식 컴포넌트·색 톤·CSS 유틸리티. 원화 화면·타이틀·이전 버튼·여우씨·장식·색·폰트·CSS 유틸리티를 고치거나 새 화면 아트를 넣을 때 연다. 키워드: 원화, 타이틀, 책갈피, 대화 화면, 세로 화면, 이전 버튼, 여우씨, 깜빡임, 장식, 팔레트, 폰트, 앰비언트, 커서."
 ---
 
 # 원화 화면·UI 아트
@@ -22,7 +22,7 @@ description: "원화 화면·UI 아트 — 3840x2160 원화 레이어(ArtStage·
 - `title-spoon.png` / `title-fork.png` — 실루엣만 남긴 컷아웃 (GrabCut + 색 정리, 스크래치패드 스크립트)
 - `title-bg-patch.png` — 떼어낸 자리를 메운 배경 조각. **배경 바로 위에 깔아야** 원본 스푼이 비치지 않는다.
   **실루엣에 딱 붙여서(10px 여유) 팔 것** — 넓게 파면 그만큼 진짜 배경이 지워지고, 형태학 연산의 사각 경계가
-  각진 얼룩으로 드러난다 (2026-08-25 실측·수정). 인페인트는 TELEA + 안쪽으로 갈수록 블러 (빛줄기 자국 제거)
+  각진 얼룩으로 드러난다. 인페인트는 TELEA + 안쪽으로 갈수록 블러 (빛줄기 자국 제거)
 - 셋 다 `art-zoom` 컨테이너 **안**에 넣을 것 — 배경만 켄번즈 줌이 걸리면 메운 자리와 어긋난다
 - 흔들림은 `.art-drift` (index.css). 현재 유효 진폭 translateY 47px + rotate 0.96deg (캔버스 기준)
 - 진폭을 키워도 원본이 새지는 않지만(patch가 실루엣을 통째로 덮으므로) **움직인 만큼 메운 배경이 드러난다** — 진폭 = 노출 폭. `--drift-amp`가 `min(--ambient, 0.6)`인 것도 `?ambient=strong`에서 그 폭이 커지지 않게 하기 위함
@@ -40,25 +40,25 @@ description: "원화 화면·UI 아트 — 3840x2160 원화 레이어(ArtStage·
 
 ## 여우씨 레이어 캐릭터
 
-`Character.jsx`가 동적 임포트로 자동 인식. 다음 파일이 모두 있으면 레이어 모드로 동작:
+`src/assets/foxLayers.js`가 `import.meta.glob`으로 `images/character/fox-*.png`를 자동 인식하고 `Character.jsx`가 렌더한다. 레이어마다 있으면 렌더, 없으면 스킵 (body는 필수):
 - `fox-body.png` — 몸체 (눈 뜬 상태, 손 빠진 상태)
 - `fox-blink-01.png` ~ `fox-blink-04.png` — 4프레임 깜빡임 (눈 뜸 → 반쯤 감김 → 감김 → 반쯤 뜸)
 - `fox-hand.png` — 분리된 손 (`.fox-hand-sway` 애니메이션 자동 적용)
 
-모든 레이어는 같은 캔버스 크기의 투명 PNG여야 좌표가 맞음. 각 레이어는 존재하면 렌더링, 없으면 스킵 (body는 필수).
+모든 레이어는 같은 캔버스 크기의 투명 PNG여야 좌표가 맞음.
 
 깜빡임 타이밍: 2~4.5초 랜덤 간격, 1프레임 80ms → 2프레임 120ms → 3프레임 80ms → 0프레임 복귀.
-손 흔들림: `index.css` `@keyframes fox-hand-sway-kf` (3.2s loop, transform-origin 50% 35%).
+손 까딱: `index.css` `.fox-hand-sway` / `@keyframes fox-hand-sway-kf` (대부분 정지 → translateY 두 번 까딱, 주기·진폭은 거기서).
 
 ## 색·폰트·장식
 
 Warm cream + brown cabin theme defined in `src/index.css` @theme block.
-Storybook 테마 작업 후 확장된 액센트: `jam`(라즈베리), `honey`(황금), `sage`(세이지 그린), `ink`(진갈색), `paper`/`paper-edge`(양피지).
+액센트: `jam`(라즈베리), `honey`(황금), `sage`(세이지 그린), `ink`(진갈색), `paper`/`paper-edge`(양피지).
 
-### 폰트 (index.html에 Google Fonts 추가됨)
-- **Display:** Gowun Batang — 한글 명조, 손글씨 느낌 살짝 (`.font-display`)
-- **Script:** Caveat — 영문 손글씨, 라벨/캡션용 (`.font-script`)
-- **Body:** Pretendard (기존 유지)
+### 폰트 (`src/main.jsx`에서 npm 패키지로 셀프호스팅 — CDN 미사용)
+- **Display:** Gowun Batang (`@fontsource/gowun-batang`) — 한글 명조 (`.font-display`)
+- **Script:** Caveat (`@fontsource/caveat`) — 영문 손글씨, 라벨/캡션용 (`.font-script`)
+- **Body:** Pretendard Variable (`pretendard` dynamic-subset)
 
 ### 공통 장식 컴포넌트
 `src/components/shared/Decorations.jsx`:
@@ -88,4 +88,4 @@ Storybook 테마 작업 후 확장된 액센트: `jam`(라즈베리), `honey`(�
 - `.script-shimmer` — 손글씨 opacity 반짝
 - `.paper-lift` — hover 시 종이 살짝 들림
 - `.scent-line` / `.oven-glow` — 향기 연기 잉크선 · 오븐 온기 펄스 (ResultTransition)
-- `.art-zoom` / `.art-sway` / `.art-bob` — 원화 화면 앰비언트 (2026-08-21)
+- `.art-zoom` / `.art-sway` / `.art-bob` — 원화 화면 앰비언트

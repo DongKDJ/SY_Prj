@@ -1,6 +1,6 @@
 ---
 name: dessert-animation
-description: "디저트 레이어 애니메이션 — dessertLayerConfig.js 옵션, 레이어 이미지 규칙·렌더 순서, 애니메이션 타입표, 작가 수정본 반영법, 튜닝 플로우. 키워드: 디저트, 레이어, 바운스, 서브, 튜닝, AnimatedDessert, subDetach, subUnderMain, 레이어 순서."
+description: "디저트 레이어 애니메이션 — dessertLayerConfig.js 옵션, 레이어 이미지 규칙·렌더 순서, 애니메이션 타입표, 작가 수정본 반영법, 튜닝 플로우. 디저트 레이어 이미지를 넣거나 레이어 순서·애니메이션을 고칠 때 연다. 키워드: 디저트, 레이어, 바운스, 서브, 튜닝, AnimatedDessert, subDetach, subUnderMain, 레이어 순서."
 ---
 
 # 디저트 애니메이션 시스템
@@ -19,12 +19,12 @@ description: "디저트 레이어 애니메이션 — dessertLayerConfig.js 옵�
 - `sub_{NN}_01.png~10.png` — 서브 장식 (선택)
 - 레이어 순서 (뒤→앞): 접시 > 백 > (subUnderMain 서브) > 메인 > 서브, 같은 종류 내 숫자 높을수록 앞
 - **작가 수정본 반영법** (드롭 폴더 `Image/디저트 레이어 순서/수정)<디저트명>_분리/` — 파일명 끝 번호가 곧 뒤→앞 순서.
-  구 위치 `여우짱 레시피/디저트_레이아웃_분리/수정)…`, 2026-08-26부터 새 폴더에 순서 꼬인 디저트가 추가로 들어온다):
+  옛 드롭 폴더 `여우짱 레시피/디저트_레이아웃_분리/수정)…` 도 같은 규칙):
   서브끼리의 순서 문제면 `sub_NN_XX` 번호를 그 순서로 다시 매기고(config 배열도 같이 치환),
-  서브가 메인보다 뒤여야 하면 `subUnderMain`. 2026-08-25 #11(스쿱·잎이 케이크 뒤)·#12(부스러기가 맨 뒤) 적용.
+  서브가 메인보다 뒤여야 하면 `subUnderMain`.
   **번호 순서는 같은 슬롯 안에서만 유효** — 렌더는 behind(접시 뒤) → 접시 → [바운스 그룹: 백 → under → 메인 → group] → detach 순이라
-  `subDetach` 서브는 번호가 낮아도 그룹 안 서브를 항상 덮는다. detach 서브 위에 얹힌 장식은 그것도 detach로 뺄 것
-  (#12 딸기·잎이 스쿱에 덮이던 원인, 2026-08-26). 파일만 바꾸지 말고 **실제 DOM 순서를 확인** — 스크린샷 또는 `dessert-wrap` 안 `<img>` src 나열
+  `subDetach` 서브는 번호가 낮아도 그룹 안 서브를 항상 덮는다. detach 서브 위에 얹힌 장식은 그것도 detach로 뺄 것.
+  파일만 바꾸지 말고 **실제 DOM 순서를 확인** — 스크린샷 또는 `dessert-wrap` 안 `<img>` src 나열
 
 ## dessertLayerConfig.js 설정 옵션
 ```js
