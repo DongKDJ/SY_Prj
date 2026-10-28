@@ -84,10 +84,12 @@ export default function FoxKitchen({ text, hint, baking = false }) {
               </p>
             </div>
 
+            {/* 안내 — 오른쪽 끝을 말풍선 안쪽(캔버스 86%)에 고정해 문구가 길어도 왼쪽으로 자란다
+                (왼쪽 기준이면 '탭하여 꺼내 보기 →'가 구름 테두리에 걸림) */}
             {hint && (
               <span
-                className="absolute font-display text-ink/60 portrait:hidden"
-                style={{ left: '83%', top: '57%', fontSize: stageFont(1.1) }}
+                className="absolute font-display text-ink/60 whitespace-nowrap portrait:hidden"
+                style={{ right: '14%', top: '57%', fontSize: stageFont(1.1) }}
               >
                 {hint}
               </span>
