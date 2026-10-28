@@ -3,6 +3,8 @@ import { motion, AnimatePresence } from 'framer-motion'
 import AnimatedDessert from './shared/AnimatedDessert'
 import { InkButton } from './shared/InkButton'
 import BackButton from './shared/BackButton'
+import { ArtBackdrop } from './shared/ArtStage'
+import { bookmarkBg } from '../assets/screenImages'
 import {
   PaperGrain,
   Divider,
@@ -73,10 +75,8 @@ export default function ResultScreen({ result, onViewBook, onBack }) {
             transition={{ duration: 0.7 }}
             className="min-h-[100dvh] flex items-center justify-center relative"
           >
-            {/* 배경: 종이 + 따뜻한 광휘 */}
-            <div className="absolute inset-0 bg-gradient-to-b from-[#FBF3E3] via-[#F5DDB8] to-[#E8B888]" />
-            <PaperGrain />
-            <div className="page-vignette" />
+            {/* 배경: 책갈피 책상 원화(흐림) + 금장 테두리 — 앞 화면들과 같은 그림책 안 */}
+            <ArtBackdrop src={bookmarkBg} veil="bg-cream/30" />
 
             {/* 중앙 빛줄기 */}
             <motion.div
@@ -84,7 +84,7 @@ export default function ResultScreen({ result, onViewBook, onBack }) {
               animate={{ opacity: 0.55, scale: 1.5 }}
               transition={{ duration: 1.6, ease: 'easeOut' }}
               className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2
-                         w-[640px] h-[640px] rounded-full pointer-events-none
+                         w-[40rem] h-[40rem] rounded-full pointer-events-none
                          bg-radial from-honey-soft/70 via-cream/30 to-transparent blur-2xl"
             />
 
@@ -97,7 +97,7 @@ export default function ResultScreen({ result, onViewBook, onBack }) {
                 rotate:  { repeat: Infinity, duration: 32, ease: 'linear' },
               }}
               className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2
-                         w-[420px] h-[420px] pointer-events-none"
+                         w-[26.25rem] h-[26.25rem] pointer-events-none"
             >
               <svg viewBox="0 0 200 200" className="w-full h-full">
                 <circle cx="100" cy="100" r="92" fill="none"
@@ -174,9 +174,14 @@ export default function ResultScreen({ result, onViewBook, onBack }) {
                 }}
                 transition={{ repeat: Infinity, duration: 2.4 }}
                 className="relative w-60 h-60 md:w-80 md:h-80 rounded-full
-                           bg-gradient-to-br from-[#FFF5DD] to-[#EFD4A4]
-                           flex items-center justify-center
-                           border-[3px] border-double border-ink/25"
+                           flex items-center justify-center"
+                style={{
+                  // 금장 테 — 원화 금장 프레임·카드 테두리와 같은 결의 금색 그라데이션 링
+                  border: '0.4rem solid transparent',
+                  background:
+                    'linear-gradient(135deg, #FFF5DD, #EFD4A4) padding-box, ' +
+                    'linear-gradient(135deg, #FBEBB0, #D6A64A 30%, #FFF1BE 52%, #B98A34 76%, #F6DE8D) border-box',
+                }}
               >
                 {/* 메달리온 안쪽 점선 링 */}
                 <div className="absolute inset-3 rounded-full border border-dashed border-ink/15" />
@@ -185,7 +190,7 @@ export default function ResultScreen({ result, onViewBook, onBack }) {
                   <Sparkle key={deg}
                     className="absolute w-4 h-4 text-jam/70"
                     style={{
-                      transform: `rotate(${deg}deg) translateY(-${typeof window !== 'undefined' && window.innerWidth >= 768 ? '152px' : '116px'})`,
+                      transform: `rotate(${deg}deg) translateY(-${typeof window !== 'undefined' && window.innerWidth >= 768 ? '9.5rem' : '7.25rem'})`,
                       transformOrigin: 'center',
                     }}
                   />
@@ -253,9 +258,8 @@ export default function ResultScreen({ result, onViewBook, onBack }) {
             transition={{ duration: 0.6 }}
             className="min-h-[100dvh] relative flex items-center justify-center px-3 py-6 md:px-8 md:py-10"
           >
-            {/* 배경 */}
-            <div className="absolute inset-0 bg-gradient-to-b from-[#E8D0AC] via-[#F0DCB8] to-[#D8B888]" />
-            <PaperGrain />
+            {/* 배경: 책상 원화(흐림) 위에 펼친 책 */}
+            <ArtBackdrop src={bookmarkBg} veil="bg-cream/25" />
 
             {/* 책 컨테이너 */}
             <div className="relative z-10 max-w-5xl mx-auto page-turn-in">

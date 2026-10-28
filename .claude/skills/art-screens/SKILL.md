@@ -12,7 +12,9 @@ description: "원화 화면·UI 아트 — 3840x2160 원화 레이어(ArtStage·
 - 스테이지: `src/components/shared/ArtStage.jsx` — 16:9 스테이지 — 가로 화면 = contain(원화 전체, 16:10 PC는 위아래 `bg-ink` 여백 — 2026-10-28 사용자 "PC 전체화면이 잘려 보임"), 세로 화면 = cover 중앙 크롭(사용자 결정). 크기 규칙 = `index.css` `.art-stage-box`, 여백 색은 바탕 ArtStage 3곳(타이틀·대화·책갈피)의 `bg-ink` — 겹쳐 올리는 ArtStage에는 배경을 주지 말 것(아래 원화를 가린다). `ArtLayer`(풀캔버스 레이어) · `GoldFrame`(금장) · `ArtBandCrop`(세로 화면용 가로 밴드 크롭: 타이틀 로고·책갈피 배너)
 - 세로(QR 모바일) 보조: 로고·배너는 ArtBandCrop 밴드로, 대사는 하단 양피지 스트립으로 대체 (`portrait:` variant)
 - 책갈피 페이지: 선택 누적 재료가 `ingredientLayers[cardId]` 풀캔버스 레이어로 책상 위에 쌓임 (원화에서 재료별 자리가 서로 다름 — 1단계 중앙 위 / 2단계 중앙 아래 / 3단계 오른쪽 / 4단계 왼쪽)
-- 여우씨 배치 튜닝: `DialogScreen.jsx` 상단 `FOX` · `BUBBLE_TEXT` 상수 (스테이지 % 좌표)
+- 여우씨 부엌 장면 = `src/components/shared/FoxKitchen.jsx` — 대화 화면(DialogScreen)과 오븐 대기 화면(ResultTransition)이 같은 무대를 쓴다. 여우씨 배치·말풍선 텍스트 영역·오븐 창 빛 자리는 그 파일 상단 `FOX` · `BUBBLE_TEXT` · `OVEN_WINDOW` 상수(스테이지 % 좌표). 로딩 게이트 목록 = `screenImages.js` `kitchenSrcs`
+- 원화가 없는 화면(결과 메달리온·펼친 책·도감) = `ArtBackdrop` — 책갈피 책상 원화를 흐리게 + 종이빛 덧칠(veil) + 금장 테두리, `fixed`라 긴 페이지에서도 화면에 붙는다. 패널·카드 테두리는 `.gold-rim`(index.css, 원화 금장과 같은 결의 금색 링)
+- 큰 가로 화면 비율: `index.css`가 가로 화면에서 `html` 글자 크기를 스테이지에 맞춰 키운다(1920x1080 = 16px, 4K = 32px, 아래로는 안 줄임) — rem 단위 UI는 원화와 같은 비율로 커진다. 새 UI는 px 고정값 대신 rem으로
 - 앰비언트: `index.css`의 `art-zoom`(배경 켄번즈) · `art-sway`(풀) · `art-bob`(로고·말풍선·배너) — 진폭이 `--ambient`를 타서 reduced-motion 시 자동 정지
 - 커스텀 커서: `index.css` 말미, `screens/cursor.png` 32x32, 핫스팟 (15,1) = 위 꼭짓점
 
@@ -30,7 +32,7 @@ description: "원화 화면·UI 아트 — 3840x2160 원화 레이어(ArtStage·
 ## 이전 버튼
 
 타이틀을 뺀 전 화면 좌하단에 원화 사과 버튼(`src/components/shared/BackButton.jsx`, `images/ui/back-button.png`).
-- 자리·크기 모두 작가 지정: 3840x2160 캔버스에 놓아준 위치(좌하단)와 크기(385px = 폭의 10% → `w-[clamp(104px,10vw,208px)]`)
+- 자리·크기 모두 작가 지정: 3840x2160 캔버스에 놓아준 위치(좌하단)와 크기(385px = 스테이지 폭의 10% → `w-[clamp(104px,min(10vw,17.78dvh),384px)]`)
 - **세로 화면에서만 좌상단** (`portrait:top-4`) — 대화 화면의 하단 대사 스트립과 겹쳐서. 원화 좌표를 그대로 쓰면 세로에서는 화면 밖으로 잘려나간다
 - `fixed` — 도감처럼 화면보다 긴 페이지에서 `absolute`는 버튼을 문서 맨 아래로 밀어낸다
 - 화면 간 이동은 `useGameState`의 `prevScreen` + `BACK_TO` 맵. 결과 → 오븐은 건너뛰고 stage4로 (되돌아가도 곧장 다시 구워지는 자동 화면이라)

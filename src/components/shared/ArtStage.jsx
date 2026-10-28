@@ -35,6 +35,29 @@ export function GoldFrame() {
   return goldFrames.map((src, i) => <ArtLayer key={i} src={src} />)
 }
 
+/* 원화가 없는 화면(결과·도감)의 배경 — 책갈피 책상 원화를 흐리게 깔고 금장 테두리를 두른다.
+   실시간 backdrop-filter 대신 이미지 자체에 blur (페이드 중 모퉁이 깜빡임 방지, StageScreen 확대 뷰와 같은 방식).
+   veil: 원화 위 종이빛 덧칠 클래스 — 글이 원화에 묻히지 않게 */
+export function ArtBackdrop({ src, veil = 'bg-cream/45' }) {
+  // fixed — 도감·펼친 책처럼 화면보다 긴 페이지에서도 배경과 테두리는 화면에 붙어 있게
+  return (
+    <div className="fixed inset-0" aria-hidden="true">
+      <ArtStage className="bg-ink">
+        <img
+          src={src}
+          alt=""
+          aria-hidden="true"
+          draggable={false}
+          className="absolute -inset-[3%] w-[106%] h-[106%] max-w-none object-cover select-none"
+          style={{ filter: 'blur(14px) saturate(1.05)' }}
+        />
+        <div className={`absolute inset-0 ${veil}`} />
+        <GoldFrame />
+      </ArtStage>
+    </div>
+  )
+}
+
 /* 원화 로딩 대기 화면 — 레이어가 낱장으로 뜨는 대신 종이색에서 멈췄다가 완성된 화면을 연다 */
 export function LoadingCover({ progress }) {
   return (

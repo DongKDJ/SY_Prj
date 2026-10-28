@@ -1,5 +1,6 @@
 // 원화 화면 레이어 (2026-08-21 서연 원화)
 // 전부 3840x2160 정렬 투명 PNG — ArtStage 안에 겹치면 좌표가 서로 맞는다.
+import { foxLayerSources } from './foxLayers'
 import titleBg from './images/screens/title-bg.png'
 import titleLogo from './images/screens/title-logo.png'
 import titleSpoon from './images/screens/title-spoon.png'
@@ -63,3 +64,6 @@ export const ingredientLayers = {
   sugar: ingSugar,     // 슈가파우더
   choco: ingChoco,     // 초콜릿 칩
 }
+
+// 여우씨 부엌 장면(FoxKitchen — 대화·오븐 대기 화면) 로딩 게이트 대상
+export const kitchenSrcs = [openingBg, openingBubble, openingObject, ...goldFrames, ...foxLayerSources]

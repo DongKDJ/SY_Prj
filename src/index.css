@@ -46,6 +46,14 @@ html, body, #root {
   padding: 0;
 }
 
+/* 큰 가로 화면(1440p·4K 전시 모니터)에서 UI가 원화와 같은 비율로 커지게 —
+   rem 기준 글자를 스테이지(16:9) 크기에 맞춘다. 1920x1080 = 16px, 4K = 32px, 그 아래로는 줄이지 않는다 */
+@media (orientation: landscape) {
+  html {
+    font-size: max(16px, min(100vw / 120, 100dvh / 67.5));
+  }
+}
+
 body {
   font-family: var(--font-family-sans);
   background-color: var(--color-cream);
@@ -249,12 +257,16 @@ body {
   animation: scent-rise 3.4s ease-in-out infinite both;
 }
 
-/* 오븐 창 온기 펄스 (ResultTransition) */
+/* 오븐 창 온기 펄스 (ResultTransition — 부엌 원화의 오븐 창 위에 얹는 빛) */
 @keyframes oven-glow-pulse {
   0%, 100% { opacity: 0.5; }
   50%      { opacity: 0.95; }
 }
-.oven-glow {
+.oven-window-glow {
+  /* 원화 오븐 창은 밝은 민트색이라 screen 합성은 티가 안 난다 — 호박색을 그대로 얹어 안에서 불이 켜진 듯 */
+  background: radial-gradient(ellipse 55% 60% at 50% 60%,
+    rgba(255, 168, 72, 0.78), rgba(246, 186, 96, 0.42) 50%, transparent 78%);
+  filter: blur(8px);
   animation: oven-glow-pulse 2.2s ease-in-out infinite;
 }
 
@@ -697,6 +709,15 @@ body {
 
 /* ===== 원화 화면 레이어 앰비언트 (타이틀/오프닝/책갈피 — 2026-08-21 원화 적용) =====
    진폭은 전부 --ambient 를 타므로 reduced-motion 에서 자동으로 0이 된다. */
+
+/* 금장 테 — 원화 금장 프레임·카드 테두리와 같은 결의 금색 링 (속은 양피지색).
+   border-image는 둥근 모서리를 못 따라가서 padding-box/border-box 이중 배경으로 */
+.gold-rim {
+  border: 0.22rem solid transparent;
+  background:
+    linear-gradient(#FBF3E3, #FBF3E3) padding-box,
+    linear-gradient(135deg, #FBEBB0, #D6A64A 30%, #FFF1BE 52%, #B98A34 76%, #F6DE8D) border-box;
+}
 
 /* 16:9 원화 스테이지 크기 — 가로 화면은 contain(원화 전체, 16:10 PC는 위아래 여백),
    세로 화면은 cover(중앙 크롭, 고정 결정). 켄번즈 줌이 여백으로 새지 않게 스테이지에서 자른다. */

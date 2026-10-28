@@ -4,6 +4,8 @@ import { dessertResults } from '../data/desserts'
 import AnimatedDessert from './shared/AnimatedDessert'
 import { InkButton } from './shared/InkButton'
 import BackButton from './shared/BackButton'
+import { ArtBackdrop } from './shared/ArtStage'
+import { bookmarkBg } from '../assets/screenImages'
 import { PaperGrain, Divider } from './shared/Decorations'
 
 const allDesserts = Object.values(dessertResults).sort((a, b) => a.id - b.id)
@@ -22,10 +24,9 @@ export default function DessertBook({ currentResult, onRestart, onExit }) {
   }
 
   return (
-    <div className="min-h-[100dvh] relative
-                    bg-gradient-to-b from-[#F5DDB8] via-[#EFE0BE] to-[#E2C89C]">
-      <PaperGrain />
-      <div className="page-vignette" />
+    <div className="min-h-[100dvh] relative">
+      {/* 책갈피 책상 원화(흐림) + 금장 테두리 — 결과 화면과 같은 배경 */}
+      <ArtBackdrop src={bookmarkBg} veil="bg-cream/45" />
 
       <AnimatePresence mode="wait">
         {!detailDessert ? (
@@ -37,7 +38,7 @@ export default function DessertBook({ currentResult, onRestart, onExit }) {
             exit={{ opacity: 0 }}
             className="relative min-h-[100dvh] flex flex-col"
           >
-            <div className="w-full max-w-4xl mx-auto px-4 py-8 md:py-10 flex flex-col">
+            <div className="w-full max-w-4xl mx-auto px-4 pt-[max(2rem,9dvh)] pb-10 flex flex-col">
               {/* 헤더 */}
               <div className="relative flex items-center justify-between gap-3">
                 <motion.button
@@ -45,23 +46,24 @@ export default function DessertBook({ currentResult, onRestart, onExit }) {
                   onClick={onExit}
                   aria-label="결과로 돌아가기"
                   className="w-9 h-9 rounded-full bg-ink/10 flex items-center justify-center
-                             text-ink/70 cursor-pointer hover:bg-ink/20 transition-colors"
+                             text-ink/70 cursor-pointer hover:bg-ink/20 transition-colors gold-rim"
                 >
                   ✕
                 </motion.button>
-                <div className="text-center">
+                <div className="gold-rim rounded-full px-8 md:px-12 py-1.5 text-center
+                                shadow-[0_10px_24px_-14px_rgba(58,36,24,0.6)]">
                   <h2 className="font-display text-2xl md:text-3xl font-bold text-ink leading-tight">
                     디저트 도감
                   </h2>
                   <p className="font-script text-sm text-jam">recipe collection</p>
                 </div>
-                <span className="font-display text-xs md:text-sm text-ink/55 tracking-wider
+                <span className="font-display text-xs md:text-sm text-ink/70 tracking-wider
                                  min-w-9 text-right">
                   {allDesserts.length}종
                 </span>
               </div>
 
-              <Divider variant="wave" className="w-full h-3 text-ink/30 my-5" />
+              <Divider variant="wave" className="w-full h-3 text-ink/35 my-5" />
 
               {/* 카드 그리드 */}
               <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-3 md:gap-4 items-start">
@@ -71,11 +73,12 @@ export default function DessertBook({ currentResult, onRestart, onExit }) {
                     whileHover={{ scale: 1.03 }}
                     whileTap={{ scale: 0.97 }}
                     onClick={() => setDetailDessert(d)}
-                    className="aspect-[3/4] rounded-xl border overflow-hidden
+                    className="gold-rim aspect-[3/4] rounded-xl overflow-hidden
                                flex flex-col relative
-                               border-paper-edge bg-[#FBF3E3] shadow-md cursor-pointer"
+                               shadow-[0_14px_24px_-16px_rgba(58,36,24,0.7)] cursor-pointer"
                   >
-                    <div className="flex-1 overflow-hidden flex items-center justify-center bg-[#F3E2C2]">
+                    <div className="flex-1 overflow-hidden flex items-center justify-center
+                                    bg-radial from-[#FFF8E8] to-[#F1DDB8]">
                       <AnimatedDessert
                         dessertId={d.id}
                         image={d.image}
@@ -84,8 +87,11 @@ export default function DessertBook({ currentResult, onRestart, onExit }) {
                         className="w-full h-full"
                       />
                     </div>
-                    <div className="px-1.5 py-1.5 text-center border-t border-paper-edge bg-[#FBF3E3]">
-                      <p className="font-display text-[10px] md:text-xs text-ink/80 font-semibold truncate">
+                    <div className="px-1.5 py-1.5 text-center border-t border-[#D6A64A]/40 bg-[#FBF3E3]">
+                      <p className="font-display text-xs md:text-sm text-ink font-bold truncate">
+                        {d.name}
+                      </p>
+                      <p className="font-display text-[0.625rem] md:text-[0.6875rem] text-ink/55 truncate">
                         {d.combo}
                       </p>
                     </div>
@@ -119,7 +125,7 @@ export default function DessertBook({ currentResult, onRestart, onExit }) {
             exit={{ opacity: 0 }}
             className="relative min-h-[100dvh] flex flex-col"
           >
-            <div className="w-full max-w-3xl mx-auto px-4 py-6 flex-1 flex flex-col">
+            <div className="w-full max-w-4xl mx-auto px-4 pt-[max(1.5rem,8dvh)] pb-[max(1.5rem,6dvh)] flex-1 flex flex-col">
               {/* 그리드로 닫기 */}
               <div className="flex justify-end">
                 <motion.button
@@ -128,7 +134,7 @@ export default function DessertBook({ currentResult, onRestart, onExit }) {
                   onClick={() => setDetailDessert(null)}
                   aria-label="도감으로"
                   className="w-9 h-9 rounded-full bg-ink/10 flex items-center justify-center
-                             text-ink/70 cursor-pointer hover:bg-ink/20 transition-colors"
+                             text-ink/70 cursor-pointer hover:bg-ink/20 transition-colors gold-rim"
                 >
                   ✕
                 </motion.button>
@@ -141,7 +147,7 @@ export default function DessertBook({ currentResult, onRestart, onExit }) {
                   whileTap={{ scale: 0.9 }}
                   onClick={() => navigateDetail(-1)}
                   aria-label="이전"
-                  className="flex-shrink-0 text-ink/45 text-2xl md:text-3xl
+                  className="flex-shrink-0 text-ink/60 text-2xl md:text-3xl drop-shadow-[0_1px_3px_rgba(255,248,240,0.9)]
                              cursor-pointer hover:text-ink transition-colors px-1 md:px-2"
                 >
                   ◀
@@ -155,12 +161,11 @@ export default function DessertBook({ currentResult, onRestart, onExit }) {
                     exit={{ opacity: 0, x: -30 }}
                     transition={{ duration: 0.25 }}
                     className="flex-1 flex flex-col md:flex-row gap-5 md:gap-6
-                               items-center max-w-2xl mx-auto"
+                               items-center max-w-3xl mx-auto"
                   >
                     {/* 카드 이미지 */}
-                    <div className="w-48 md:w-60 flex-shrink-0">
-                      <div className="bg-[#FBF3E3] rounded-2xl border border-paper-edge
-                                      shadow-xl overflow-hidden aspect-[3/4]
+                    <div className="w-48 md:w-72 flex-shrink-0">
+                      <div className="gold-rim rounded-2xl shadow-xl overflow-hidden aspect-[3/4]
                                       flex items-center justify-center p-2">
                         <AnimatedDessert
                           dessertId={detailDessert.id}
@@ -174,10 +179,9 @@ export default function DessertBook({ currentResult, onRestart, onExit }) {
 
                     {/* 정보 패널 (종이 노트) */}
                     <div className="flex-1 w-full">
-                      <div className="relative bg-[#FBF3E3] rounded-2xl border border-paper-edge
-                                      shadow-lg p-5 md:p-6 overflow-hidden">
+                      <div className="relative gold-rim rounded-2xl shadow-lg p-5 md:p-6 overflow-hidden">
                         <PaperGrain />
-                        <h3 className="relative font-display text-xl md:text-2xl font-bold
+                        <h3 className="relative font-display text-xl md:text-3xl font-bold
                                        text-ink text-center leading-tight">
                           {detailDessert.name}
                         </h3>
@@ -188,7 +192,7 @@ export default function DessertBook({ currentResult, onRestart, onExit }) {
                                       text-sm md:text-base">
                           {detailDessert.personality}
                         </p>
-                        <p className="relative font-display text-sm text-ink/80 leading-relaxed mt-4">
+                        <p className="relative font-display text-sm md:text-base text-ink/80 leading-relaxed mt-4">
                           &ldquo;{detailDessert.description}&rdquo;
                         </p>
                       </div>
@@ -201,7 +205,7 @@ export default function DessertBook({ currentResult, onRestart, onExit }) {
                   whileTap={{ scale: 0.9 }}
                   onClick={() => navigateDetail(1)}
                   aria-label="다음"
-                  className="flex-shrink-0 text-ink/45 text-2xl md:text-3xl
+                  className="flex-shrink-0 text-ink/60 text-2xl md:text-3xl drop-shadow-[0_1px_3px_rgba(255,248,240,0.9)]
                              cursor-pointer hover:text-ink transition-colors px-1 md:px-2"
                 >
                   ▶
