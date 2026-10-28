@@ -22,23 +22,31 @@ description: "디저트 레이어 애니메이션 — dessertLayerConfig.js 옵�
   옛 드롭 폴더 `여우짱 레시피/디저트_레이아웃_분리/수정)…` 도 같은 규칙):
   서브끼리의 순서 문제면 `sub_NN_XX` 번호를 그 순서로 다시 매기고(config 배열도 같이 치환),
   서브가 메인보다 뒤여야 하면 `subUnderMain`.
-  **번호 순서는 같은 슬롯 안에서만 유효** — 렌더는 behind(접시 뒤) → 접시 → [바운스 그룹: 백 → under → 메인 → group] → detach 순이라
-  `subDetach` 서브는 번호가 낮아도 그룹 안 서브를 항상 덮는다. detach 서브 위에 얹힌 장식은 그것도 detach로 뺄 것.
+  **번호 순서는 같은 슬롯 안에서만 유효** — 렌더는 behind(접시 뒤) → 접시 → 백 → under → 메인 → group → detach 순이라
+  `subDetach` 서브는 번호가 낮아도 group 서브를 항상 덮는다. detach 서브 위에 얹힌 장식은 그것도 detach로 뺄 것.
+  슬롯 플래그는 **z 순서만** 정한다 — 움직임은 `subOn`(얹힌 대상)이 정한다.
   파일만 바꾸지 말고 **실제 DOM 순서를 확인** — 스크린샷 또는 `dessert-wrap` 안 `<img>` src 나열
 
 ## dessertLayerConfig.js 설정 옵션
+
+**원칙: 모든 파츠는 뿌리(닿는 면)가 고정된다** (2026-10-28 사용자 지시). 축 = 접점, 얹힌 파츠는 받치는 파츠의 움직임을 물려받는다.
+
 ```js
 {
-  bounce: 'bounce',           // 메인 바운스 타입 (기본 'bounce', 'wobble', 'soft', 'float' 등)
-  pivotY: 'bottom',           // 바운스 그룹 피봇 Y (기본 'bottom', '%'값 가능)
-  subs: ['type', ...],        // 서브별 애니메이션 타입
-  subPivots: ['x% y%', ...],  // 서브별 피봇 (null=기본, 단일값='center {v}', 2값=그대로)
-  subDelays: [0.1, ...],      // 서브별 딜레이 초 (null=자동 스태거)
-  subDetach: [true, ...],     // true=바운스 그룹 밖 독립 움직임
-  subBehind: [true, ...],     // true=접시보다 뒤에 렌더링
-  subUnderMain: [true, ...],  // true=접시 위·메인 뒤 (바운스 그룹 안)
+  bounce: 'soft',                // 메인 타입 — 'bounce' | 'wobble' | 'soft' | 'crisp' (전부 접점 축 scale, translate 금지)
+  mainPivots: ['49% 80%', ...],  // 메인별 바닥 접점 'x% y%' = 바운스 축. 한 덩어리 메인 여러 장이면 같은 값
+  backPivot: '39% 58%',          // 백 레이어 접점 (백은 첫 메인을 따른다)
+  subs: ['type', ...],           // 서브별 애니메이션 타입
+  subPivots: ['x% y%', ...],     // 서브별 접점(뿌리) — 닿거나 꽂힌 자리. 공중 장식만 제 중심
+  subOn: ['main', ...],          // 얹힌 대상: 'plate' | 'main' | 'main2' | 'sub1'~ | 'air'(공중 장식)
+  subDelays: [0.1, ...],         // 서브별 딜레이 초 (null=자동 스태거)
+  subDetach / subBehind / subUnderMain: [true, ...],  // z 순서 플래그
 }
 ```
+
+- 렌더 = `AnimatedDessert.jsx` `Moving` — 얹힌 대상의 움직임 고리(같은 클래스·축·딜레이)를 바깥부터 겹겹이 감싸서 프레임 단위로 같이 움직인다.
+- 접점 찾기: 레이어 알파의 맨 아래 띠 = 접점, 그 띠와 겹치는 아래층 = 얹힌 대상. 자동 계산 후 그림으로 확인(공중 장식·꽂힌 웨하스처럼 판단이 필요한 것만 손으로).
+- 검증: 16종 동시 마운트 → 여러 시점 스크린샷 → 프레임 차이 히트맵. 접점·접시 쪽이 어두우면(안 움직임) 고정된 것.
 
 ## 사용 가능한 애니메이션 타입
 | 타입 | 설명 | 변형 |
@@ -59,14 +67,15 @@ description: "디저트 레이어 애니메이션 — dessertLayerConfig.js 옵�
 | `bounce` | 기본 2단 바운스 (scaleY 기반, 강→약) |
 | `wobble` | scaleX↔scaleY 교차 변형 (말랑 젤리) |
 | `soft` | scaleY만 부드럽게 부풀기 (무스/구름용) |
-| `float` | translateY + 미세 scaleY (구름 부유) |
+| `crisp` | 접점 고정, 숨 쉬듯 1% — 바삭한 구움과자·유리잔 (옛 float = 통째로 떠오름은 폐기) |
+| (썸네일) | 도감 그리드는 메인 타입 대신 `dessert-soft-sm` (16종 동시라 가장 얌전하게) |
 
 ## 애니메이션 원칙
 - 음식이므로 과한 움직임 금지
-- 메인 바운스: scaleY 기반, bottom 앵커, 2단 바운스 (강→약)
-- 서브: 바닥 고정 원칙, rotate 기반 찰랑거림 권장 (skewX보다 자연스러움)
+- 메인 바운스: scaleY 기반, 제 바닥 접점(mainPivots) 앵커 — 캔버스 아래 끝이 아니다
+- 서브: 뿌리 고정 — 접점 축, rotate 기반 찰랑거림 권장 (skewX보다 자연스러움). translate(hover·drift)는 공중 장식에만
 - 늘어남→원상복귀는 ease-out으로 느리게 (자연스러운 탄성)
-- detach된 서브는 메인 바운스와 독립적으로 움직임
+- 접시·테이블에 놓인 서브는 `subOn: 'plate'` — 디저트 바운스를 따르지 않는다
 
 
 ## 튜닝

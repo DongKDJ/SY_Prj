@@ -396,34 +396,36 @@ body {
   }
 }
 
-/* ── Float 바운스: 구름처럼 부유 (translateY + 미세 scaleY) ── */
-.dessert-float {
+/* ── Crisp: 바삭한 구움과자·유리잔 — 바닥 접점은 붙인 채 숨 쉬듯 아주 미세하게 ── */
+.dessert-crisp {
   position: absolute;
   inset: 0;
   transform-origin: center bottom;
-  animation: dessert-float-kf 3.5s ease-in-out infinite;
+  animation: dessert-crisp-kf 3.6s ease-in-out infinite;
 }
 
-@keyframes dessert-float-kf {
-  0%, 100% {
-    transform: translateY(0) scaleY(1);
-  }
-  50% {
-    transform: translateY(-1.8%) scaleY(1.015);
-  }
+@keyframes dessert-crisp-kf {
+  0%, 100% { transform: scaleY(1) scaleX(1); }
+  50% { transform: scaleY(1.01) scaleX(0.997); }
 }
 
-/* ── Thumb용 부드러운 플로트 ── */
-.dessert-float-sm {
+/* ── Thumb용: 도감 16종이 한꺼번에 움직이므로 가장 얌전한 부풀기 (바닥 접점 고정) ── */
+.dessert-soft-sm {
   position: absolute;
   inset: 0;
   transform-origin: center bottom;
-  animation: dessert-float-sm-kf 3s ease-in-out infinite;
+  animation: dessert-soft-sm-kf 3.2s ease-in-out infinite;
 }
 
-@keyframes dessert-float-sm-kf {
-  0%, 100% { transform: translateY(0) scaleY(1); }
-  50% { transform: translateY(-1%) scaleY(1.01); }
+@keyframes dessert-soft-sm-kf {
+  0%, 100% { transform: scaleY(1) scaleX(1); }
+  50% { transform: scaleY(1.012) scaleX(0.995); }
+}
+
+/* 움직임 사슬의 고리 (AnimatedDessert Moving) — 레이어 캔버스 전체를 덮는다 */
+.dessert-part {
+  position: absolute;
+  inset: 0;
 }
 
 /* ── 백 레이어: 메인보다 느린 미세 바운스 ── */

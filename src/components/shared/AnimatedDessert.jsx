@@ -2,13 +2,36 @@ import { getDessertImage, getDessertLayers } from '../../assets/imageMap'
 import { dessertLayerConfig } from '../../data/dessertLayerConfig'
 import { useImagesReady } from '../../hooks/useImagesReady'
 
+/* "x% y%" 그대로, 한 값이면 세로값으로 */
+const toOrigin = (v) => (v ? (v.includes(' ') ? v : `center ${v}`) : undefined)
+
+/* 움직임 사슬을 바깥(받치는 대상)부터 안쪽(자기)까지 겹겹이 감싼다.
+   고리마다 같은 클래스·축·딜레이를 쓰므로 얹힌 파츠는 받치는 파츠와 프레임 단위로 같이 움직인다. */
+function Moving({ chain, children }) {
+  return chain.reduceRight(
+    (inner, link) => (
+      <div
+        className={`dessert-part ${link.cls}`}
+        style={{
+          transformOrigin: link.origin,
+          animationDelay: link.delay ? `${link.delay}s` : undefined,
+        }}
+      >
+        {inner}
+      </div>
+    ),
+    children,
+  )
+}
+
 /**
- * 디저트 애니메이션 컴포넌트
+ * 디저트 애니메이션 컴포넌트 — 모든 파츠는 뿌리(닿는 면)가 고정된다.
  *
- * 레이어 이미지가 있으면 → 접시(static) + 백(static) + 메인·서브(boing + 흔들림)
- * 레이어 이미지가 없으면 → 단일 이미지에도 바운스 애니메이션 적용
+ * 메인은 제 바닥 접점(mainPivots)을 축으로, 서브는 제 접점(subPivots)을 축으로 움직이고,
+ * 얹힌 대상(subOn)의 움직임을 그대로 물려받는다 — 케이크 위 딸기는 케이크와, 크림에 꽂힌 웨하스는 크림과.
+ * 접시는 정적, 접시에 놓인 서브는 접시 기준.
  *
- * 레이어 순서 (뒤→앞): 접시 > 백 > (subUnderMain 서브) > 메인 > 서브
+ * 레이어 순서 (뒤→앞): behind 서브 > 접시 > 백 > under 서브 > 메인 > 서브 > detach 서브
  * 같은 종류 내에서는 숫자가 높을수록 앞에 렌더링
  */
 export default function AnimatedDessert({
@@ -23,8 +46,8 @@ export default function AnimatedDessert({
   const config = dessertLayerConfig[dessertId]
   const isThumb = variant === 'thumb'
   const bounceType = config?.bounce || 'bounce'
-  const bounceClass = isThumb ? 'dessert-float-sm' : `dessert-${bounceType}`
-  const pivotY = config?.pivotY || 'bottom'
+  // 도감 썸네일은 한 화면에 16종이 동시에 움직이므로 메인을 가장 얌전한 바운스로
+  const bounceClass = isThumb ? 'dessert-soft-sm' : `dessert-${bounceType}`
   /* 도감 그리드(썸네일 16종 × 레이어 다수)는 lazy가 이득이지만,
      결과 화면 히어로는 리빌 순간에 레이어가 늦게 뜨면 연출이 무너지므로 eager */
   const loadingMode = isThumb ? 'lazy' : 'eager'
@@ -37,12 +60,9 @@ export default function AnimatedDessert({
   )
   const revealStyle = { opacity: ready ? 1 : 0, transition: 'opacity 0.45s ease-out' }
 
-  /* 서브 레이어가 들어갈 자리 — 원화 레이어 순서를 그대로 따른다.
-     behind(접시 뒤) > under(접시 위·메인 뒤) > detach(바운스 그룹 밖) > group(메인과 함께) */
-  const subSlot = (i) =>
-    config?.subBehind?.[i] ? 'behind'
-      : config?.subUnderMain?.[i] ? 'under'
-        : config?.subDetach?.[i] ? 'detach' : 'group'
+  const layerImg = (src, alt = '') => (
+    <img src={src} alt={alt} className="dessert-layer" loading={loadingMode} draggable={false} />
+  )
 
   /* ── 레이어 없음: 단일 이미지에도 바운스 적용 ── */
   if (!layers) {
@@ -50,9 +70,7 @@ export default function AnimatedDessert({
       return (
         <div className={`dessert-stage ${className}`}>
           <div className="dessert-wrap" style={revealStyle}>
-            <div className={bounceClass}>
-              <img src={fallbackImage} alt={name} className="dessert-layer" loading={loadingMode} draggable={false} />
-            </div>
+            <div className={bounceClass}>{layerImg(fallbackImage, name)}</div>
           </div>
           {!isThumb && <div className="dessert-shadow-el" />}
         </div>
@@ -64,131 +82,76 @@ export default function AnimatedDessert({
     return <span className={emojiSize}>🍰</span>
   }
 
+  /* ── 움직임 사슬 ── */
+  const mainPivots = config?.mainPivots || []
+  const mainLink = (i) => ({
+    cls: bounceClass,
+    origin: toOrigin(mainPivots[i] || mainPivots[0]) || 'center bottom',
+  })
+  const subLink = (i) => {
+    const subDelay = config?.subDelays?.[i]
+    return {
+      cls: `dessert-sub dessert-sub-${config?.subs?.[i] || 'jelly'}`,
+      origin: toOrigin(config?.subPivots?.[i]),
+      delay: subDelay !== undefined && subDelay !== null ? subDelay : (i + 1) * 0.15,
+    }
+  }
+  // 얹힌 대상 — 지정이 없으면 detach·behind는 접시, 나머지는 첫 메인
+  const subOn = (i) =>
+    config?.subOn?.[i]
+      || (config?.subDetach?.[i] || config?.subBehind?.[i] ? 'plate' : 'main')
+  const subChain = (i, seen = []) => {
+    const on = subOn(i)
+    let base = []
+    if (on === 'main') base = [mainLink(0)]
+    else if (/^main\d+$/.test(on)) base = [mainLink(parseInt(on.slice(4), 10) - 1)]
+    else if (/^sub\d+$/.test(on)) {
+      const j = parseInt(on.slice(3), 10) - 1
+      if (j !== i && !seen.includes(j)) base = subChain(j, [...seen, i])
+    }
+    // 'plate' · 'air' — 디저트 움직임을 물려받지 않는다
+    return [...base, subLink(i)]
+  }
+
+  /* 서브가 들어갈 z 자리 — 원화 레이어 순서를 그대로 따른다 */
+  const subSlot = (i) =>
+    config?.subBehind?.[i] ? 'behind'
+      : config?.subUnderMain?.[i] ? 'under'
+        : config?.subDetach?.[i] ? 'detach' : 'group'
+  const subsIn = (slot) =>
+    layers.subs.map((sub, i) =>
+      subSlot(i) === slot && (
+        <Moving key={`sub-${slot}-${i}`} chain={subChain(i)}>{layerImg(sub)}</Moving>
+      ),
+    )
+
   /* ── 레이어 애니메이션 렌더링 ── */
   return (
     <div className={`dessert-stage ${className}`}>
       <div className="dessert-wrap" style={revealStyle}>
-        {/* 서브 레이어 (접시 뒤): 맨 뒤에 렌더링 */}
-        {layers.subs.map((sub, i) => {
-          if (subSlot(i) !== 'behind') return null
-          const type = config?.subs?.[i] || 'jelly'
-          const subDelay = config?.subDelays?.[i]
-          const delay = subDelay !== undefined && subDelay !== null ? subDelay : (i + 1) * 0.15
-          return (
-            <img
-              key={`sub-behind-${i}`}
-              src={sub}
-              alt=""
-              className={`dessert-layer dessert-sub dessert-sub-${type}`}
-              style={{ animationDelay: `${delay}s` }}
-              loading={loadingMode}
-              draggable={false}
-            />
-          )
-        })}
+        {subsIn('behind')}
 
-        {/* 접시 레이어 – 항상 정적 */}
-        {layers.plate && (
-          <img
-            src={layers.plate}
-            alt=""
-            className="dessert-layer"
-            loading={loadingMode}
-            draggable={false}
-          />
+        {/* 접시 – 항상 정적 */}
+        {layers.plate && layerImg(layers.plate)}
+
+        {/* 백 – 첫 메인 위에서 제 접점 축으로 미세 바운스 */}
+        {layers.back && (
+          <Moving chain={[mainLink(0), { cls: 'dessert-back', origin: toOrigin(config?.backPivot) }]}>
+            {layerImg(layers.back)}
+          </Moving>
         )}
 
-        {/* 바운스 그룹: 백 + 메인 + 서브 (접시에 붙은 느낌) */}
-        <div className={bounceClass} style={{ transformOrigin: `center ${pivotY}` }}>
-          {/* 백 레이어 – 개별 미세 바운스 */}
-          {layers.back && (
-            <img
-              src={layers.back}
-              alt=""
-              className="dessert-layer dessert-back"
-              loading={loadingMode}
-              draggable={false}
-            />
-          )}
-          {/* 서브 레이어 (메인 뒤): 접시 위·메인 아래 — 원화에서 메인보다 뒤에 그려진 장식 */}
-          {layers.subs.map((sub, i) => {
-            if (subSlot(i) !== 'under') return null
-            const type = config?.subs?.[i] || 'jelly'
-            const subPivot = config?.subPivots?.[i]
-            const subDelay = config?.subDelays?.[i]
-            const delay = subDelay !== undefined && subDelay !== null ? subDelay : (i + 1) * 0.15
-            return (
-              <img
-                key={`sub-under-${i}`}
-                src={sub}
-                alt=""
-                className={`dessert-layer dessert-sub dessert-sub-${type}`}
-                style={{
-                  animationDelay: `${delay}s`,
-                  ...(subPivot && { transformOrigin: subPivot.includes(' ') ? subPivot : `center ${subPivot}` }),
-                }}
-                loading={loadingMode}
-                draggable={false}
-              />
-            )
-          })}
-          {/* 메인 레이어 (복수 가능, 숫자 높을수록 앞) */}
-          {layers.mains.map((main, i) => (
-            <img
-              key={`main-${i}`}
-              src={main}
-              alt={i === 0 ? name : ''}
-              className="dessert-layer"
-              loading={loadingMode}
-              draggable={false}
-            />
-          ))}
-          {/* 서브 레이어 (바운스 그룹 안): 메인과 함께 움직임 — behind 서브는 위에서 이미 렌더됨 */}
-          {layers.subs.map((sub, i) => {
-            if (subSlot(i) !== 'group') return null
-            const type = config?.subs?.[i] || 'jelly'
-            const subPivot = config?.subPivots?.[i]
-            const subDelay = config?.subDelays?.[i]
-            const delay = subDelay !== undefined && subDelay !== null ? subDelay : (i + 1) * 0.15
-            return (
-              <img
-                key={`sub-${i}`}
-                src={sub}
-                alt=""
-                className={`dessert-layer dessert-sub dessert-sub-${type}`}
-                style={{
-                  animationDelay: `${delay}s`,
-                  ...(subPivot && { transformOrigin: subPivot.includes(' ') ? subPivot : `center ${subPivot}` }),
-                }}
-                loading={loadingMode}
-                draggable={false}
-              />
-            )
-          })}
-        </div>
+        {subsIn('under')}
 
-        {/* 서브 레이어 (바운스 그룹 밖): 독립 움직임 */}
-        {layers.subs.map((sub, i) => {
-          if (subSlot(i) !== 'detach') return null
-          const type = config?.subs?.[i] || 'jelly'
-          const subPivot = config?.subPivots?.[i]
-          const subDelay = config?.subDelays?.[i]
-          const delay = subDelay !== undefined && subDelay !== null ? subDelay : (i + 1) * 0.15
-          return (
-            <img
-              key={`sub-detach-${i}`}
-              src={sub}
-              alt=""
-              className={`dessert-layer dessert-sub dessert-sub-${type}`}
-              style={{
-                animationDelay: `${delay}s`,
-                ...(subPivot && { transformOrigin: subPivot.includes(' ') ? subPivot : `center ${subPivot}` }),
-              }}
-              loading={loadingMode}
-              draggable={false}
-            />
-          )
-        })}
+        {/* 메인 (복수 가능, 숫자 높을수록 앞) — 각자 제 바닥 접점 축 */}
+        {layers.mains.map((main, i) => (
+          <Moving key={`main-${i}`} chain={[mainLink(i)]}>
+            {layerImg(main, i === 0 ? name : '')}
+          </Moving>
+        ))}
+
+        {subsIn('group')}
+        {subsIn('detach')}
       </div>
 
       {/* 그림자 */}
