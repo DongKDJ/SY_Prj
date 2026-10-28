@@ -1,5 +1,6 @@
 import { getDessertImage, getDessertLayers } from '../../assets/imageMap'
 import { dessertLayerConfig } from '../../data/dessertLayerConfig'
+import { useImagesReady } from '../../hooks/useImagesReady'
 
 /**
  * 디저트 애니메이션 컴포넌트
@@ -28,6 +29,14 @@ export default function AnimatedDessert({
      결과 화면 히어로는 리빌 순간에 레이어가 늦게 뜨면 연출이 무너지므로 eager */
   const loadingMode = isThumb ? 'lazy' : 'eager'
 
+  /* 레이어가 낱장으로 뜨면 접시 없이 장식만 떠 있는 순간이 생긴다 — 다 받은 뒤 한 번에 페이드인 */
+  const { ready } = useImagesReady(
+    layers
+      ? [layers.plate, layers.back, ...layers.mains, ...layers.subs].filter(Boolean)
+      : [fallbackImage].filter(Boolean),
+  )
+  const revealStyle = { opacity: ready ? 1 : 0, transition: 'opacity 0.45s ease-out' }
+
   /* 서브 레이어가 들어갈 자리 — 원화 레이어 순서를 그대로 따른다.
      behind(접시 뒤) > under(접시 위·메인 뒤) > detach(바운스 그룹 밖) > group(메인과 함께) */
   const subSlot = (i) =>
@@ -40,7 +49,7 @@ export default function AnimatedDessert({
     if (fallbackImage) {
       return (
         <div className={`dessert-stage ${className}`}>
-          <div className="dessert-wrap">
+          <div className="dessert-wrap" style={revealStyle}>
             <div className={bounceClass}>
               <img src={fallbackImage} alt={name} className="dessert-layer" loading={loadingMode} draggable={false} />
             </div>
@@ -58,7 +67,7 @@ export default function AnimatedDessert({
   /* ── 레이어 애니메이션 렌더링 ── */
   return (
     <div className={`dessert-stage ${className}`}>
-      <div className="dessert-wrap">
+      <div className="dessert-wrap" style={revealStyle}>
         {/* 서브 레이어 (접시 뒤): 맨 뒤에 렌더링 */}
         {layers.subs.map((sub, i) => {
           if (subSlot(i) !== 'behind') return null
