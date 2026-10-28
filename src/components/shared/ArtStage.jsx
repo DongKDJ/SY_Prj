@@ -1,14 +1,13 @@
 import { goldFrames } from '../../assets/screenImages'
 
-/* 3840x2160 원화 레이어 화면용 16:9 스테이지.
-   화면을 cover 로 채우고(세로 화면 = 중앙 크롭) 자식은 스테이지 기준 % 좌표로 배치한다.
-   width/height 중 한쪽 max() 만 이기므로 16:9 비율이 항상 유지된다. */
+/* 3840x2160 원화 레이어 화면용 16:9 스테이지. 자식은 스테이지 기준 % 좌표로 배치한다.
+   가로 화면 = contain(원화 전체가 보이고 16:10 등은 위아래 여백 — 바탕 화면 ArtStage에 bg-ink를 줘 액자 여백으로), 세로 화면 = cover 중앙 크롭.
+   크기 규칙은 index.css .art-stage-box */
 export function ArtStage({ children, className = '' }) {
   return (
     <div className={`absolute inset-0 overflow-hidden ${className}`}>
       <div
-        className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2"
-        style={{ width: 'max(100vw, 177.78dvh)', height: 'max(100dvh, 56.25vw)' }}
+        className="art-stage-box absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2"
       >
         {children}
       </div>

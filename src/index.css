@@ -698,6 +698,20 @@ body {
 /* ===== 원화 화면 레이어 앰비언트 (타이틀/오프닝/책갈피 — 2026-08-21 원화 적용) =====
    진폭은 전부 --ambient 를 타므로 reduced-motion 에서 자동으로 0이 된다. */
 
+/* 16:9 원화 스테이지 크기 — 가로 화면은 contain(원화 전체, 16:10 PC는 위아래 여백),
+   세로 화면은 cover(중앙 크롭, 고정 결정). 켄번즈 줌이 여백으로 새지 않게 스테이지에서 자른다. */
+.art-stage-box {
+  width: min(100vw, 177.78dvh);
+  height: min(100dvh, 56.25vw);
+  overflow: hidden;
+}
+@media (orientation: portrait) {
+  .art-stage-box {
+    width: max(100vw, 177.78dvh);
+    height: max(100dvh, 56.25vw);
+  }
+}
+
 /* 배경 아주 느린 줌 (Ken Burns) */
 @keyframes art-zoom-kf {
   0%, 100% { transform: scale(1); }

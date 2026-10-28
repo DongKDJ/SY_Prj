@@ -153,7 +153,7 @@ export default function StageScreen({ stageIndex, selections, onSelect, onComple
 
       {/* 책갈피 원화 배경 — 페이즈·스테이지 전환과 무관하게 상주 (책상·풀·금장·누적 재료).
           다음 책갈피로 넘어가도 배경과 테두리는 "이미 있는" 상태이고, 배너 등만 새로 채워진다. */}
-      <ArtStage className="art-reveal">
+      <ArtStage className="art-reveal bg-ink">
         <ArtLayer src={bookmarkBg} className="art-zoom" />
 
         {/* 풀·잎 장식 — 딜레이를 어긋내 미세하게 흔들림 */}

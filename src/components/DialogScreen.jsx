@@ -61,7 +61,7 @@ export default function DialogScreen({ onComplete, onBack }) {
 
   return (
     <div className="relative h-[100dvh] w-full overflow-hidden">
-      <ArtStage className="art-reveal">
+      <ArtStage className="art-reveal bg-ink">
         <ArtLayer src={openingBg} />
 
         {/* 여우씨 — 책상 윗선(DESK_TOP)에서 잘라 책상 뒤에 걸친 것처럼 */}

@@ -9,7 +9,7 @@ description: "원화 화면·UI 아트 — 3840x2160 원화 레이어(ArtStage·
 
 타이틀·대화(오프닝)·책갈피 3개 화면은 3840x2160 정렬 투명 PNG 레이어(원본: 작가 4K 원화, 무손실 복사 — 사용자 결정)로 구성.
 - 임포트 정본: `src/assets/screenImages.js` (금장 5장·풀 4장·책갈피 타이틀 4장·재료 8장 등 매핑)
-- 스테이지: `src/components/shared/ArtStage.jsx` — 16:9 cover 스테이지(세로 화면 = 중앙 크롭, 사용자 결정). `ArtLayer`(풀캔버스 레이어) · `GoldFrame`(금장) · `ArtBandCrop`(세로 화면용 가로 밴드 크롭: 타이틀 로고·책갈피 배너)
+- 스테이지: `src/components/shared/ArtStage.jsx` — 16:9 스테이지 — 가로 화면 = contain(원화 전체, 16:10 PC는 위아래 `bg-ink` 여백 — 2026-10-28 사용자 "PC 전체화면이 잘려 보임"), 세로 화면 = cover 중앙 크롭(사용자 결정). 크기 규칙 = `index.css` `.art-stage-box`, 여백 색은 바탕 ArtStage 3곳(타이틀·대화·책갈피)의 `bg-ink` — 겹쳐 올리는 ArtStage에는 배경을 주지 말 것(아래 원화를 가린다). `ArtLayer`(풀캔버스 레이어) · `GoldFrame`(금장) · `ArtBandCrop`(세로 화면용 가로 밴드 크롭: 타이틀 로고·책갈피 배너)
 - 세로(QR 모바일) 보조: 로고·배너는 ArtBandCrop 밴드로, 대사는 하단 양피지 스트립으로 대체 (`portrait:` variant)
 - 책갈피 페이지: 선택 누적 재료가 `ingredientLayers[cardId]` 풀캔버스 레이어로 책상 위에 쌓임 (원화에서 재료별 자리가 서로 다름 — 1단계 중앙 위 / 2단계 중앙 아래 / 3단계 오른쪽 / 4단계 왼쪽)
 - 여우씨 배치 튜닝: `DialogScreen.jsx` 상단 `FOX` · `BUBBLE_TEXT` 상수 (스테이지 % 좌표)

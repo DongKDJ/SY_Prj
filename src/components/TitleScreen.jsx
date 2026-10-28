@@ -16,7 +16,7 @@ export default function TitleScreen({ onStart }) {
       className="relative block h-[100dvh] w-full overflow-hidden cursor-pointer"
       aria-label="시작하기"
     >
-      <ArtStage className="art-reveal">
+      <ArtStage className="art-reveal bg-ink">
         {/* 배경 켄번즈 줌 안에 스푼·포크까지 넣어야 메운 자리(patch)와 어긋나지 않는다 */}
         <div className="absolute inset-0 art-zoom">
           <ArtLayer src={titleBg} />
