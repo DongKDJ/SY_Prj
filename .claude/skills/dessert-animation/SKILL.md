@@ -49,7 +49,7 @@ description: "디저트 레이어 애니메이션 — dessertLayerConfig.js 옵�
 | `hover` | translateY 미세 부유 | `hover-lg` (1.3배) |
 | `breathe` | scaleY 부풀기 | `breathe-lg` (1.3배) |
 | `pulse` | opacity 반짝 | — |
-| `back` | 백 레이어와 같은 미세 바운스 — 원화상 메인 앞에 와야 하는 백 장식을 서브로 옮길 때 | — |
+| `twinkle` | 반짝임 — 피봇(반짝임 중심)에서 opacity·scale·rotate | — |
 | `drift` | translateX 좌우 이동 | — |
 | `drift-scale` | 좌우 이동 + 균일 크기 변화 | — |
 

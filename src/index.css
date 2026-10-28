@@ -444,11 +444,6 @@ body {
   }
 }
 
-/* back: 백 레이어와 같은 움직임 — 원화상 메인 앞에 와야 하는 백 장식용 */
-.dessert-sub-back {
-  animation: dessert-back-sway 1.2s ease-in-out infinite;
-}
-
 /* ── 서브 레이어 공통 ── */
 .dessert-sub {
   transform-origin: center bottom;
@@ -513,6 +508,15 @@ body {
 @keyframes dessert-sub-pulse {
   0%, 100% { opacity: 1; transform: scale(1); }
   50% { opacity: 0.82; transform: scale(0.98); }
+}
+
+/* twinkle: 반짝임 — 제 중심(피봇)에서 살짝 작아지며 흐려졌다 돌아온다 */
+.dessert-sub-twinkle {
+  animation: dessert-sub-twinkle 2.4s ease-in-out infinite;
+}
+@keyframes dessert-sub-twinkle {
+  0%, 100% { opacity: 1; transform: scale(1) rotate(0deg); }
+  50% { opacity: 0.5; transform: scale(0.86) rotate(8deg); }
 }
 
 /* hover: translateY 미세 부유 */

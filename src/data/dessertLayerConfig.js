@@ -33,7 +33,7 @@ export const dessertLayerConfig = {
     bounce: 'wobble',
     pivotY: '85%',
     subs: ['drift-scale'],
-    subPivots: [null],
+    subPivots: ['76% 40%'], // 구름 자리에서 부풀게 (기본 축 = 캔버스 아래 끝이면 구름이 떠밀림)
     subDelays: [0.3],
     subDetach: [true],   // 구름은 독립 부유
     subBehind: [false],
@@ -60,8 +60,8 @@ export const dessertLayerConfig = {
     // sub1: 노란 반짝임, sub2: 작은 반짝임, sub3: 눈송이 무리
     bounce: 'soft',      // 마쉬멜로우 — 부드럽게 부풀기
     pivotY: 'bottom',
-    subs: ['pulse', 'pulse', 'drift'],
-    subPivots: ['26% 30%', '35% 32%', null],
+    subs: ['twinkle', 'twinkle', 'drift'],
+    subPivots: ['26% 30%', '35% 32%', null], // 반짝임은 제 중심에서 반짝
     subDelays: [0.2, 0.9, 0.5],
     subDetach: [true, true, true],    // 반짝임·눈송이는 디저트 바운스와 무관하게
     subBehind: [false, false, false],
@@ -103,13 +103,13 @@ export const dessertLayerConfig = {
   },
   9: {
     // 고요한 딸기 초코 파르페 — 접시 없음, main = 유리잔
-    // sub1: 생크림, sub2: 트러플, sub3: 별과자, sub4: 웨하스 스틱,
-    // sub5: 작은 알갱이(블루베리), sub6: 고양이 얼굴 마카롱, sub7: 딸기
+    // sub1: 생크림, sub2: 트러플, sub3: 별과자, sub4: 웨하스 스틱(크림에 꽂힌 지점 축),
+    // sub5: 블루베리 2알(곰 뒤), sub6: 곰 얼굴 아이스크림(크림 위에 앉아 있으므로 떠오르지 않고 부풀기), sub7: 딸기
     // 유리잔은 스쿼시하면 안 되므로 변형이 가장 적은 float.
     bounce: 'float',
     pivotY: 'bottom',
-    subs: ['breathe-lg', 'sway-sm2', 'sway-lg', 'sway-lg', 'pulse', 'hover', 'sway-sm2'],
-    subPivots: ['50% 36%', '60% 31%', '58% 24%', '32% 34%', null, null, '54% 36%'],
+    subs: ['breathe-lg', 'sway-sm2', 'sway-lg', 'sway-lg', 'sway-sm2', 'breathe', 'sway-sm2'],
+    subPivots: ['50% 36%', '60% 31%', '58% 24%', '40% 37%', '52% 33%', '42% 35%', '54% 36%'],
     subDelays: [0.1, 0.3, 0.5, 0.7, 0.9, 0.2, 0.4],
     subDetach: [false, false, false, false, false, false, false],
     subBehind: [false, false, false, false, false, false, false],
@@ -117,25 +117,25 @@ export const dessertLayerConfig = {
   10: {
     // 새벽녘 딸기 젤리 롤 — main: 롤케이크
     // sub1: 과일 슬라이스, sub2: 딸기, sub3: 잎, sub4: 블루베리(테이블),
-    // sub5: 웨하스 스틱 — 원화에서 롤 앞에 꽂혀 있어 백이 아닌 서브(옛 back_10과 같은 움직임)
+    // sub5: 웨하스 스틱 — 원화에서 롤 앞에 꽂혀 있어 백이 아닌 서브, 롤에 꽂힌 지점을 축으로 찰랑
     bounce: 'bounce',
     pivotY: 'bottom',
-    subs: ['sync-sm', 'sway-sm2', 'sway-lg', 'sway-sm2', 'back'],
-    subPivots: ['41% 37%', '53% 34%', '60% 39%', '75% 87%', null],
+    subs: ['sync-sm', 'sway-sm2', 'sway-lg', 'sway-sm2', 'sway-sm2'],
+    subPivots: ['41% 37%', '53% 34%', '60% 39%', '75% 87%', '28% 54%'],
     subDelays: [0.15, 0.3, 0.45, 0.9, 0],
     subDetach: [false, false, false, true, false],
     subBehind: [false, false, false, false, false],
   },
   11: {
     // 딸기 퐁당 오 쇼콜라
-    // sub1: 아이스크림 스쿱, sub2: 잎, sub3: 딸기+반쪽(접시), sub4: 블루베리(접시)
+    // sub1: 아이스크림 스쿱, sub2: 잎, sub3: 딸기+반쪽(케이크 윗면 — 케이크와 함께 움직임), sub4: 블루베리(접시)
     // 원화 레이어 순서(2026-08-25 수정본): 접시 > 스쿱 > 잎 > 케이크 > 딸기 > 블루베리
     bounce: 'soft',      // 겉은 구워진 케이크 — 흐르는 건 속
     pivotY: 'bottom',
     subs: ['breathe', 'sway-lg', 'sway-sm2', 'sway-sm2'],
     subPivots: ['35% 57%', '31% 25%', '56% 47%', '27% 73%'],
     subDelays: [0.1, 0.4, 0.6, 0.9],
-    subDetach: [false, false, true, true],
+    subDetach: [false, false, false, true],
     subBehind: [false, false, false, false],
     subUnderMain: [true, true, false, false], // 스쿱·잎은 케이크 뒤
   },
