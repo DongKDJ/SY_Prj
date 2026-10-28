@@ -432,6 +432,11 @@ body {
   }
 }
 
+/* back: 백 레이어와 같은 움직임 — 원화상 메인 앞에 와야 하는 백 장식용 */
+.dessert-sub-back {
+  animation: dessert-back-sway 1.2s ease-in-out infinite;
+}
+
 /* ── 서브 레이어 공통 ── */
 .dessert-sub {
   transform-origin: center bottom;

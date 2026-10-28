@@ -90,40 +90,41 @@ export const dessertLayerConfig = {
   },
   8: {
     // 따끈한 사과 슈가 팬케이크
-    // sub1: 부채꼴 사과슬라이스(스택 위), sub2: 사과(스택 위), sub3: 크림 얹은 슬라이스(중단),
+    // sub1: 사과(스택 위), sub2: 부채꼴 사과슬라이스(스택 위, 사과 앞), sub3: 크림 얹은 슬라이스(중단),
     // sub4: 사과+반쪽(테이블), sub5: 작은 사과(테이블), sub6: 민트잎(중단), sub7: 블루베리(테이블)
     // 4·5·7은 팬케이크가 아니라 테이블에 놓인 것이라 바운스 그룹 밖으로 뺀다.
     bounce: 'bounce',
     pivotY: 'bottom',
-    subs: ['sway-sm2', 'sync-sm', 'sync-fast', 'sway-sm2', 'sway-sm2', 'sway-lg', 'sway-sm2'],
-    subPivots: ['40% 38%', '58% 41%', '44% 50%', '27% 80%', '45% 83%', '60% 47%', '76% 75%'],
-    subDelays: [0.1, 0.3, 0.2, 0.8, 1.0, 0.4, 0.6],
+    subs: ['sync-sm', 'sway-sm2', 'sync-fast', 'sway-sm2', 'sway-sm2', 'sway-lg', 'sway-sm2'],
+    subPivots: ['58% 41%', '40% 38%', '44% 50%', '27% 80%', '45% 83%', '60% 47%', '76% 75%'],
+    subDelays: [0.3, 0.1, 0.2, 0.8, 1.0, 0.4, 0.6],
     subDetach: [false, false, false, true, true, false, true],
     subBehind: [false, false, false, false, false, false, false],
   },
   9: {
     // 고요한 딸기 초코 파르페 — 접시 없음, main = 유리잔
-    // sub1: 생크림, sub2: 별과자, sub3: 트러플, sub4: 웨하스 스틱,
-    // sub5: 고양이 얼굴 마카롱, sub6: 작은 알갱이, sub7: 딸기
+    // sub1: 생크림, sub2: 트러플, sub3: 별과자, sub4: 웨하스 스틱,
+    // sub5: 작은 알갱이(블루베리), sub6: 고양이 얼굴 마카롱, sub7: 딸기
     // 유리잔은 스쿼시하면 안 되므로 변형이 가장 적은 float.
     bounce: 'float',
     pivotY: 'bottom',
-    subs: ['breathe-lg', 'sway-lg', 'sway-sm2', 'sway-lg', 'hover', 'pulse', 'sway-sm2'],
-    subPivots: ['50% 36%', '58% 24%', '60% 31%', '32% 34%', null, null, '54% 36%'],
-    subDelays: [0.1, 0.5, 0.3, 0.7, 0.2, 0.9, 0.4],
+    subs: ['breathe-lg', 'sway-sm2', 'sway-lg', 'sway-lg', 'pulse', 'hover', 'sway-sm2'],
+    subPivots: ['50% 36%', '60% 31%', '58% 24%', '32% 34%', null, null, '54% 36%'],
+    subDelays: [0.1, 0.3, 0.5, 0.7, 0.9, 0.2, 0.4],
     subDetach: [false, false, false, false, false, false, false],
     subBehind: [false, false, false, false, false, false, false],
   },
   10: {
-    // 새벽녘 딸기 젤리 롤 — back: 웨하스 스틱, main: 롤케이크
-    // sub1: 과일 슬라이스, sub2: 딸기, sub3: 잎, sub4: 블루베리(테이블)
+    // 새벽녘 딸기 젤리 롤 — main: 롤케이크
+    // sub1: 과일 슬라이스, sub2: 딸기, sub3: 잎, sub4: 블루베리(테이블),
+    // sub5: 웨하스 스틱 — 원화에서 롤 앞에 꽂혀 있어 백이 아닌 서브(옛 back_10과 같은 움직임)
     bounce: 'bounce',
     pivotY: 'bottom',
-    subs: ['sync-sm', 'sway-sm2', 'sway-lg', 'sway-sm2'],
-    subPivots: ['41% 37%', '53% 34%', '60% 39%', '75% 87%'],
-    subDelays: [0.15, 0.3, 0.45, 0.9],
-    subDetach: [false, false, false, true],
-    subBehind: [false, false, false, false],
+    subs: ['sync-sm', 'sway-sm2', 'sway-lg', 'sway-sm2', 'back'],
+    subPivots: ['41% 37%', '53% 34%', '60% 39%', '75% 87%', null],
+    subDelays: [0.15, 0.3, 0.45, 0.9, 0],
+    subDetach: [false, false, false, true, false],
+    subBehind: [false, false, false, false, false],
   },
   11: {
     // 딸기 퐁당 오 쇼콜라
