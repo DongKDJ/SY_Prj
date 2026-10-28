@@ -6,7 +6,7 @@
   --color-cabin: #C4956A;
   --color-cabin-light: #E8A87C;
   --color-cabin-dark: #A0724E;
-  --color-brown: #5C4033;
+  --color-brown: #6E5440;
   --color-brown-light: #7A5A4A;
   --color-card: #FDF2E9;
   --color-morning: #FFECD2;
@@ -15,16 +15,18 @@
   --color-night: #2C1810;
   --color-night-text: #F5E6D3;
   --color-dawn: #FFE8D6;
-  /* Storybook accent palette */
-  --color-jam: #8B2E3F;
-  --color-jam-soft: #B85870;
-  --color-honey: #D4A24C;
-  --color-honey-soft: #E8C078;
-  --color-sage: #7A8A6F;
-  --color-sage-soft: #A8B498;
-  --color-ink: #3A2418;
-  --color-paper: #FBF3E3;
-  --color-paper-edge: #E8D7B8;
+  /* 원화 팔레트 (2026-10-28, 원화 레이어에서 추출) — 글씨 = 로고의 따뜻한 갈색을 읽기 좋게 한 톤 짙게,
+     jam = 이전 버튼 사과의 장밋빛, honey = 금장 테두리, sage = 타이틀 배경의 민트 잎색 */
+  --color-jam: #C2546A;
+  --color-jam-soft: #E58FA0;
+  --color-honey: #CFA24E;
+  --color-honey-soft: #EFD38C;
+  --color-sage: #6FA986;
+  --color-sage-soft: #B5DBC0;
+  --color-sky: #8BCFE6;
+  --color-ink: #5E4632;
+  --color-paper: #FFF8EC;
+  --color-paper-edge: #EEDCAE;
   /* 'Pretendard Variable' = 번들된 가변 폰트(main.jsx), 'Pretendard' = 사용자 로컬 설치본 폴백 */
   --font-family-sans: 'Pretendard Variable', 'Pretendard', -apple-system, BlinkMacSystemFont, system-ui, sans-serif;
   --font-family-display: 'Gowun Batang', 'Pretendard Variable', 'Pretendard', serif;
@@ -724,6 +726,27 @@ body {
     linear-gradient(#FBF3E3, #FBF3E3) padding-box,
     linear-gradient(135deg, #FBEBB0, #D6A64A 30%, #FFF1BE 52%, #B98A34 76%, #F6DE8D) border-box;
 }
+
+/* 금장 구슬 — 진행도 점 등 작은 금 장식 */
+.gold-bead {
+  background: linear-gradient(135deg, #FFF1BE, #D6A64A 45%, #F6DE8D 70%, #B98A34);
+  box-shadow: inset 0 0.05rem 0 rgba(255, 255, 255, 0.7);
+}
+
+/* 원화 결 버튼 (InkButton) — 금장 테 알약, 속은 파스텔 그라데이션, 글씨는 원화 갈색 */
+.btn-art {
+  border: 0.2rem solid transparent;
+  background:
+    linear-gradient(180deg, var(--btn-a), var(--btn-b)) padding-box,
+    linear-gradient(135deg, #FBEBB0, #D6A64A 30%, #FFF1BE 52%, #B98A34 76%, #F6DE8D) border-box;
+  color: var(--color-ink);
+  box-shadow: inset 0 0.08rem 0 rgba(255, 255, 255, 0.75), 0 0.7rem 1.4rem -0.8rem rgba(94, 70, 50, 0.55);
+  transition: filter 0.3s;
+}
+.group:hover .btn-art { filter: brightness(1.05) saturate(1.08); }
+.btn-art-butter { --btn-a: #FFFAEA; --btn-b: #F5DE9C; }
+.btn-art-rose   { --btn-a: #FFF1F3; --btn-b: #F4BCC8; }
+.btn-art-mint   { --btn-a: #F2FBF5; --btn-b: #BFE5CC; }
 
 /* 16:9 원화 스테이지 크기 — 가로 화면은 contain(원화 전체, 16:10 PC는 위아래 여백),
    세로 화면은 cover(중앙 크롭, 고정 결정). 켄번즈 줌이 여백으로 새지 않게 스테이지에서 자른다. */

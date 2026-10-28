@@ -26,7 +26,7 @@ export default function BackButton({ onClick, label = '이전으로', className 
       className={`fixed left-4 md:left-6 z-50 cursor-pointer
                   landscape:bottom-4 landscape:md:bottom-6 portrait:top-4
                   w-[clamp(104px,min(10vw,17.78dvh),384px)]
-                  drop-shadow-[0_6px_14px_rgba(58,36,24,0.5)] ${className}`}
+                  drop-shadow-[0_6px_14px_rgba(94,70,50,0.5)] ${className}`}
     >
       <img
         src={backButtonImg}

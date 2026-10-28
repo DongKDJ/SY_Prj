@@ -103,8 +103,8 @@ export default function FoxKitchen({ text, hint, baking = false }) {
 export function KitchenPortraitStrip({ text, hint }) {
   return (
     <div className="hidden portrait:block absolute bottom-[4%] left-1/2 -translate-x-1/2 w-[92vw] z-20">
-      <div className="bg-paper/95 border border-paper-edge rounded-md px-4 py-3
-                      shadow-[0_12px_24px_-12px_rgba(58,36,24,0.5)]">
+      <div className="gold-rim rounded-xl px-4 py-3
+                      shadow-[0_12px_24px_-12px_rgba(94,70,50,0.5)]">
         <p className="font-display text-ink text-sm leading-relaxed min-h-[3.5rem]">
           {text}
         </p>

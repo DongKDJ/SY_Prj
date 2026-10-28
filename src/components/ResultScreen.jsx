@@ -22,7 +22,7 @@ function createMote(id) {
     'text-jam',     'text-jam-soft',
     'text-honey',   'text-honey-soft',
     'text-sage',    'text-sage-soft',
-    'text-cabin-light',
+    'text-sky',
   ]
   // 결정적 난수 (id 기반)
   const r = (n) => {
@@ -167,9 +167,9 @@ export default function ResultScreen({ result, onViewBook, onBack }) {
               <motion.div
                 animate={{
                   boxShadow: [
-                    '0 0 60px rgba(212,162,76,0.35), inset 0 0 0 4px rgba(58,36,24,0.12)',
-                    '0 0 90px rgba(212,162,76,0.55), inset 0 0 0 4px rgba(58,36,24,0.18)',
-                    '0 0 60px rgba(212,162,76,0.35), inset 0 0 0 4px rgba(58,36,24,0.12)',
+                    '0 0 60px rgba(212,162,76,0.35), inset 0 0 0 4px rgba(94,70,50,0.12)',
+                    '0 0 90px rgba(212,162,76,0.55), inset 0 0 0 4px rgba(94,70,50,0.18)',
+                    '0 0 60px rgba(212,162,76,0.35), inset 0 0 0 4px rgba(94,70,50,0.12)',
                   ],
                 }}
                 transition={{ repeat: Infinity, duration: 2.4 }}
@@ -265,14 +265,13 @@ export default function ResultScreen({ result, onViewBook, onBack }) {
             <div className="relative z-10 max-w-5xl mx-auto page-turn-in">
               {/* 책등 그림자 (중앙 세로 가운데) — md 이상에서만 */}
               <div className="hidden md:block absolute top-4 bottom-4 left-1/2 -translate-x-1/2 w-16
-                              bg-gradient-to-r from-transparent via-ink/30 to-transparent
+                              bg-gradient-to-r from-transparent via-ink/20 to-transparent
                               pointer-events-none z-20" />
 
               <div className="grid md:grid-cols-2 gap-0 md:gap-0
-                              bg-paper rounded-2xl md:rounded-[2rem]
-                              shadow-[0_30px_60px_-30px_rgba(58,36,24,0.45)]
-                              overflow-hidden relative
-                              border border-paper-edge">
+                              gold-rim rounded-2xl md:rounded-[2rem]
+                              shadow-[0_30px_60px_-30px_rgba(94,70,50,0.45)]
+                              overflow-hidden relative">
 
                 {/* ─────── 좌측 페이지: 디저트 ─────── */}
                 <motion.section
@@ -284,8 +283,8 @@ export default function ResultScreen({ result, onViewBook, onBack }) {
                              bg-gradient-to-br from-[#FBF3E3] to-[#F0DEB6]"
                 >
                   <PaperGrain />
-                  <CornerOrnament corner="tl" className="absolute top-3 left-3 w-9 h-9 text-ink/35" />
-                  <CornerOrnament corner="bl" className="absolute bottom-3 left-3 w-9 h-9 text-ink/35" />
+                  <CornerOrnament corner="tl" className="absolute top-3 left-3 w-9 h-9 text-honey" />
+                  <CornerOrnament corner="bl" className="absolute bottom-3 left-3 w-9 h-9 text-honey" />
 
                   {/* 페이지 헤더 */}
                   <div className="relative flex items-center justify-between mb-4">
@@ -306,7 +305,7 @@ export default function ResultScreen({ result, onViewBook, onBack }) {
                       animate={{ rotate: -2.5, y: 0, opacity: 1 }}
                       transition={{ delay: 0.5, type: 'spring', stiffness: 80, damping: 14 }}
                       className="relative bg-[#FCF5E6] p-3 md:p-4 pb-10 md:pb-12
-                                 shadow-[0_18px_30px_-18px_rgba(58,36,24,0.5)]
+                                 shadow-[0_18px_30px_-18px_rgba(94,70,50,0.5)]
                                  border border-paper-edge"
                     >
                       <MaskingTape
@@ -365,9 +364,8 @@ export default function ResultScreen({ result, onViewBook, onBack }) {
                   >
                     {result.combo.split('/').map((part, i, arr) => (
                       <span key={i} className="flex items-center gap-2">
-                        <span className="font-display text-sm md:text-base text-ink/80
-                                         px-2.5 py-0.5 bg-honey-soft/30
-                                         border border-ink/15 rounded-full">
+                        <span className="font-display text-sm md:text-base text-ink
+                                         px-3 py-0.5 gold-rim rounded-full">
                           {part.trim()}
                         </span>
                         {i < arr.length - 1 && (
@@ -395,8 +393,8 @@ export default function ResultScreen({ result, onViewBook, onBack }) {
                              bg-gradient-to-bl from-[#FCF5E6] to-[#F0DEB6]"
                 >
                   <PaperGrain />
-                  <CornerOrnament corner="tr" className="absolute top-3 right-3 w-9 h-9 text-ink/35" />
-                  <CornerOrnament corner="br" className="absolute bottom-3 right-3 w-9 h-9 text-ink/35" />
+                  <CornerOrnament corner="tr" className="absolute top-3 right-3 w-9 h-9 text-honey" />
+                  <CornerOrnament corner="br" className="absolute bottom-3 right-3 w-9 h-9 text-honey" />
                   <WheatSprig className="absolute top-10 right-4 w-8 h-auto text-sage/40" />
 
                   {/* 페이지 헤더 */}

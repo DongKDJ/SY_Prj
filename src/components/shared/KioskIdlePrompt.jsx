@@ -15,7 +15,7 @@ export default function KioskIdlePrompt({ secondsLeft }) {
       animate={{ opacity: 1 }}
       exit={{ opacity: 0 }}
       className="fixed inset-0 z-50 flex items-center justify-center
-                 bg-ink/45 backdrop-blur-sm"
+                 bg-ink/30 backdrop-blur-sm"
       role="status"
       aria-live="polite"
     >
@@ -23,9 +23,9 @@ export default function KioskIdlePrompt({ secondsLeft }) {
         initial={{ scale: 0.94, y: 10 }}
         animate={{ scale: 1, y: 0 }}
         transition={{ type: 'spring', stiffness: 130, damping: 16 }}
-        className="relative bg-paper border border-paper-edge rounded-md
+        className="relative gold-rim rounded-2xl
                    px-10 py-8 text-center max-w-sm mx-6
-                   shadow-[0_28px_50px_-22px_rgba(58,36,24,0.75)]"
+                   shadow-[0_28px_50px_-22px_rgba(94,70,50,0.75)]"
       >
         <PaperGrain />
 

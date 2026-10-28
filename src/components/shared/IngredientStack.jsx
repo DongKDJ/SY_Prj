@@ -45,7 +45,7 @@ export default function IngredientStack({ selections }) {
           >
             {/* 폴라로이드 */}
             <div className="relative w-full h-full bg-[#FBF3E3] p-1.5 pb-7
-                            shadow-[0_10px_18px_-10px_rgba(58,36,24,0.55)]
+                            shadow-[0_10px_18px_-10px_rgba(94,70,50,0.55)]
                             border border-paper-edge">
               <MaskingTape
                 className="absolute -top-2 left-1/2 -translate-x-1/2"

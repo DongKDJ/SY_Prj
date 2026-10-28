@@ -66,9 +66,9 @@ export function LoadingCover({ progress }) {
         여우씨가 레시피 재료를 준비하고 있어요…
       </span>
       {progress != null && (
-        <div className="w-56 h-1.5 rounded-full bg-ink/10 overflow-hidden">
+        <div className="gold-rim w-56 h-2.5 rounded-full overflow-hidden">
           <div
-            className="h-full bg-honey rounded-full transition-[width] duration-300 ease-out"
+            className="h-full gold-bead rounded-full transition-[width] duration-300 ease-out"
             style={{ width: `${Math.round(progress * 100)}%` }}
           />
         </div>

@@ -237,12 +237,13 @@ export default function StageScreen({ stageIndex, selections, onSelect, onComple
               {[0, 1, 2, 3].map(i => (
                 <span
                   key={i}
-                  className={`inline-block transition-all drop-shadow-[0_1px_3px_rgba(255,248,240,0.8)] ${
+                  className={`inline-block transition-all rounded-full
+                              drop-shadow-[0_1px_3px_rgba(94,70,50,0.35)] ${
                     i < stageIndex
-                      ? `w-3 h-3 rounded-full ${style.accentBg}`
+                      ? 'w-3 h-3 gold-bead'
                       : i === stageIndex
-                        ? `w-6 h-3 rounded-full ${style.accentBg}`
-                        : 'w-3 h-3 rounded-full border border-ink/40'
+                        ? 'w-7 h-3 gold-bead'
+                        : 'w-3 h-3 bg-paper/80 border border-honey'
                   }`}
                 />
               ))}
@@ -285,12 +286,12 @@ export default function StageScreen({ stageIndex, selections, onSelect, onComple
             transition={{ duration: 0.5 }}
             className="min-h-[100dvh] flex flex-col items-center justify-center px-4 py-8 relative"
           >
-            {/* 카드·질문이 배경 원화에 묻히지 않게 화면 중앙만 살짝 어둡게 */}
+            {/* 카드·질문이 배경 원화에 묻히지 않게 — 원화 톤을 탁하게 하는 어두운 막 대신 화면 중앙에 크림빛 빛무리 */}
             <div
               className="absolute inset-0 pointer-events-none"
               style={{
                 background:
-                  'radial-gradient(ellipse 58% 66% at 50% 52%, rgba(58,36,24,0.52), rgba(58,36,24,0.26) 55%, transparent 82%)',
+                  'radial-gradient(ellipse 52% 62% at 50% 52%, rgba(255,248,236,0.72), rgba(255,248,236,0.38) 55%, transparent 84%)',
               }}
             />
             <CardSelect
@@ -329,8 +330,8 @@ export default function StageScreen({ stageIndex, selections, onSelect, onComple
                   style={{ filter: 'blur(16px)' }}
                 />
               </div>
-              <div className="absolute inset-0 bg-ink/30" />
-              <div className="absolute inset-0 bg-radial from-transparent to-black/50" />
+              <div className="absolute inset-0 bg-cream/40" />
+              <div className="absolute inset-0 bg-radial from-[#FFF3D6]/60 via-transparent to-transparent" />
 
               <motion.div
                 initial={{ scale: 0.6, opacity: 0, rotateZ: -3 }}
@@ -341,7 +342,7 @@ export default function StageScreen({ stageIndex, selections, onSelect, onComple
                 {/* 카드 — 테두리·명패까지 원화 한 장에 그려져 있어 별도 액자를 두르지 않는다.
                     설명을 읽는 8~12초 동안 정지하지 않도록 아주 느리게 흔들린다. */}
                 <div className="ambient-pinned w-56 md:w-72 aspect-[16/21]
-                                shadow-[0_30px_50px_-20px_rgba(0,0,0,0.6)]">
+                                shadow-[0_30px_50px_-24px_rgba(94,70,50,0.55)]">
                   {cardImg ? (
                     <img src={cardImg} alt={card.ingredient}
                          draggable={false}
@@ -382,7 +383,7 @@ export default function StageScreen({ stageIndex, selections, onSelect, onComple
                   className="mt-7 max-w-md text-center px-2"
                 >
                   <Floret className="w-4 h-4 text-honey mx-auto mb-2" />
-                  <p className="font-display italic text-sm md:text-base text-cream/95 leading-relaxed">
+                  <p className="font-display italic text-sm md:text-base text-ink leading-relaxed">
                     &ldquo;{card.description}&rdquo;
                   </p>
                 </motion.div>

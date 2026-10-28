@@ -46,12 +46,11 @@ export default function CardSelect({ stage, onSelect, accent = 'honey' }) {
         transition={{ type: 'spring', stiffness: 110, damping: 14 }}
         className="relative mx-auto mb-10 max-w-md"
       >
-        <MaskingTape className="absolute -top-2.5 left-8" width={70} rotate={-9} tone="honey" />
-        <MaskingTape className="absolute -top-2.5 right-8" width={70} rotate={8} tone="jam" />
+        <MaskingTape className="absolute -top-2.5 left-8 z-10" width={70} rotate={-9} tone="honey" />
+        <MaskingTape className="absolute -top-2.5 right-8 z-10" width={70} rotate={8} tone="jam" />
 
-        <div className={`relative bg-[#FBF3E3] rounded-md px-6 py-4
-                         border border-paper-edge
-                         shadow-[0_14px_28px_-14px_rgba(58,36,24,0.55)]`}>
+        <div className="relative gold-rim rounded-xl px-6 py-4
+                        shadow-[0_14px_28px_-14px_rgba(94,70,50,0.55)]">
           <PaperGrain />
           <div className="relative flex items-center gap-2 mb-1.5">
             <Sparkle className={`w-3 h-3 ${a.text}`} />
@@ -150,8 +149,8 @@ export default function CardSelect({ stage, onSelect, accent = 'honey' }) {
         animate={{ opacity: selectedId ? 0 : 1 }}
         transition={selectedId ? { duration: 0.35 } : { delay: 0.9 }}
         aria-hidden={!!selectedId}
-        className="mt-10 text-center font-script text-base select-none pointer-events-none
-                   text-paper"
+        className="mt-10 text-center font-display text-base select-none pointer-events-none
+                   text-ink drop-shadow-[0_1px_4px_rgba(255,248,236,0.95)]"
       >
         마음에 드는 카드를 탭해주세요
       </motion.p>

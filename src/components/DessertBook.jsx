@@ -51,7 +51,7 @@ export default function DessertBook({ currentResult, onRestart, onExit }) {
                   ✕
                 </motion.button>
                 <div className="gold-rim rounded-full px-8 md:px-12 py-1.5 text-center
-                                shadow-[0_10px_24px_-14px_rgba(58,36,24,0.6)]">
+                                shadow-[0_10px_24px_-14px_rgba(94,70,50,0.6)]">
                   <h2 className="font-display text-2xl md:text-3xl font-bold text-ink leading-tight">
                     디저트 도감
                   </h2>
@@ -75,7 +75,7 @@ export default function DessertBook({ currentResult, onRestart, onExit }) {
                     onClick={() => setDetailDessert(d)}
                     className="gold-rim aspect-[3/4] rounded-xl overflow-hidden
                                flex flex-col relative
-                               shadow-[0_14px_24px_-16px_rgba(58,36,24,0.7)] cursor-pointer"
+                               shadow-[0_14px_24px_-16px_rgba(94,70,50,0.7)] cursor-pointer"
                   >
                     <div className="flex-1 overflow-hidden flex items-center justify-center
                                     bg-radial from-[#FFF8E8] to-[#F1DDB8]">
@@ -147,8 +147,10 @@ export default function DessertBook({ currentResult, onRestart, onExit }) {
                   whileTap={{ scale: 0.9 }}
                   onClick={() => navigateDetail(-1)}
                   aria-label="이전"
-                  className="flex-shrink-0 text-ink/60 text-2xl md:text-3xl drop-shadow-[0_1px_3px_rgba(255,248,240,0.9)]
-                             cursor-pointer hover:text-ink transition-colors px-1 md:px-2"
+                  className="flex-shrink-0 gold-rim rounded-full w-10 h-10 md:w-12 md:h-12
+                             flex items-center justify-center text-ink/70 text-base md:text-lg
+                             cursor-pointer hover:text-ink transition-colors
+                             shadow-[0_8px_16px_-10px_rgba(94,70,50,0.6)]"
                 >
                   ◀
                 </motion.button>
@@ -205,8 +207,10 @@ export default function DessertBook({ currentResult, onRestart, onExit }) {
                   whileTap={{ scale: 0.9 }}
                   onClick={() => navigateDetail(1)}
                   aria-label="다음"
-                  className="flex-shrink-0 text-ink/60 text-2xl md:text-3xl drop-shadow-[0_1px_3px_rgba(255,248,240,0.9)]
-                             cursor-pointer hover:text-ink transition-colors px-1 md:px-2"
+                  className="flex-shrink-0 gold-rim rounded-full w-10 h-10 md:w-12 md:h-12
+                             flex items-center justify-center text-ink/70 text-base md:text-lg
+                             cursor-pointer hover:text-ink transition-colors
+                             shadow-[0_8px_16px_-10px_rgba(94,70,50,0.6)]"
                 >
                   ▶
                 </motion.button>

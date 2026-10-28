@@ -142,10 +142,11 @@ export function WaxSeal({
 export function MaskingTape({
   className = '', width = 90, rotate = -6, tone = 'honey',
 }) {
+  // 원화 파스텔 — 버터·민트·장밋빛 반투명 테이프
   const palette = {
-    honey: 'rgba(212,162,76,0.55)',
-    sage:  'rgba(122,138,111,0.45)',
-    jam:   'rgba(184,88,112,0.45)',
+    honey: 'rgba(242,214,128,0.62)',
+    sage:  'rgba(150,212,176,0.58)',
+    jam:   'rgba(240,158,180,0.55)',
     cream: 'rgba(255,248,240,0.7)',
   }
   return (
@@ -159,7 +160,7 @@ export function MaskingTape({
           `repeating-linear-gradient(45deg, rgba(255,255,255,0.18) 0 4px, transparent 4px 10px)`,
         '--rot': `${rotate}deg`,
         transform: `rotate(${rotate}deg)`,
-        boxShadow: '0 1px 2px rgba(58,36,24,0.18)',
+        boxShadow: '0 1px 2px rgba(94,70,50,0.18)',
       }}
     />
   )

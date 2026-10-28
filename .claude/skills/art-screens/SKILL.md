@@ -54,8 +54,10 @@ description: "원화 화면·UI 아트 — 3840x2160 원화 레이어(ArtStage·
 
 ## 색·폰트·장식
 
-Warm cream + brown cabin theme defined in `src/index.css` @theme block.
-액센트: `jam`(라즈베리), `honey`(황금), `sage`(세이지 그린), `ink`(진갈색), `paper`/`paper-edge`(양피지).
+원화 파스텔 팔레트 — `src/index.css` @theme (2026-10-28 원화 레이어에서 추출해 교체, 사용자 "UI도 원화 분위기로").
+`ink`(글씨 = 로고의 따뜻한 갈색을 한 톤 짙게 #5E4632), `jam`(이전 버튼 사과의 장밋빛), `honey`(금장 금색), `sage`(타이틀 배경 민트 잎), `sky`, `paper`/`paper-edge`(크림 양피지).
+어두운 막(ink·black 오버레이)으로 원화를 탁하게 하지 말 것 — 글이 묻히면 크림빛 빛무리·`bg-cream/NN` 덧칠로.
+UI 재료: `.gold-rim`(금장 테 패널·칩·원형 버튼) · `.gold-bead`(진행 점·게이지) · `.btn-art`(InkButton — 금장 테 파스텔 알약: butter=주 버튼, rose, mint).
 
 ### 폰트 (`src/main.jsx`에서 npm 패키지로 셀프호스팅 — CDN 미사용)
 - **Display:** Gowun Batang (`@fontsource/gowun-batang`) — 한글 명조 (`.font-display`)
