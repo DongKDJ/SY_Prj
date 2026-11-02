@@ -49,9 +49,15 @@ description: "디저트 레이어 애니메이션 — dessertLayerConfig.js 옵�
 - 검증: 16종 동시 마운트 → 여러 시점 스크린샷 → 프레임 차이 히트맵. 접점·접시 쪽이 어두우면(안 움직임) 고정된 것.
 
 ## 사용 가능한 애니메이션 타입
+파츠 종류별 기본 배정(2026-11-02 대표 지시 "파츠마다 어울리게"): 윗면에 놓인 과일·토핑 `settle` · 잎·허브 `flutter` · 크림·스쿱 `breathe`(`breathe-lg`) · 꽂힌 막대·과자 `sway-sm2`/`sway-lg` · 반짝임 `twinkle` · 눈송이 `snow` · 구름 `drift-scale` · 접시 위 과일도 `settle`(subOn plate).
+
 | 타입 | 설명 | 변형 |
 |------|------|------|
-| `jelly` | scaleY+scaleX+skewX 탱글 (기본) | — |
+| `settle` | 접점 축 rotate ±0.35° + scaleY 0.6% — 받치는 파츠 위에 놓인 과일·토핑 | — |
+| `flutter` | 줄기 접점 축 불규칙 rotate(2.2/−1.2/1.6°) — 잎·허브 | — |
+| `glisten` | 제자리 brightness 숨쉬기 — 사탕·젤리 구슬 (transform 없음) | — |
+| `snow` | 제 중심 translate+rotate 떠다님 — 눈송이(공중 전용) | — |
+| `jelly` | scaleY+skewX 탱글 (기본) | — |
 | `sway` | skewX 바닥고정 찰랑 (±0.6°) | `sway-sm`, `sway-lg`, `sway-xl`, `sway-sm2` |
 | `sync` | 메인 바운스 동기화 | `sync-sm` (0.8배), `sync-fast` (0.8배) |
 | `hover` | translateY 미세 부유 | `hover-lg` (1.3배) |
@@ -61,17 +67,19 @@ description: "디저트 레이어 애니메이션 — dessertLayerConfig.js 옵�
 | `drift` | translateX 좌우 이동 | — |
 | `drift-scale` | 좌우 이동 + 균일 크기 변화 | — |
 
-## 메인 바운스 타입 (`bounce` 옵션)
+## 메인 바운스 타입 (`bounce` 옵션) — 재질로 고른다
 | 타입 | 설명 |
 |------|------|
-| `bounce` | 기본 2단 바운스 (scaleY 기반, 강→약) |
-| `wobble` | scaleX↔scaleY 교차 변형 (말랑 젤리) |
-| `soft` | scaleY만 부드럽게 부풀기 (무스/구름용) |
-| `crisp` | 접점 고정, 숨 쉬듯 1% — 바삭한 구움과자·유리잔 (옛 float = 통째로 떠오름은 폐기) |
-| (썸네일) | 도감 그리드는 메인 타입 대신 `dessert-soft-sm` (16종 동시라 가장 얌전하게) |
+| `bounce` | 2단 scaleY 통통 (강→약) — 폭신한 팬케이크 |
+| `wobble` | 밑면 고정 skewX ±1.3° + scaleY — 젤리·푸딩·판나코타 (밑면 폭은 변하지 않는다) |
+| `soft` | scaleY만 부드럽게 부풀기 — 무스·스펀지·마쉬멜로우 |
+| `crisp` | 접점 고정, 숨 쉬듯 0.8% — 구움과자·페이스트리·파이·타르트·유리잔 (옛 float = 통째로 떠오름은 폐기) |
+| (썸네일) | 도감 그리드·포토부스는 메인 타입 대신 `dessert-soft-sm` (16종 동시라 가장 얌전하게) |
 
 ## 애니메이션 원칙
 - 음식이므로 과한 움직임 금지
+- **접시는 정적** — plate 레이어는 Moving 밖, 접시 밑 그림자(`.dessert-shadow-el`)도 펄스 없음(2026-11-02: 폭 펄스가 접시 흔들림으로 읽혀 제거)
+- **코어(접시에 닿은 본체)는 떨어지거나 미끄러지지 않는다** — 메인·sync·back 키프레임에 scaleX 금지(밑면 폭이 변하면 미끄러져 보인다). 메인은 scaleY(위로만)와 밑면 고정 skewX만. 검증 = 도감 상세 5프레임 diff 히트맵에서 접시·바닥 띠가 검게 나와야 한다(스크래치 `motion_diff.mjs` 전례, 2026-11-02 16종 모두 하단 20% 띠 = 0)
 - 메인 바운스: scaleY 기반, 제 바닥 접점(mainPivots) 앵커 — 캔버스 아래 끝이 아니다
 - 서브: 뿌리 고정 — 접점 축, rotate 기반 찰랑거림 권장 (skewX보다 자연스러움). translate(hover·drift)는 공중 장식에만
 - 늘어남→원상복귀는 ease-out으로 느리게 (자연스러운 탄성)
