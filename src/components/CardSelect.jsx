@@ -44,7 +44,7 @@ export default function CardSelect({ stage, onSelect, accent = 'honey' }) {
         initial={{ opacity: 0, y: -16, rotate: -1 }}
         animate={{ opacity: 1, y: 0, rotate: 0 }}
         transition={{ type: 'spring', stiffness: 110, damping: 14 }}
-        className="relative mx-auto mb-10 max-w-md"
+        className="relative mx-auto mb-10 max-w-lg"
       >
         <MaskingTape className="absolute -top-2.5 left-8 z-10" width={70} rotate={-9} tone="honey" />
         <MaskingTape className="absolute -top-2.5 right-8 z-10" width={70} rotate={8} tone="jam" />
@@ -54,15 +54,15 @@ export default function CardSelect({ stage, onSelect, accent = 'honey' }) {
           <PaperGrain />
           <div className="relative flex items-center gap-2 mb-1.5">
             <Sparkle className={`w-3 h-3 ${a.text}`} />
-            <span className={`font-script text-base ${a.text}`}>
+            <span className={`font-script text-lg ${a.text}`}>
               Chapter {stageNum}
             </span>
             <div className="flex-1 h-px bg-ink/15" />
-            <span className="font-display text-[10px] text-ink/45 tracking-[0.25em]">
+            <span className="font-display text-xs text-ink/55 tracking-[0.25em]">
               {stage.element.toUpperCase()}
             </span>
           </div>
-          <p className="relative font-display text-ink text-sm md:text-base leading-relaxed">
+          <p className="relative font-display font-semibold text-ink text-lg md:text-xl leading-relaxed">
             {stage.title}
           </p>
         </div>
@@ -149,7 +149,7 @@ export default function CardSelect({ stage, onSelect, accent = 'honey' }) {
         animate={{ opacity: selectedId ? 0 : 1 }}
         transition={selectedId ? { duration: 0.35 } : { delay: 0.9 }}
         aria-hidden={!!selectedId}
-        className="mt-10 text-center font-display text-base select-none pointer-events-none
+        className="mt-10 text-center font-display text-lg md:text-xl select-none pointer-events-none
                    text-ink drop-shadow-[0_1px_4px_rgba(255,248,236,0.95)]"
       >
         마음에 드는 카드를 탭해주세요

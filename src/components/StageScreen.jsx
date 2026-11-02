@@ -256,10 +256,10 @@ export default function StageScreen({ stageIndex, selections, onSelect, onComple
               transition={{ delay: 1.4 }}
               className="absolute bottom-6 left-0 right-0 flex flex-col items-center gap-1 z-10 pointer-events-none"
             >
-              <span className="font-script text-xl text-jam drop-shadow-[0_1px_4px_rgba(255,248,240,0.9)]">
+              <span className="font-script text-2xl text-jam drop-shadow-[0_1px_4px_rgba(255,248,240,0.9)]">
                 turn the page
               </span>
-              <span className="font-display text-xs tracking-widest text-ink/80
+              <span className="font-display text-sm md:text-base tracking-widest text-ink/85
                                drop-shadow-[0_1px_4px_rgba(255,248,240,0.9)]">
                 탭하여 계속 →
               </span>
@@ -337,7 +337,7 @@ export default function StageScreen({ stageIndex, selections, onSelect, onComple
                 initial={{ scale: 0.6, opacity: 0, rotateZ: -3 }}
                 animate={{ scale: 1, opacity: 1, rotateZ: 0 }}
                 transition={{ type: 'spring', stiffness: 80, damping: 14 }}
-                className="relative z-10 flex flex-col items-center max-w-md mt-[5vh]"
+                className="relative z-10 flex flex-col items-center max-w-lg mt-[5vh]"
               >
                 {/* 카드 — 테두리·명패까지 원화 한 장에 그려져 있어 별도 액자를 두르지 않는다.
                     설명을 읽는 8~12초 동안 정지하지 않도록 아주 느리게 흔들린다. */}
@@ -369,7 +369,7 @@ export default function StageScreen({ stageIndex, selections, onSelect, onComple
                     className="w-full h-auto select-none"
                   />
                   <div className="absolute inset-0 flex items-center justify-center pt-[5%] px-12">
-                    <p className="font-display text-lg md:text-xl font-bold text-ink text-center leading-tight">
+                    <p className="font-display text-xl md:text-2xl font-bold text-ink text-center leading-tight">
                       {card.brief}
                     </p>
                   </div>
@@ -380,10 +380,10 @@ export default function StageScreen({ stageIndex, selections, onSelect, onComple
                   initial={{ opacity: 0, y: 12 }}
                   animate={{ opacity: 1, y: 0 }}
                   transition={{ delay: 0.4 }}
-                  className="mt-7 max-w-md text-center px-2"
+                  className="mt-7 max-w-lg text-center px-2"
                 >
                   <Floret className="w-4 h-4 text-honey mx-auto mb-2" />
-                  <p className="font-display italic text-sm md:text-base text-ink leading-relaxed">
+                  <p className="font-display text-lg md:text-xl text-ink leading-relaxed">
                     &ldquo;{card.description}&rdquo;
                   </p>
                 </motion.div>
