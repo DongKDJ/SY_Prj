@@ -1,3 +1,4 @@
+import { useState } from 'react'
 import { AnimatePresence, MotionConfig, motion } from 'framer-motion'
 import { useGameState } from './hooks/useGameState'
 import { readKioskFlag, useKioskIdle, useKioskLock } from './hooks/useKiosk'
@@ -53,6 +54,9 @@ function App() {
     restart,
   } = useGameState()
 
+  // 결과 화면을 어느 페이지로 열지 — 오븐에서 오면 메달리온 공개, 사진 찍기에서 돌아오면 곧장 펼친 책
+  const [resultPhase, setResultPhase] = useState('reveal')
+
   useKioskLock(isKiosk)
   const idleSeconds = useKioskIdle({
     enabled: isKiosk,
@@ -100,12 +104,17 @@ function App() {
             )}
 
             {screen === 'resultTransition' && (
-              <ResultTransition onComplete={nextScreen} result={currentResult} onBack={prevScreen} />
+              <ResultTransition
+                onComplete={() => { setResultPhase('reveal'); nextScreen() }}
+                result={currentResult}
+                onBack={prevScreen}
+              />
             )}
 
             {screen === 'result' && (
               <ResultScreen
                 result={currentResult}
+                initialPhase={resultPhase}
                 onViewBook={() => goToScreen('dessertBook')}
                 onTakePhoto={() => goToScreen('photo')}
                 onBack={prevScreen}
@@ -113,7 +122,11 @@ function App() {
             )}
 
             {screen === 'photo' && (
-              <PhotoScreen result={currentResult} kiosk={isKiosk} onBack={prevScreen} />
+              <PhotoScreen
+                result={currentResult}
+                kiosk={isKiosk}
+                onBack={() => { setResultPhase('detail'); prevScreen() }}
+              />
             )}
 
             {screen === 'dessertBook' && (

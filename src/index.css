@@ -313,7 +313,11 @@ body {
   pointer-events: none;
 }
 
-/* ── Boing 바운스: 접시에 바닥이 붙은 느낌 (절제된 squash & stretch) ── */
+/* 메인(코어) 공통 원칙 (2026-11-02 대표 지시 "접시에 닿은 본체가 떨어지지 않게"):
+   가로 scale 금지 — 접점 축이 바닥이라도 scaleX가 들어가면 접시에 닿은 밑면의 폭이 늘었다 줄었다 하며
+   본체가 접시 위에서 미끄러져 보인다. 메인은 scaleY(위로만 부풀기)와 바닥 고정 skewX(젤리 출렁)만 쓴다. */
+
+/* ── Boing 바운스: 폭신한 것(팬케이크)이 위로 통통 — 밑면 폭 고정 ── */
 .dessert-bounce {
   position: absolute;
   inset: 0;
@@ -324,41 +328,41 @@ body {
 @keyframes dessert-boing {
   /* 1단: 늘어남 */
   0% {
-    transform: scaleX(1) scaleY(1);
+    transform: scaleY(1);
     animation-timing-function: cubic-bezier(0.33, 0, 0.66, 0);
   }
   12% {
-    transform: scaleX(0.97) scaleY(1.04);
+    transform: scaleY(1.035);
   }
   /* 1단: 눌림 → 원상복귀 (느리게) */
   22% {
-    transform: scaleX(1.025) scaleY(0.965);
+    transform: scaleY(0.975);
     animation-timing-function: cubic-bezier(0.25, 0.1, 0.25, 1);
   }
   34% {
-    transform: scaleX(0.998) scaleY(1.006);
+    transform: scaleY(1.005);
   }
   40% {
-    transform: scaleX(1) scaleY(1);
+    transform: scaleY(1);
   }
   /* 2단: 늘어남 */
   48% {
-    transform: scaleX(0.99) scaleY(1.018);
+    transform: scaleY(1.015);
   }
   /* 2단: 눌림 → 원상복귀 (느리게) */
   56% {
-    transform: scaleX(1.012) scaleY(0.985);
+    transform: scaleY(0.99);
     animation-timing-function: cubic-bezier(0.25, 0.1, 0.25, 1);
   }
   66% {
-    transform: scaleX(0.997) scaleY(1.005);
+    transform: scaleY(1.004);
   }
   74%, 100% {
-    transform: scaleX(1) scaleY(1);
+    transform: scaleY(1);
   }
 }
 
-/* ── Soft 바운스: 몽글몽글 부풀기 (무스/구름 디저트용) ── */
+/* ── Soft 바운스: 몽글몽글 부풀기 (무스·스펀지·마쉬멜로우) ── */
 .dessert-soft {
   position: absolute;
   inset: 0;
@@ -368,37 +372,37 @@ body {
 
 @keyframes dessert-soft-kf {
   0%, 100% {
-    transform: scaleY(1) scaleX(1);
+    transform: scaleY(1);
   }
   50% {
-    transform: scaleY(1.025) scaleX(0.99);
+    transform: scaleY(1.022);
   }
 }
 
-/* ── Wobble 바운스: 말랑 젤리 (scaleY↔scaleX 교차 변형) ── */
+/* ── Wobble: 말랑 젤리 — 밑면은 접시에 붙인 채 윗부분만 좌우로 출렁(skewX) + 살짝 부풀기 ── */
 .dessert-wobble {
   position: absolute;
   inset: 0;
   transform-origin: center bottom;
-  animation: dessert-wobble-kf 1.55s ease-in-out infinite;
+  animation: dessert-wobble-kf 2.2s ease-in-out infinite;
 }
 
 @keyframes dessert-wobble-kf {
   0%, 100% {
-    transform: scaleX(1) scaleY(1);
+    transform: skewX(0deg) scaleY(1);
   }
   25% {
-    transform: scaleX(0.975) scaleY(1.05);
+    transform: skewX(1.3deg) scaleY(1.03);
   }
   50% {
-    transform: scaleX(1.025) scaleY(0.975);
+    transform: skewX(0deg) scaleY(0.985);
   }
   75% {
-    transform: scaleX(0.98) scaleY(1.04);
+    transform: skewX(-1.3deg) scaleY(1.025);
   }
 }
 
-/* ── Crisp: 바삭한 구움과자·유리잔 — 바닥 접점은 붙인 채 숨 쉬듯 아주 미세하게 ── */
+/* ── Crisp: 바삭한 구움과자·페이스트리·유리잔 — 접점 고정, 숨 쉬듯 아주 미세하게 ── */
 .dessert-crisp {
   position: absolute;
   inset: 0;
@@ -407,8 +411,8 @@ body {
 }
 
 @keyframes dessert-crisp-kf {
-  0%, 100% { transform: scaleY(1) scaleX(1); }
-  50% { transform: scaleY(1.01) scaleX(0.997); }
+  0%, 100% { transform: scaleY(1); }
+  50% { transform: scaleY(1.008); }
 }
 
 /* ── Thumb용: 도감 16종이 한꺼번에 움직이므로 가장 얌전한 부풀기 (바닥 접점 고정) ── */
@@ -420,8 +424,8 @@ body {
 }
 
 @keyframes dessert-soft-sm-kf {
-  0%, 100% { transform: scaleY(1) scaleX(1); }
-  50% { transform: scaleY(1.012) scaleX(0.995); }
+  0%, 100% { transform: scaleY(1); }
+  50% { transform: scaleY(1.012); }
 }
 
 /* 움직임 사슬의 고리 (AnimatedDessert Moving) — 레이어 캔버스 전체를 덮는다 */
@@ -438,13 +442,13 @@ body {
 
 @keyframes dessert-back-sway {
   0%, 100% {
-    transform: scaleY(1) scaleX(1);
+    transform: scaleY(1);
   }
   30% {
-    transform: scaleX(1.012) scaleY(0.988);
+    transform: scaleY(0.99);
   }
   60% {
-    transform: scaleX(0.988) scaleY(1.015);
+    transform: scaleY(1.012);
   }
 }
 
@@ -458,10 +462,10 @@ body {
   animation: dessert-sub-jelly 2.4s ease-in-out infinite;
 }
 @keyframes dessert-sub-jelly {
-  0%, 100% { transform: scaleY(1) scaleX(1) skewX(0deg); }
-  25% { transform: scaleY(1.022) scaleX(0.984) skewX(0.8deg); }
-  50% { transform: scaleY(0.984) scaleX(1.016) skewX(0deg); }
-  75% { transform: scaleY(1.016) scaleX(0.99) skewX(-0.8deg); }
+  0%, 100% { transform: scaleY(1) skewX(0deg); }
+  25% { transform: scaleY(1.022) skewX(0.8deg); }
+  50% { transform: scaleY(0.984) skewX(0deg); }
+  75% { transform: scaleY(1.016) skewX(-0.8deg); }
 }
 
 /* sway: 바닥고정 skewX 찰랑 */
@@ -537,15 +541,15 @@ body {
   animation: dessert-sub-sync 2.4s ease-in-out infinite;
 }
 @keyframes dessert-sub-sync {
-  0% { transform: scaleY(1) scaleX(1); }
-  12% { transform: scaleY(1.03) scaleX(0.975); }
-  22% { transform: scaleY(0.97) scaleX(1.02); }
-  34% { transform: scaleY(1.005) scaleX(0.998); }
-  40% { transform: scaleY(1) scaleX(1); }
-  48% { transform: scaleY(1.015) scaleX(0.99); }
-  56% { transform: scaleY(0.988) scaleX(1.01); }
-  66% { transform: scaleY(1.004) scaleX(0.998); }
-  74%, 100% { transform: scaleY(1) scaleX(1); }
+  0% { transform: scaleY(1); }
+  12% { transform: scaleY(1.03); }
+  22% { transform: scaleY(0.97); }
+  34% { transform: scaleY(1.005); }
+  40% { transform: scaleY(1); }
+  48% { transform: scaleY(1.015); }
+  56% { transform: scaleY(0.988); }
+  66% { transform: scaleY(1.004); }
+  74%, 100% { transform: scaleY(1); }
 }
 
 /* sync-sm: sync의 0.8배 스케일 */
@@ -553,31 +557,31 @@ body {
   animation: dessert-sub-sync-sm 2.4s ease-in-out infinite;
 }
 @keyframes dessert-sub-sync-sm {
-  0% { transform: scaleY(1) scaleX(1); }
-  12% { transform: scaleY(1.029) scaleX(0.976); }
-  22% { transform: scaleY(0.971) scaleX(1.019); }
-  34% { transform: scaleY(1.005) scaleX(0.998); }
-  40% { transform: scaleY(1) scaleX(1); }
-  48% { transform: scaleY(1.014) scaleX(0.99); }
-  56% { transform: scaleY(0.988) scaleX(1.01); }
-  66% { transform: scaleY(1.004) scaleX(0.998); }
-  74%, 100% { transform: scaleY(1) scaleX(1); }
+  0% { transform: scaleY(1); }
+  12% { transform: scaleY(1.024); }
+  22% { transform: scaleY(0.976); }
+  34% { transform: scaleY(1.004); }
+  40% { transform: scaleY(1); }
+  48% { transform: scaleY(1.012); }
+  56% { transform: scaleY(0.99); }
+  66% { transform: scaleY(1.003); }
+  74%, 100% { transform: scaleY(1); }
 }
 
-/* sync-fast: 메인과 동기화, 변형량 0.8배 */
+/* sync-fast: 메인과 동기화, 변형량 0.6배 */
 .dessert-sub-sync-fast {
   animation: dessert-sub-sync-fast 2.4s ease-in-out infinite;
 }
 @keyframes dessert-sub-sync-fast {
-  0% { transform: scaleY(1) scaleX(1); }
-  12% { transform: scaleY(1.024) scaleX(0.98); }
-  22% { transform: scaleY(0.976) scaleX(1.016); }
-  34% { transform: scaleY(1.004) scaleX(0.998); }
-  40% { transform: scaleY(1) scaleX(1); }
-  48% { transform: scaleY(1.012) scaleX(0.992); }
-  56% { transform: scaleY(0.99) scaleX(1.008); }
-  66% { transform: scaleY(1.003) scaleX(0.998); }
-  74%, 100% { transform: scaleY(1) scaleX(1); }
+  0% { transform: scaleY(1); }
+  12% { transform: scaleY(1.018); }
+  22% { transform: scaleY(0.982); }
+  34% { transform: scaleY(1.003); }
+  40% { transform: scaleY(1); }
+  48% { transform: scaleY(1.009); }
+  56% { transform: scaleY(0.992); }
+  66% { transform: scaleY(1.002); }
+  74%, 100% { transform: scaleY(1); }
 }
 
 /* pulse-bounce: opacity 반짝 + scaleY 바운스 복합 */
@@ -585,13 +589,53 @@ body {
   animation: dessert-sub-pulse-bounce 3.6s ease-in-out infinite;
 }
 @keyframes dessert-sub-pulse-bounce {
-  0% { opacity: 1; transform: scaleY(1) scaleX(1); }
-  15% { opacity: 0.88; transform: scaleY(1.02) scaleX(0.985); }
-  25% { opacity: 1; transform: scaleY(0.98) scaleX(1.015); }
-  42% { opacity: 1; transform: scaleY(1) scaleX(1); }
-  55% { opacity: 0.9; transform: scaleY(1.012) scaleX(0.993); }
-  65% { opacity: 1; transform: scaleY(0.99) scaleX(1.008); }
-  85%, 100% { opacity: 1; transform: scaleY(1) scaleX(1); }
+  0% { opacity: 1; transform: scaleY(1); }
+  15% { opacity: 0.88; transform: scaleY(1.02); }
+  25% { opacity: 1; transform: scaleY(0.98); }
+  42% { opacity: 1; transform: scaleY(1); }
+  55% { opacity: 0.9; transform: scaleY(1.012); }
+  65% { opacity: 1; transform: scaleY(0.99); }
+  85%, 100% { opacity: 1; transform: scaleY(1); }
+}
+
+/* settle: 윗면에 놓인 과일 — 받치는 파츠의 움직임을 물려받은 위에 제 접점에서 아주 살짝 기울어졌다 돌아온다 */
+.dessert-sub-settle {
+  animation: dessert-sub-settle 3.4s ease-in-out infinite;
+}
+@keyframes dessert-sub-settle {
+  0%, 100% { transform: rotate(0deg) scaleY(1); }
+  35% { transform: rotate(-0.35deg) scaleY(1.006); }
+  70% { transform: rotate(0.35deg) scaleY(1); }
+}
+
+/* flutter: 잎·허브 — 줄기 접점을 축으로 바람에 팔랑 (sway-lg보다 가볍고 불규칙) */
+.dessert-sub-flutter {
+  animation: dessert-sub-flutter 3.1s ease-in-out infinite;
+}
+@keyframes dessert-sub-flutter {
+  0%, 100% { transform: rotate(0deg); }
+  20% { transform: rotate(2.2deg); }
+  45% { transform: rotate(-1.2deg); }
+  70% { transform: rotate(1.6deg); }
+}
+
+/* glisten: 사탕·젤리 구슬 같은 반짝이는 토핑 — 제자리에서 밝기만 숨쉬듯 */
+.dessert-sub-glisten {
+  animation: dessert-sub-glisten 2.8s ease-in-out infinite;
+}
+@keyframes dessert-sub-glisten {
+  0%, 100% { filter: brightness(1); }
+  50% { filter: brightness(1.08); }
+}
+
+/* snow: 눈송이 — 제 중심에서 천천히 돌며 떠다닌다 (공중 장식 전용) */
+.dessert-sub-snow {
+  animation: dessert-sub-snow 7s ease-in-out infinite;
+}
+@keyframes dessert-sub-snow {
+  0%, 100% { transform: translate(0, 0) rotate(0deg); opacity: 1; }
+  33% { transform: translate(0.6%, -0.8%) rotate(6deg); opacity: 0.85; }
+  66% { transform: translate(-0.5%, 0.4%) rotate(-5deg); opacity: 0.95; }
 }
 
 /* sway-sm2: rotate 찰랑 (sway-lg의 0.5배) */
@@ -651,7 +695,7 @@ body {
   50% { transform: scaleY(1.0325); }
 }
 
-/* ── 바운스와 동기화되는 그림자 ── */
+/* ── 접시 밑 그림자 — 정적. 폭이 늘었다 줄었다 하던 펄스는 접시가 흔들리는 것처럼 읽혀 뺐다(2026-11-02) ── */
 .dessert-shadow-el {
   width: 55%;
   height: 6px;
@@ -659,13 +703,7 @@ body {
   border-radius: 50%;
   margin-top: -2px;
   flex-shrink: 0;
-  animation: dessert-shadow-pulse 2.4s ease-in-out infinite;
-}
-
-@keyframes dessert-shadow-pulse {
-  0%, 100% { transform: scaleX(1); opacity: 0.35; }
-  35% { transform: scaleX(0.85); opacity: 0.25; }
-  60% { transform: scaleX(1.06); opacity: 0.4; }
+  opacity: 0.35;
 }
 
 /* ===== 앰비언트 모션 — 진입이 끝난 뒤에도 페이지가 살아 있도록 =====
@@ -883,14 +921,31 @@ a,
 }
 
 /* ===== 사진 찍기 화면 (PhotoScreen) =====
-   카메라 프레임 — 가로 화면은 4:3, 세로 화면(폰 미러샷)은 3:4. 머리말·버튼 자리를 남기도록 높이로 상한. */
-.photo-frame {
-  width: min(90vw, calc(62dvh * 4 / 3));
-  aspect-ratio: 4 / 3;
+   사진에 담기는 영역 = 원화 스테이지 박스(.art-stage-box)와 화면의 교집합.
+   가로 = 스테이지 박스(16:10 PC는 위아래 ink 여백 제외), 세로 = 화면 전체(스테이지는 cover 크롭). 디저트·스티커는 이 안에서 움직인다. */
+.photo-area {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  transform: translate(-50%, -50%);
+  width: min(100vw, 177.78dvh);
+  height: min(100dvh, 56.25vw);
 }
 @media (orientation: portrait) {
-  .photo-frame {
-    width: min(92vw, calc(58dvh * 3 / 4));
-    aspect-ratio: 3 / 4;
+  .photo-area {
+    inset: 0;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    transform: none;
   }
+}
+
+/* 스티커 트레이 — 가로 스크롤, 스크롤바 숨김 */
+.sticker-tray {
+  scrollbar-width: none;
+}
+.sticker-tray::-webkit-scrollbar {
+  display: none;
 }

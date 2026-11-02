@@ -44,8 +44,9 @@ function createMote(id) {
   }
 }
 
-export default function ResultScreen({ result, onViewBook, onTakePhoto, onBack }) {
-  const [phase, setPhase] = useState('reveal')
+// initialPhase: 'reveal'(오븐에서 온 첫 공개) | 'detail'(사진 찍기에서 돌아올 때 — 메달리온을 건너뛰고 펼친 책으로)
+export default function ResultScreen({ result, onViewBook, onTakePhoto, onBack, initialPhase = 'reveal' }) {
+  const [phase, setPhase] = useState(initialPhase)
   const motes = useMemo(() =>
     Array.from({ length: 44 }, (_, i) => createMote(i)), []
   )
