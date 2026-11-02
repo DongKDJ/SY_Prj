@@ -881,3 +881,16 @@ a,
 .cursor-pointer {
   cursor: url('./assets/images/screens/cursor.png') 15 1, pointer;
 }
+
+/* ===== 사진 찍기 화면 (PhotoScreen) =====
+   카메라 프레임 — 가로 화면은 4:3, 세로 화면(폰 미러샷)은 3:4. 머리말·버튼 자리를 남기도록 높이로 상한. */
+.photo-frame {
+  width: min(90vw, calc(62dvh * 4 / 3));
+  aspect-ratio: 4 / 3;
+}
+@media (orientation: portrait) {
+  .photo-frame {
+    width: min(92vw, calc(58dvh * 3 / 4));
+    aspect-ratio: 3 / 4;
+  }
+}

@@ -24,6 +24,7 @@ const BACK_TO = {
   resultTransition: 'stage4',
   result: 'stage4',
   dessertBook: 'result',
+  photo: 'result', // 사진 찍기는 결과에서 갈라지는 곁가지 — SCREENS 순서에는 없고 goToScreen으로만 간다
 }
 
 export function useGameState() {

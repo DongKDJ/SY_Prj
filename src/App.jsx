@@ -18,6 +18,7 @@ import StageScreen from './components/StageScreen'
 import ResultTransition from './components/ResultTransition'
 import ResultScreen from './components/ResultScreen'
 import DessertBook from './components/DessertBook'
+import PhotoScreen from './components/PhotoScreen'
 
 const pageTransition = {
   initial: { opacity: 0 },
@@ -57,6 +58,7 @@ function App() {
     enabled: isKiosk,
     armed: screen !== 'title', // 타이틀에서는 되돌릴 진행 상태가 없다
     onReset: restart,
+    idleMs: screen === 'photo' ? 180_000 : undefined, // 포토부스는 포즈 잡는 동안 손을 안 대니 3분
   })
 
   // 스테이지 4개는 한 마운트를 공유 — 스테이지 사이에 페이지 페이드(크림색 플래시)와
@@ -105,8 +107,13 @@ function App() {
               <ResultScreen
                 result={currentResult}
                 onViewBook={() => goToScreen('dessertBook')}
+                onTakePhoto={() => goToScreen('photo')}
                 onBack={prevScreen}
               />
+            )}
+
+            {screen === 'photo' && (
+              <PhotoScreen result={currentResult} kiosk={isKiosk} onBack={prevScreen} />
             )}
 
             {screen === 'dessertBook' && (

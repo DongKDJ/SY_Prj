@@ -10,7 +10,7 @@
 
 ## 구조
 
-- 화면 흐름 = `useGameState`: `title → dialog → stage1~4 → resultTransition → result → dessertBook`. 뒤로 가기 = `prevScreen` + `BACK_TO` 맵.
+- 화면 흐름 = `useGameState`: `title → dialog → stage1~4 → resultTransition → result → dessertBook`. 뒤로 가기 = `prevScreen` + `BACK_TO` 맵. 곁가지 `result → photo`(`PhotoScreen`, 카메라 거울 + 디저트 장식): `?kiosk=1`이면 거울만(관람객이 폰으로 화면을 찍는 미러샷, 저장 없음), 아니면 찰칵·합성(`lib/composePhoto.js`)·저장. 카메라는 https에서만 켜진다.
 - 데이터 = `src/data/desserts.js`(stages 4문항 · dessertResults 16조합(카드 ID 키) · foxDialogs).
 - 이미지 = `src/assets/images/` — `character/`(여우씨 레이어) · `cards/` · `desserts/`(+`layers/`) · `screens/`(원화 레이어). 같은 파일명으로 교체.
 - 브랜치 = `main` 단일(분기 안 함). `main` push → GitHub Actions 자동 배포(정본: 메모리 `deploy-mechanism`).

@@ -44,7 +44,7 @@ function createMote(id) {
   }
 }
 
-export default function ResultScreen({ result, onViewBook, onBack }) {
+export default function ResultScreen({ result, onViewBook, onTakePhoto, onBack }) {
   const [phase, setPhase] = useState('reveal')
   const motes = useMemo(() =>
     Array.from({ length: 44 }, (_, i) => createMote(i)), []
@@ -444,44 +444,58 @@ export default function ResultScreen({ result, onViewBook, onBack }) {
                     <Floret className="w-5 h-5 text-honey/80" />
                   </div>
 
-                  {/* 버튼 2개 */}
+                  {/* 버튼: 사진 찍기(주) + 공유·디저트 북 */}
                   <motion.div
                     initial={{ opacity: 0, y: 10 }}
                     animate={{ opacity: 1, y: 0 }}
                     transition={{ delay: 1.2 }}
-                    className="flex justify-center items-start gap-6 mt-10"
+                    className="flex flex-col items-center gap-5 mt-8"
                   >
                     <InkButton
-                      size="sm"
-                      tone="honey"
+                      size="md"
+                      tone="jam"
                       arrow={false}
-                      onClick={() => {
-                        const text =
-                          `나의 디저트는 "${result.name}"!\n성격: ${result.personality}\n\n${result.description}\n\n여우씨의 디저트 레시피에서 확인해보세요!`
-                        if (navigator.share) {
-                          // 공유 시트를 닫으면 AbortError로 reject — 조용히 무시
-                          navigator.share({ title: '여우씨의 디저트 레시피', text }).catch(() => {})
-                        } else if (navigator.clipboard) {
-                          navigator.clipboard.writeText(text)
-                            .then(() => alert('결과가 클립보드에 복사되었습니다!'))
-                            .catch(() => alert('복사하지 못했어요. 화면을 캡처해 주세요.'))
-                        } else {
-                          alert('이 브라우저에서는 공유를 지원하지 않아요. 화면을 캡처해 주세요.')
-                        }
-                      }}
-                      aria-label="결과 공유하기"
+                      sub="photo booth"
+                      onClick={onTakePhoto}
+                      aria-label="내 디저트와 사진 찍기"
                     >
-                      결과 공유
+                      <Sparkle className="w-4 h-4 text-jam/80" />
+                      내 디저트와 사진 찍기!
                     </InkButton>
 
-                    <InkButton
-                      size="sm"
-                      sub="recipe book"
-                      onClick={onViewBook}
-                      aria-label="디저트 북 보기"
-                    >
-                      디저트 북 보기
-                    </InkButton>
+                    <div className="flex justify-center items-start gap-6">
+                      <InkButton
+                        size="sm"
+                        tone="honey"
+                        arrow={false}
+                        onClick={() => {
+                          const text =
+                            `나의 디저트는 "${result.name}"!\n성격: ${result.personality}\n\n${result.description}\n\n여우씨의 디저트 레시피에서 확인해보세요!`
+                          if (navigator.share) {
+                            // 공유 시트를 닫으면 AbortError로 reject — 조용히 무시
+                            navigator.share({ title: '여우씨의 디저트 레시피', text }).catch(() => {})
+                          } else if (navigator.clipboard) {
+                            navigator.clipboard.writeText(text)
+                              .then(() => alert('결과가 클립보드에 복사되었습니다!'))
+                              .catch(() => alert('복사하지 못했어요. 화면을 캡처해 주세요.'))
+                          } else {
+                            alert('이 브라우저에서는 공유를 지원하지 않아요. 화면을 캡처해 주세요.')
+                          }
+                        }}
+                        aria-label="결과 공유하기"
+                      >
+                        결과 공유
+                      </InkButton>
+
+                      <InkButton
+                        size="sm"
+                        sub="recipe book"
+                        onClick={onViewBook}
+                        aria-label="디저트 북 보기"
+                      >
+                        디저트 북 보기
+                      </InkButton>
+                    </div>
                   </motion.div>
 
                   {/* 페이지 번호 */}

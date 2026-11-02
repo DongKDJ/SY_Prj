@@ -22,9 +22,10 @@ const ACTIVITY = ['pointerdown', 'pointermove', 'keydown', 'wheel', 'touchstart'
  * @param enabled 키오스크 모드 여부
  * @param armed   유휴 복귀를 걸어둘지 (타이틀 화면에서는 되돌릴 게 없으므로 false)
  * @param onReset 복귀 동작
+ * @param idleMs  무조작 허용 시간 (기본 90초 — 사진 찍기 화면은 포즈 잡는 동안 손을 안 대니 더 길게)
  * @returns 카운트다운 잔여 초 (진행 중이 아니면 null)
  */
-export function useKioskIdle({ enabled, armed, onReset }) {
+export function useKioskIdle({ enabled, armed, onReset, idleMs = IDLE_MS }) {
   const [countdown, setCountdown] = useState(null)
 
   // ref로 받아두는 이유: onReset이 매 렌더 새 함수여도 유휴 시계가 리셋되지 않게
@@ -61,7 +62,7 @@ export function useKioskIdle({ enabled, armed, onReset }) {
         setCountdown(null)
       }
       clearTimeout(idleTimer)
-      idleTimer = setTimeout(startCountdown, IDLE_MS)
+      idleTimer = setTimeout(startCountdown, idleMs)
     }
 
     ACTIVITY.forEach(e => window.addEventListener(e, bump, { passive: true }))
@@ -73,7 +74,7 @@ export function useKioskIdle({ enabled, armed, onReset }) {
       clearInterval(tickTimer)
       setCountdown(null) // 화면이 바뀌어 무장 해제될 때 진행 중이던 안내를 걷는다
     }
-  }, [enabled, armed])
+  }, [enabled, armed, idleMs])
 
   return countdown
 }
