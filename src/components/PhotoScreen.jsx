@@ -615,12 +615,14 @@ export default function PhotoScreen({ result, kiosk = false, onBack }) {
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
             transition={{ duration: 0.3 }}
-            className="absolute inset-0 z-[45] bg-ink flex flex-col items-center"
+            className="absolute inset-0 z-[45] bg-ink flex landscape:flex-row portrait:flex-col"
           >
-            <div className="flex-1 min-h-0 w-full flex items-center justify-center p-3 md:p-5 pb-0">
+            {/* 사진 — 버튼과 겹치지 않게 제 칸 안에서만 최대로. 기울이지 않는다(모서리가 버튼 칸으로 새지 않게). */}
+            <div className="flex-1 min-h-0 min-w-0 flex items-center justify-center
+                            p-4 md:p-6 landscape:pr-2 portrait:pb-2">
               <motion.img
-                initial={{ scale: 0.96, rotate: 0 }}
-                animate={{ scale: 1, rotate: -1 }}
+                initial={{ scale: 0.96, opacity: 0 }}
+                animate={{ scale: 1, opacity: 1 }}
                 transition={{ type: 'spring', stiffness: 90, damping: 14 }}
                 src={shot.url}
                 alt={`${result.name}와 함께 찍은 사진`}
@@ -629,12 +631,16 @@ export default function PhotoScreen({ result, kiosk = false, onBack }) {
                            shadow-[0_22px_40px_-20px_rgba(0,0,0,0.8)]"
               />
             </div>
-            <div className="w-full bg-cream/90 border-t-[0.2rem] border-[#D6A64A]/70 px-3 py-3 md:py-4
-                            flex flex-wrap items-center justify-center gap-3 md:gap-5">
-              {/* 전시 PC: 폰으로 화면을 찍는 미러샷 안내도 함께 — 저장은 전시 PC의 다운로드 폴더로 간다 */}
+            {/* 버튼 칸 — 가로 화면은 오른쪽 세로 줄(사진은 화면 높이를 다 쓴다), 세로 화면은 아래 두 줄.
+                전시 PC에서 관람객이 폰으로 찍을 때 사진만 프레임에 담기도록 사진과 겹치지 않게 따로 둔다. */}
+            <div className="flex-shrink-0 bg-cream/90 border-[#D6A64A]/70
+                            landscape:w-[15rem] landscape:border-l-[0.2rem] landscape:flex-col landscape:justify-center
+                            portrait:w-full portrait:border-t-[0.2rem] portrait:flex-row portrait:flex-wrap portrait:justify-center
+                            flex items-center gap-3 px-4 py-4">
+              {/* 전시 PC: 폰으로 화면을 찍는 미러샷 안내 — 저장은 전시 PC의 다운로드 폴더로 간다 */}
               {kiosk && (
-                <div className="gold-rim rounded-full px-5 py-1.5 text-center">
-                  <p className="font-display text-sm md:text-base font-bold text-ink leading-tight">
+                <div className="gold-rim rounded-2xl px-4 py-2 text-center portrait:w-full landscape:mb-2">
+                  <p className="font-display text-sm md:text-base font-bold text-ink leading-snug">
                     내 폰으로 이 화면을 찍어 보세요!
                   </p>
                   <p className="font-script text-xs md:text-sm text-jam leading-tight">mirror shot</p>
@@ -646,7 +652,7 @@ export default function PhotoScreen({ result, kiosk = false, onBack }) {
                 </InkButton>
                 {/* 아이폰 공유 시트가 안 뜨거나 "이미지 저장"이 없을 때의 길 — iOS는 이미지 길게 누르기 메뉴에 '사진 앱에 저장'이 있다 */}
                 {isAppleTouch() && (
-                  <p className="font-display text-[0.65rem] text-ink/60">안 되면 사진을 길게 눌러 ‘사진 앱에 저장’</p>
+                  <p className="font-display text-[0.65rem] text-ink/60 text-center">안 되면 사진을 길게 눌러 ‘사진 앱에 저장’</p>
                 )}
               </div>
               <InkButton size="sm" tone="honey" arrow={false} onClick={retake}>
