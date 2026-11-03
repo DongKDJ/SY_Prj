@@ -56,6 +56,9 @@ function App() {
 
   // 결과 화면을 어느 페이지로 열지 — 오븐에서 오면 메달리온 공개, 사진 찍기에서 돌아오면 곧장 펼친 책
   const [resultPhase, setResultPhase] = useState('reveal')
+  // 스테이지를 어느 페이즈로 열지 — 대화에서 오면 책갈피, 결과·오븐에서 뒤로 오면 곧장 카드 고르기
+  // (스테이지 사이에서 뒤로 갈 때와 같은 규칙. 2026-11-04 검수: 결과에서 이전 → 책갈피라 한 번 더 눌러야 했다)
+  const [stageEntry, setStageEntry] = useState('bookmark')
 
   useKioskLock(isKiosk)
   const idleSeconds = useKioskIdle({
@@ -90,13 +93,14 @@ function App() {
             )}
 
             {screen === 'dialog' && (
-              <DialogScreen onComplete={nextScreen} onBack={prevScreen} />
+              <DialogScreen onComplete={() => { setStageEntry('bookmark'); nextScreen() }} onBack={prevScreen} />
             )}
 
             {stageNo && (
               <StageScreen
                 stageIndex={stageNo - 1}
                 selections={selections.slice(0, stageNo - 1)}
+                initialPhase={stageEntry}
                 onSelect={selectCard}
                 onComplete={nextScreen}
                 onBack={prevScreen}
@@ -107,7 +111,7 @@ function App() {
               <ResultTransition
                 onComplete={() => { setResultPhase('reveal'); nextScreen() }}
                 result={currentResult}
-                onBack={prevScreen}
+                onBack={() => { setStageEntry('cards'); prevScreen() }}
               />
             )}
 
@@ -117,7 +121,7 @@ function App() {
                 initialPhase={resultPhase}
                 onViewBook={() => goToScreen('dessertBook')}
                 onTakePhoto={() => goToScreen('photo')}
-                onBack={prevScreen}
+                onBack={() => { setStageEntry('cards'); prevScreen() }}
               />
             )}
 

@@ -91,8 +91,9 @@ const STAGE_SRCS = [
 ]
 
 // Phase: 'bookmark' → 'cards' → 'enlarged'
-export default function StageScreen({ stageIndex, selections, onSelect, onComplete, onBack }) {
-  const [phase, setPhase] = useState('bookmark')
+// initialPhase: 'bookmark'(대화에서 들어옴) | 'cards'(결과·오븐에서 뒤로 들어옴)
+export default function StageScreen({ stageIndex, selections, onSelect, onComplete, onBack, initialPhase = 'bookmark' }) {
+  const [phase, setPhase] = useState(initialPhase)
   const [selectedCardId, setSelectedCardId] = useState(null)
   const proceedRef = useRef(false)
 

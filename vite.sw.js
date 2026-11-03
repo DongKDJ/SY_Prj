@@ -4,13 +4,15 @@
 // · 화면(index.html): 인터넷 먼저 → 실패하면 저장본. 배포하면 다음 접속에 바로 새 판이 뜬다.
 // · 그림·코드·폰트(assets/, 이름에 해시): 저장본 먼저 → 없으면 받아서 저장. 이름이 바뀌니 옛 판과 섞이지 않는다.
 // · 관람객 폰은 실제로 본 파일만 저장(데이터 아끼기). 전시 PC(?kiosk=1)는 페이지가 precache.json 목록을 하나씩 요청해 전체(약 33MB)를 미리 저장.
-// · 판(VERSION)이 바뀌면 옛 저장소는 지운다.
+// · 판(VERSION)이 바뀌면 새 판에도 그대로 쓰는 파일을 옛 저장소에서 새 저장소로 옮긴 뒤(기기 안 복사, 인터넷 불필요) 옛 저장소를 지운다.
+//   (2026-11-04 라이브 실측: 옮기지 않고 지우면 전환 직후 새 저장소가 49/288뿐 — 그 순간 와이파이가 끊기면 그림이 빈다)
 import { createHash } from 'node:crypto'
 
-const swSource = (version) => `/* 여우씨의 디저트 레시피 — 오프라인 대비 (빌드가 생성, 직접 고치지 말 것: vite.sw.js) */
+const swSource = (version, assets) => `/* 여우씨의 디저트 레시피 — 오프라인 대비 (빌드가 생성, 직접 고치지 말 것: vite.sw.js) */
 const VERSION = ${JSON.stringify(version)}
 const CACHE = 'sy-' + VERSION
 const SHELL = ['./', './index.html', './favicon.svg']
+const ASSETS = ${JSON.stringify(assets)}
 
 self.addEventListener('install', (e) => {
   self.skipWaiting()
@@ -19,7 +21,19 @@ self.addEventListener('install', (e) => {
 
 self.addEventListener('activate', (e) => {
   e.waitUntil((async () => {
-    for (const k of await caches.keys()) if (k.startsWith('sy-') && k !== CACHE) await caches.delete(k)
+    const cur = await caches.open(CACHE)
+    const keep = new Set(ASSETS.map((a) => new URL(a, self.registration.scope).href))
+    for (const k of await caches.keys()) {
+      if (!k.startsWith('sy-') || k === CACHE) continue
+      const old = await caches.open(k)
+      for (const req of await old.keys()) {
+        if (!keep.has(req.url)) continue
+        if (await cur.match(req, { ignoreVary: true })) continue
+        const res = await old.match(req, { ignoreVary: true })
+        if (res) await cur.put(req, res)
+      }
+      await caches.delete(k)
+    }
     await self.clients.claim()
   })())
 })
@@ -30,10 +44,11 @@ self.addEventListener('fetch', (e) => {
   const url = new URL(req.url)
   if (url.origin !== self.location.origin) return
   if (req.mode === 'navigate') {
-    // 화면: 인터넷 먼저(새 배포 반영), 끊기면 저장된 index.html — ?kiosk=1 같은 주소 뒤 꼬리는 무시
+    // 화면: 인터넷 먼저(새 배포 반영), 끊기면 저장된 index.html — ?kiosk=1 같은 주소 뒤 꼬리는 무시.
+    // no-cache = 브라우저가 들고 있는 사본이 최신인지 서버에 꼭 확인(GitHub Pages가 10분 보관을 시켜 새 배포가 늦게 뜨던 것)
     e.respondWith((async () => {
       try {
-        const res = await fetch(req)
+        const res = await fetch(req.url, { cache: 'no-cache', credentials: 'same-origin' })
         const c = await caches.open(CACHE)
         c.put('./index.html', res.clone())
         return res
@@ -65,7 +80,7 @@ export default function offlineServiceWorker() {
     generateBundle(_, bundle) {
       const assets = Object.keys(bundle).filter((f) => !f.endsWith('.html')).sort()
       const version = createHash('sha1').update(assets.join('\n')).digest('hex').slice(0, 10)
-      this.emitFile({ type: 'asset', fileName: 'sw.js', source: swSource(version) })
+      this.emitFile({ type: 'asset', fileName: 'sw.js', source: swSource(version, assets) })
       // 전시 PC가 미리 받을 목록
       this.emitFile({ type: 'asset', fileName: 'precache.json', source: JSON.stringify({ version, assets }) })
     },
