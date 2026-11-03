@@ -333,30 +333,30 @@ body {
     animation-timing-function: cubic-bezier(0.33, 0, 0.66, 0);
   }
   12% {
-    transform: scaleY(1.09) skewX(0.6deg);
+    transform: scaleY(calc(1 + (0.09) * var(--dz))) skewX(calc(0.6deg * var(--dz)));
   }
   /* 1단: 눌림 → 원상복귀 (느리게) */
   22% {
-    transform: scaleY(0.95) skewX(-0.6deg);
+    transform: scaleY(calc(1 + (-0.05) * var(--dz))) skewX(calc(-0.6deg * var(--dz)));
     animation-timing-function: cubic-bezier(0.25, 0.1, 0.25, 1);
   }
   34% {
-    transform: scaleY(1.015) skewX(0.2deg);
+    transform: scaleY(calc(1 + (0.015) * var(--dz))) skewX(calc(0.2deg * var(--dz)));
   }
   40% {
     transform: scaleY(1) skewX(0deg);
   }
   /* 2단: 늘어남 */
   48% {
-    transform: scaleY(1.04) skewX(0.3deg);
+    transform: scaleY(calc(1 + (0.04) * var(--dz))) skewX(calc(0.3deg * var(--dz)));
   }
   /* 2단: 눌림 → 원상복귀 (느리게) */
   56% {
-    transform: scaleY(0.975) skewX(-0.3deg);
+    transform: scaleY(calc(1 + (-0.025) * var(--dz))) skewX(calc(-0.3deg * var(--dz)));
     animation-timing-function: cubic-bezier(0.25, 0.1, 0.25, 1);
   }
   66% {
-    transform: scaleY(1.008) skewX(0deg);
+    transform: scaleY(calc(1 + (0.008) * var(--dz))) skewX(0deg);
   }
   74%, 100% {
     transform: scaleY(1) skewX(0deg);
@@ -376,10 +376,10 @@ body {
     transform: scaleY(1) skewX(0deg);
   }
   30% {
-    transform: scaleY(1.055) skewX(0.8deg);
+    transform: scaleY(calc(1 + (0.055) * var(--dz))) skewX(calc(0.8deg * var(--dz)));
   }
   65% {
-    transform: scaleY(1.02) skewX(-0.7deg);
+    transform: scaleY(calc(1 + (0.02) * var(--dz))) skewX(calc(-0.7deg * var(--dz)));
   }
 }
 
@@ -396,13 +396,13 @@ body {
     transform: skewX(0deg) scaleY(1);
   }
   25% {
-    transform: skewX(3.2deg) scaleY(1.07);
+    transform: skewX(calc(3.2deg * var(--dz))) scaleY(calc(1 + (0.07) * var(--dz)));
   }
   50% {
-    transform: skewX(0deg) scaleY(0.965);
+    transform: skewX(0deg) scaleY(calc(1 + (-0.035) * var(--dz)));
   }
   75% {
-    transform: skewX(-3.2deg) scaleY(1.06);
+    transform: skewX(calc(-3.2deg * var(--dz))) scaleY(calc(1 + (0.06) * var(--dz)));
   }
 }
 
@@ -416,8 +416,8 @@ body {
 
 @keyframes dessert-crisp-kf {
   0%, 100% { transform: rotate(0deg) scaleY(1); }
-  28% { transform: rotate(1.1deg) scaleY(1.025); }
-  62% { transform: rotate(-1deg) scaleY(1.012); }
+  28% { transform: rotate(calc(1.1deg * var(--dz))) scaleY(calc(1 + (0.025) * var(--dz))); }
+  62% { transform: rotate(calc(-1deg * var(--dz))) scaleY(calc(1 + (0.012) * var(--dz))); }
 }
 
 /* ── Thumb용: 도감 16종이 한꺼번에 움직이므로 가장 얌전한 부풀기 (바닥 접점 고정) ── */
@@ -430,7 +430,7 @@ body {
 
 @keyframes dessert-soft-sm-kf {
   0%, 100% { transform: scaleY(1) skewX(0deg); }
-  50% { transform: scaleY(1.035) skewX(0.5deg); }
+  50% { transform: scaleY(calc(1 + (0.035) * var(--dz))) skewX(calc(0.5deg * var(--dz))); }
 }
 
 /* 움직임 사슬의 고리 (AnimatedDessert Moving) — 레이어 캔버스 전체를 덮는다 */
@@ -450,10 +450,10 @@ body {
     transform: scaleY(1) skewX(0deg);
   }
   30% {
-    transform: scaleY(0.975) skewX(-0.8deg);
+    transform: scaleY(calc(1 + (-0.025) * var(--dz))) skewX(calc(-0.8deg * var(--dz)));
   }
   60% {
-    transform: scaleY(1.04) skewX(0.9deg);
+    transform: scaleY(calc(1 + (0.04) * var(--dz))) skewX(calc(0.9deg * var(--dz)));
   }
 }
 
@@ -468,9 +468,9 @@ body {
 }
 @keyframes dessert-sub-jelly {
   0%, 100% { transform: scaleY(1) skewX(0deg); }
-  25% { transform: scaleY(1.06) skewX(2.2deg); }
-  50% { transform: scaleY(0.965) skewX(0deg); }
-  75% { transform: scaleY(1.05) skewX(-2.2deg); }
+  25% { transform: scaleY(calc(1 + (0.06) * var(--dz))) skewX(calc(2.2deg * var(--dz))); }
+  50% { transform: scaleY(calc(1 + (-0.035) * var(--dz))) skewX(0deg); }
+  75% { transform: scaleY(calc(1 + (0.05) * var(--dz))) skewX(calc(-2.2deg * var(--dz))); }
 }
 
 /* sway: 바닥고정 skewX 찰랑 */
@@ -479,8 +479,8 @@ body {
 }
 @keyframes dessert-sub-sway {
   0%, 100% { transform: skewX(0deg); }
-  30% { transform: skewX(2deg); }
-  70% { transform: skewX(-2deg); }
+  30% { transform: skewX(calc(2deg * var(--dz))); }
+  70% { transform: skewX(calc(-2deg * var(--dz))); }
 }
 
 /* drift: 좌우 이동 (공중 장식) */
@@ -489,8 +489,8 @@ body {
 }
 @keyframes dessert-sub-drift {
   0%, 100% { transform: translateX(0); }
-  30% { transform: translateX(2%); }
-  70% { transform: translateX(-2%); }
+  30% { transform: translateX(calc(2% * var(--dz))); }
+  70% { transform: translateX(calc(-2% * var(--dz))); }
 }
 
 /* drift-scale: 구름 — 떠다니며 커졌다 작아진다 (공중 장식) */
@@ -499,9 +499,9 @@ body {
 }
 @keyframes dessert-sub-drift-scale {
   0%, 100% { transform: translate(0, 0) scale(1); }
-  25% { transform: translate(2.2%, -1.2%) scale(1.1); }
-  50% { transform: translate(0.4%, 0.6%) scale(0.94); }
-  75% { transform: translate(-2.2%, -0.8%) scale(1.08); }
+  25% { transform: translate(calc(2.2% * var(--dz)), calc(-1.2% * var(--dz))) scale(calc(1 + (0.1) * var(--dz))); }
+  50% { transform: translate(calc(0.4% * var(--dz)), calc(0.6% * var(--dz))) scale(calc(1 + (-0.06) * var(--dz))); }
+  75% { transform: translate(calc(-2.2% * var(--dz)), calc(-0.8% * var(--dz))) scale(calc(1 + (0.08) * var(--dz))); }
 }
 
 /* sway-sm: sway의 절반 */
@@ -510,8 +510,8 @@ body {
 }
 @keyframes dessert-sub-sway-sm {
   0%, 100% { transform: skewX(0deg); }
-  30% { transform: skewX(1deg); }
-  70% { transform: skewX(-1deg); }
+  30% { transform: skewX(calc(1deg * var(--dz))); }
+  70% { transform: skewX(calc(-1deg * var(--dz))); }
 }
 
 /* pulse: opacity 반짝 */
@@ -520,7 +520,7 @@ body {
 }
 @keyframes dessert-sub-pulse {
   0%, 100% { opacity: 1; transform: scale(1); }
-  50% { opacity: 0.7; transform: scale(0.94); }
+  50% { opacity: 0.7; transform: scale(calc(1 + (-0.06) * var(--dz))); }
 }
 
 /* twinkle: 반짝임 — 제 중심(피봇)에서 돌며 작아졌다 커지고 흐려졌다 밝아진다 */
@@ -529,7 +529,7 @@ body {
 }
 @keyframes dessert-sub-twinkle {
   0%, 100% { opacity: 1; transform: scale(1) rotate(0deg); }
-  50% { opacity: 0.35; transform: scale(0.7) rotate(22deg); }
+  50% { opacity: 0.35; transform: scale(calc(1 + (-0.3) * var(--dz))) rotate(calc(22deg * var(--dz))); }
 }
 
 /* hover: translateY 부유 (공중 장식) */
@@ -538,7 +538,7 @@ body {
 }
 @keyframes dessert-sub-hover {
   0%, 100% { transform: translateY(0); }
-  50% { transform: translateY(-3.5%); }
+  50% { transform: translateY(calc(-3.5% * var(--dz))); }
 }
 
 /* sync: 메인 바운스와 동기화 (약간 작은 스케일) */
@@ -547,13 +547,13 @@ body {
 }
 @keyframes dessert-sub-sync {
   0% { transform: scaleY(1); }
-  12% { transform: scaleY(1.07); }
-  22% { transform: scaleY(0.94); }
-  34% { transform: scaleY(1.012); }
+  12% { transform: scaleY(calc(1 + (0.07) * var(--dz))); }
+  22% { transform: scaleY(calc(1 + (-0.06) * var(--dz))); }
+  34% { transform: scaleY(calc(1 + (0.012) * var(--dz))); }
   40% { transform: scaleY(1); }
-  48% { transform: scaleY(1.035); }
-  56% { transform: scaleY(0.975); }
-  66% { transform: scaleY(1.008); }
+  48% { transform: scaleY(calc(1 + (0.035) * var(--dz))); }
+  56% { transform: scaleY(calc(1 + (-0.025) * var(--dz))); }
+  66% { transform: scaleY(calc(1 + (0.008) * var(--dz))); }
   74%, 100% { transform: scaleY(1); }
 }
 
@@ -563,13 +563,13 @@ body {
 }
 @keyframes dessert-sub-sync-sm {
   0% { transform: scaleY(1); }
-  12% { transform: scaleY(1.055); }
-  22% { transform: scaleY(0.952); }
-  34% { transform: scaleY(1.01); }
+  12% { transform: scaleY(calc(1 + (0.055) * var(--dz))); }
+  22% { transform: scaleY(calc(1 + (-0.048) * var(--dz))); }
+  34% { transform: scaleY(calc(1 + (0.01) * var(--dz))); }
   40% { transform: scaleY(1); }
-  48% { transform: scaleY(1.028); }
-  56% { transform: scaleY(0.98); }
-  66% { transform: scaleY(1.006); }
+  48% { transform: scaleY(calc(1 + (0.028) * var(--dz))); }
+  56% { transform: scaleY(calc(1 + (-0.02) * var(--dz))); }
+  66% { transform: scaleY(calc(1 + (0.006) * var(--dz))); }
   74%, 100% { transform: scaleY(1); }
 }
 
@@ -579,13 +579,13 @@ body {
 }
 @keyframes dessert-sub-sync-fast {
   0% { transform: scaleY(1); }
-  12% { transform: scaleY(1.042); }
-  22% { transform: scaleY(0.964); }
-  34% { transform: scaleY(1.007); }
+  12% { transform: scaleY(calc(1 + (0.042) * var(--dz))); }
+  22% { transform: scaleY(calc(1 + (-0.036) * var(--dz))); }
+  34% { transform: scaleY(calc(1 + (0.007) * var(--dz))); }
   40% { transform: scaleY(1); }
-  48% { transform: scaleY(1.02); }
-  56% { transform: scaleY(0.985); }
-  66% { transform: scaleY(1.004); }
+  48% { transform: scaleY(calc(1 + (0.02) * var(--dz))); }
+  56% { transform: scaleY(calc(1 + (-0.015) * var(--dz))); }
+  66% { transform: scaleY(calc(1 + (0.004) * var(--dz))); }
   74%, 100% { transform: scaleY(1); }
 }
 
@@ -595,11 +595,11 @@ body {
 }
 @keyframes dessert-sub-pulse-bounce {
   0% { opacity: 1; transform: scaleY(1); }
-  15% { opacity: 0.8; transform: scaleY(1.05); }
-  25% { opacity: 1; transform: scaleY(0.955); }
+  15% { opacity: 0.8; transform: scaleY(calc(1 + (0.05) * var(--dz))); }
+  25% { opacity: 1; transform: scaleY(calc(1 + (-0.045) * var(--dz))); }
   42% { opacity: 1; transform: scaleY(1); }
-  55% { opacity: 0.85; transform: scaleY(1.03); }
-  65% { opacity: 1; transform: scaleY(0.975); }
+  55% { opacity: 0.85; transform: scaleY(calc(1 + (0.03) * var(--dz))); }
+  65% { opacity: 1; transform: scaleY(calc(1 + (-0.025) * var(--dz))); }
   85%, 100% { opacity: 1; transform: scaleY(1); }
 }
 
@@ -609,8 +609,8 @@ body {
 }
 @keyframes dessert-sub-settle {
   0%, 100% { transform: rotate(0deg) scaleY(1); }
-  35% { transform: rotate(-2.4deg) scaleY(1.04); }
-  70% { transform: rotate(2.2deg) scaleY(1.01); }
+  35% { transform: rotate(calc(-2.4deg * var(--dz))) scaleY(calc(1 + (0.04) * var(--dz))); }
+  70% { transform: rotate(calc(2.2deg * var(--dz))) scaleY(calc(1 + (0.01) * var(--dz))); }
 }
 
 /* flutter: 잎·허브 — 줄기 접점을 축으로 바람에 팔랑 (sway-lg보다 가볍고 불규칙) */
@@ -619,9 +619,9 @@ body {
 }
 @keyframes dessert-sub-flutter {
   0%, 100% { transform: rotate(0deg); }
-  20% { transform: rotate(7deg); }
-  45% { transform: rotate(-4deg); }
-  70% { transform: rotate(5deg); }
+  20% { transform: rotate(calc(7deg * var(--dz))); }
+  45% { transform: rotate(calc(-4deg * var(--dz))); }
+  70% { transform: rotate(calc(5deg * var(--dz))); }
 }
 
 /* glisten: 사탕·젤리 구슬 같은 반짝이는 토핑 — 제자리에서 밝기만 숨쉬듯 */
@@ -639,8 +639,8 @@ body {
 }
 @keyframes dessert-sub-snow {
   0%, 100% { transform: translate(0, 0) rotate(0deg); opacity: 1; }
-  33% { transform: translate(1.8%, -2.4%) rotate(18deg); opacity: 0.75; }
-  66% { transform: translate(-1.6%, 1.2%) rotate(-14deg); opacity: 0.9; }
+  33% { transform: translate(calc(1.8% * var(--dz)), calc(-2.4% * var(--dz))) rotate(calc(18deg * var(--dz))); opacity: 0.75; }
+  66% { transform: translate(calc(-1.6% * var(--dz)), calc(1.2% * var(--dz))) rotate(calc(-14deg * var(--dz))); opacity: 0.9; }
 }
 
 /* sway-sm2: rotate 찰랑 (sway-lg의 0.5배) */
@@ -649,8 +649,8 @@ body {
 }
 @keyframes dessert-sub-sway-sm2 {
   0%, 100% { transform: rotate(0deg); }
-  30% { transform: rotate(-2.6deg); }
-  70% { transform: rotate(2.6deg); }
+  30% { transform: rotate(calc(-2.6deg * var(--dz))); }
+  70% { transform: rotate(calc(2.6deg * var(--dz))); }
 }
 
 /* sway-lg: 꽂힌 지점 기준 rotate 찰랑 — 피봇은 config에서 지정 */
@@ -659,8 +659,8 @@ body {
 }
 @keyframes dessert-sub-sway-lg {
   0%, 100% { transform: rotate(0deg); }
-  30% { transform: rotate(6deg); }
-  70% { transform: rotate(-6deg); }
+  30% { transform: rotate(calc(6deg * var(--dz))); }
+  70% { transform: rotate(calc(-6deg * var(--dz))); }
 }
 
 /* sway-xl: sway-lg의 1.4배 */
@@ -669,8 +669,8 @@ body {
 }
 @keyframes dessert-sub-sway-xl {
   0%, 100% { transform: rotate(0deg); }
-  30% { transform: rotate(8.5deg); }
-  70% { transform: rotate(-8.5deg); }
+  30% { transform: rotate(calc(8.5deg * var(--dz))); }
+  70% { transform: rotate(calc(-8.5deg * var(--dz))); }
 }
 
 /* hover-lg: hover의 1.3배 */
@@ -679,7 +679,7 @@ body {
 }
 @keyframes dessert-sub-hover-lg {
   0%, 100% { transform: translateY(0); }
-  50% { transform: translateY(-4.5%); }
+  50% { transform: translateY(calc(-4.5% * var(--dz))); }
 }
 
 /* breathe: 크림·스쿱 — 접점에서 위로 부풀며 살짝 기운다 */
@@ -688,8 +688,8 @@ body {
 }
 @keyframes dessert-sub-breathe {
   0%, 100% { transform: scaleY(1) skewX(0deg); }
-  35% { transform: scaleY(1.08) skewX(1deg); }
-  70% { transform: scaleY(1.02) skewX(-0.8deg); }
+  35% { transform: scaleY(calc(1 + (0.08) * var(--dz))) skewX(calc(1deg * var(--dz))); }
+  70% { transform: scaleY(calc(1 + (0.02) * var(--dz))) skewX(calc(-0.8deg * var(--dz))); }
 }
 
 /* breathe-lg: breathe의 1.3배 */
@@ -698,8 +698,8 @@ body {
 }
 @keyframes dessert-sub-breathe-lg {
   0%, 100% { transform: scaleY(1) skewX(0deg); }
-  35% { transform: scaleY(1.1) skewX(1.3deg); }
-  70% { transform: scaleY(1.03) skewX(-1deg); }
+  35% { transform: scaleY(calc(1 + (0.1) * var(--dz))) skewX(calc(1.3deg * var(--dz))); }
+  70% { transform: scaleY(calc(1 + (0.03) * var(--dz))) skewX(calc(-1deg * var(--dz))); }
 }
 
 /* ── 접시 밑 그림자 — 정적. 폭이 늘었다 줄었다 하던 펄스는 접시가 흔들리는 것처럼 읽혀 뺐다(2026-11-02) ── */
@@ -723,6 +723,9 @@ body {
    기본 0.6(은은) / .ambient-strong 1.6(확실) — 실물 보고 고른 뒤 기본값에 반영. */
 :root {
   --ambient: 0.6;
+  /* 디저트 움직임 세기 다이얼 — 모든 디저트 키프레임의 진폭(scaleY·skewX·rotate·translate)이 이 값에 비례한다.
+     1 = 2026-11-03 "너무 과함" 판정을 받은 세기, 0.5 = 그 절반(대표 판단용 gif A안), 0.3 = B안. 접점 고정은 값과 무관. */
+  --dz: 0.5;
 }
 
 .ambient-strong {
