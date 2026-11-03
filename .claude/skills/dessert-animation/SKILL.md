@@ -79,7 +79,8 @@ description: "디저트 레이어 애니메이션 — dessertLayerConfig.js 옵�
 ## 애니메이션 원칙
 - 음식이므로 과한 움직임 금지
 - **접시는 정적** — plate 레이어는 Moving 밖, 접시 밑 그림자(`.dessert-shadow-el`)도 펄스 없음(2026-11-02: 폭 펄스가 접시 흔들림으로 읽혀 제거)
-- **코어(접시에 닿은 본체)는 떨어지거나 미끄러지지 않는다** — 메인·sync·back 키프레임에 scaleX 금지(밑면 폭이 변하면 미끄러져 보인다). 메인은 scaleY(위로만)와 밑면 고정 skewX만. 검증 = 도감 상세 5프레임 diff 히트맵에서 접시·바닥 띠가 검게 나와야 한다(스크래치 `motion_diff.mjs` 전례, 2026-11-02 16종 모두 하단 20% 띠 = 0)
+- **코어(접시에 닿은 본체)는 떨어지거나 미끄러지지 않는다** — 메인·sync·back 키프레임에 scaleX 금지(밑면 폭이 변하면 미끄러져 보인다). 메인은 접점 축 scaleY(위로만)·skewX(출렁)·rotate(까딱)만.
+- **바닥만 고정하고 나머지는 활발하게**(2026-11-03 대표 "너무 정적") — 접점 축 변형은 밑면이 안 움직이므로 진폭을 키워도 된다. 현재 값: wobble skew ±3.2°·scaleY 1.07 / soft scaleY 1.055 / bounce scaleY 1.09 / crisp rotate ±1.1° / settle rotate ±2.4° / flutter 7° / breathe scaleY 1.08 / sway-lg 6° / twinkle scale 0.7. 더 줄이라는 말이 오면 이 값들을 절반으로. 검증 = 도감 상세 5프레임 diff 히트맵에서 접시·바닥 띠가 검게 나와야 한다(스크래치 `motion_diff.mjs` 전례, 2026-11-02 16종 모두 하단 20% 띠 = 0)
 - 메인 바운스: scaleY 기반, 제 바닥 접점(mainPivots) 앵커 — 캔버스 아래 끝이 아니다
 - 서브: 뿌리 고정 — 접점 축, rotate 기반 찰랑거림 권장 (skewX보다 자연스러움). translate(hover·drift)는 공중 장식에만
 - 늘어남→원상복귀는 ease-out으로 느리게 (자연스러운 탄성)
