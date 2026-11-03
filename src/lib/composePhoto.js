@@ -105,10 +105,10 @@ export async function composePhoto({ video, mirrored, frameRect, videoRect, laye
   })
 }
 
-/** 폰·태블릿이면 true — 저장 버튼을 공유 시트(사진 앱 저장)로 보낼지 정할 때 쓴다 */
-export function isTouchMobile() {
-  if (navigator.userAgentData?.mobile) return true
-  if (/Android|iPhone|iPad|iPod/i.test(navigator.userAgent)) return true
-  // iPadOS는 데스크톱 UA를 쓴다
+/** 아이폰·아이패드면 true — 저장을 공유 시트("이미지 저장" → 사진 앱)로 보낼지 정할 때 쓴다.
+ *  안드로이드는 공유 시트에 갤러리 저장이 없어 다운로드로 보낸다. */
+export function isAppleTouch() {
+  if (/iPhone|iPad|iPod/i.test(navigator.userAgent)) return true
+  // iPadOS는 데스크톱(맥) UA를 쓴다 — 터치 포인트로 가른다
   return navigator.platform === 'MacIntel' && navigator.maxTouchPoints > 1
 }
