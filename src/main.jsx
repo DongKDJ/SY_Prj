@@ -18,3 +18,16 @@ if (new URLSearchParams(window.location.search).get('ambient') === 'strong') {
 }
 
 createRoot(document.getElementById('root')).render(<App />)
+
+// 오프라인 대비(배포본만) — 서비스 워커는 vite.sw.js가 빌드 때 만든다.
+// 전시 PC(?kiosk=1)는 앱 전체를 미리 저장해 두어, 이후 와이파이가 끊겨도 새로고침·재시작해도 열린다.
+if (import.meta.env.PROD && 'serviceWorker' in navigator) {
+  window.addEventListener('load', () => {
+    navigator.serviceWorker.register(`${import.meta.env.BASE_URL}sw.js`)
+      .then(() => navigator.serviceWorker.ready)
+      .then((reg) => {
+        if (new URLSearchParams(window.location.search).get('kiosk') === '1') reg.active?.postMessage('warm')
+      })
+      .catch(() => {}) // 등록 실패 = 오프라인 대비만 없는 것 — 앱은 그대로
+  })
+}

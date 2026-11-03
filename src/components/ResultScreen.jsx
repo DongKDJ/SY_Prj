@@ -471,13 +471,15 @@ export default function ResultScreen({ result, onViewBook, onTakePhoto, onBack, 
                         tone="honey"
                         arrow={false}
                         onClick={() => {
+                          // 받은 사람이 들어올 사이트 주소 — 전시 PC 주소(?kiosk=1)가 아닌 기본 주소
+                          const url = new URL(import.meta.env.BASE_URL, window.location.origin).href
                           const text =
                             `나의 디저트는 "${result.name}"!\n성격: ${result.personality}\n\n${result.description}\n\n여우씨의 디저트 레시피에서 확인해보세요!`
                           if (navigator.share) {
-                            // 공유 시트를 닫으면 AbortError로 reject — 조용히 무시
-                            navigator.share({ title: '여우씨의 디저트 레시피', text }).catch(() => {})
+                            // 주소는 url 칸으로 — 받는 앱이 링크 미리보기로 붙인다. 시트를 닫으면 AbortError — 조용히 무시
+                            navigator.share({ title: '여우씨의 디저트 레시피', text, url }).catch(() => {})
                           } else if (navigator.clipboard) {
-                            navigator.clipboard.writeText(text)
+                            navigator.clipboard.writeText(`${text}\n${url}`)
                               .then(() => alert('결과가 클립보드에 복사되었습니다!'))
                               .catch(() => alert('복사하지 못했어요. 화면을 캡처해 주세요.'))
                           } else {
