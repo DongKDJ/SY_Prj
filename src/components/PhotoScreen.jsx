@@ -25,7 +25,8 @@ function stamp() {
   const p = (n) => String(n).padStart(2, '0')
   return {
     file: `${d.getFullYear()}${p(d.getMonth() + 1)}${p(d.getDate())}-${p(d.getHours())}${p(d.getMinutes())}`,
-    caption: `${d.getFullYear()}.${p(d.getMonth() + 1)}.${p(d.getDate())}`,
+    // 사진 아래 캡션 — 날짜 옆에 찍은 시각(24시간)
+    caption: `${d.getFullYear()}.${p(d.getMonth() + 1)}.${p(d.getDate())} ${p(d.getHours())}:${p(d.getMinutes())}`,
   }
 }
 

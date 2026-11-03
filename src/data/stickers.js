@@ -1,5 +1,5 @@
 /**
- * 포토부스 스티커 — 작가 원화 스티커 18장 (2026-11-04 대표 지정 "Downloads\스티커"로 교체).
+ * 포토부스 스티커 — 여우씨 원화 1장 + 작가 원화 스티커 18장 (2026-11-04 대표 지정 "Downloads\스티커"로 교체).
  * 원본은 그대로 두고, 그린 부분만 남게 잘라 긴 변 900px로 줄인 사본이 src/assets/images/stickers/ 에 있다.
  * (흰 배경 중복본 IMG_2255는 투명본 IMG_3110 1과 같은 그림이라 뺐다. 원본 파일명 대응은 아래 주석.)
  * 빌드 때 vite.webp.js가 WebP로 바꾼다.
@@ -7,6 +7,7 @@
  * w: 사진 영역 폭 대비 처음 붙일 때의 폭(소수) — 붙인 뒤 손잡이·두 손가락으로 자유롭게 키우고 줄인다.
  * tilt: 처음 붙일 때 무작위로 기울이는 범위(도)
  */
+import foxBody from '../assets/images/character/fox-body.png'              // 대화 화면의 여우씨 원화 (2026-11-04 대표 "기존 여우도 추가")
 import foxBerry from '../assets/images/stickers/fox-berry.png'             // 제목_없는_아트워크
 import foxCake from '../assets/images/stickers/fox-cake.png'               // IMG_3110 1
 import thankYou from '../assets/images/stickers/thank-you.png'             // IMG_2510
@@ -27,6 +28,7 @@ import sparkle from '../assets/images/stickers/sparkle.png'               // IMG
 import snow from '../assets/images/stickers/snow.png'                     // IMG_2908
 
 export const stickers = [
+  { id: 'fox', label: '여우씨', src: foxBody, w: 0.26, tilt: 5 },
   { id: 'fox-berry', label: '여우씨 블루베리', src: foxBerry, w: 0.24, tilt: 5 },
   { id: 'fox-cake', label: '여우씨 케이크', src: foxCake, w: 0.24, tilt: 5 },
   { id: 'thank-you', label: '땡큐', src: thankYou, w: 0.16, tilt: 8 },
