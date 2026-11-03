@@ -42,13 +42,15 @@ export function useCamera(initialFacing = 'environment') {
     let cancelled = false
     let current = null
 
+    // 화면 방향에 맞는 영상을 요청 — 세로 폰에 가로 영상이 오면 화면에 맞추느라 가운데만 크게 잘려 '확대된 것처럼' 보인다
+    const portrait = window.matchMedia?.('(orientation: portrait)').matches
     navigator.mediaDevices
       .getUserMedia({
         audio: false,
         video: {
           facingMode: { ideal: facing },
-          width: { ideal: 1920 },
-          height: { ideal: 1080 },
+          width: { ideal: portrait ? 1080 : 1920 },
+          height: { ideal: portrait ? 1920 : 1080 },
         },
       })
       .then((s) => {

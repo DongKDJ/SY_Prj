@@ -10,6 +10,7 @@ import { useCamera } from '../hooks/useCamera'
 import { composePhoto, isAppleTouch } from '../lib/composePhoto'
 
 const COUNTDOWN_FROM = 3
+const MAX_ZOOM = 3
 const MAX_STICKERS = 12
 
 const ERROR_TEXT = {
@@ -249,22 +250,65 @@ export default function PhotoScreen({ result, kiosk = false, onBack }) {
     setPlaced(p => p.map(s => (s.uid === uid ? { ...s, ...patch } : s)))
   }
 
-  // 스티커 몸통 끌기·두 손가락 — 사진 영역이 받는다. 첫 손가락이 스티커에 닿으면 그 스티커가 대상이고,
-  // 이어서 닿는 손가락은 어디에 닿든(카메라 화면 위여도) 같은 스티커 조작에 합류한다.
+  // 카메라 확대·축소 (디지털) — 1 = 화면을 꽉 채운 기본, 최대 3배. 축소는 카메라가 찍는 전체 화면이 다 보일 때까지
+  // (그 아래로는 빈 띠만 늘어난다). 모든 기기에서 같은 방식이라 합성(composePhoto)도 보이는 그대로 담긴다.
+  const [zoom, setZoom] = useState(1)
+  const [minZoom, setMinZoom] = useState(1)
+  const minZoomRef = useRef(1)
+  const zoomRef = useRef(1)
+  const applyZoom = useCallback((z) => {
+    const v = Math.min(MAX_ZOOM, Math.max(minZoomRef.current, z))
+    zoomRef.current = v
+    setZoom(v)
+  }, [])
+  const measureZoom = useCallback(() => {
+    const v = videoRef.current
+    const area = areaRef.current
+    if (!v?.videoWidth || !area) return
+    const a = area.getBoundingClientRect()
+    const cover = Math.max(a.width / v.videoWidth, a.height / v.videoHeight)
+    const contain = Math.min(a.width / v.videoWidth, a.height / v.videoHeight)
+    // 슬라이더 눈금(0.01)에 맞게 올림 — 끝자리가 길면 브라우저가 최솟값을 눈금 밖 값으로 본다
+    const m = Math.ceil(Math.max(0.4, Math.min(1, contain / cover)) * 100) / 100
+    minZoomRef.current = m
+    setMinZoom(m)
+    applyZoom(zoomRef.current)
+  }, [applyZoom])
+  useEffect(() => {
+    window.addEventListener('resize', measureZoom)
+    return () => window.removeEventListener('resize', measureZoom)
+  }, [measureZoom])
+
+  // 사진 영역 손가락 조작 — 첫 손가락이 스티커에 닿으면 그 스티커가 대상(옮기기 / 두 손가락 = 확대·회전),
+  // 빈 카메라 화면에 닿으면 카메라가 대상(두 손가락 = 확대·축소). 이어서 닿는 손가락은 어디에 닿든 같은 대상에 합류한다.
+  // 디저트는 제 끌기(framer)가 받으므로 건드리지 않는다.
+  const CAM = 'camera'
   const touch = useRef({ ptrs: new Map(), uid: null, g: null })
   const restartGesture = () => {
     const t = touch.current
+    const pts = [...t.ptrs.values()]
+    if (t.uid === CAM) {
+      t.g = pts.length >= 2 ? { mode: 'zoom', d0: dist(pts[0], pts[1]), z0: zoomRef.current } : null
+      return
+    }
     const it = placed.find(s => s.uid === t.uid)
-    t.g = it ? gestureBegin([...t.ptrs.values()], it, areaRef.current.getBoundingClientRect()) : null
+    t.g = it ? gestureBegin(pts, it, areaRef.current.getBoundingClientRect()) : null
   }
   const onAreaDown = (e) => {
     const t = touch.current
+    const onDessert = !!e.target.closest?.('[aria-label="디저트 옮기기"]')
     if (t.ptrs.size === 0) {
       const hit = e.target.closest?.('[data-sticker]')
-      if (!hit) { setSelected(null); return } // 빈 곳·디저트 — 선택 해제(디저트 끌기는 제 손잡이가 받는다)
-      t.uid = hit.dataset.sticker
-      selectSticker(t.uid)
-    } else if (!t.uid) {
+      if (!hit) setSelected(null)
+      if (hit) {
+        t.uid = hit.dataset.sticker
+        selectSticker(t.uid)
+      } else if (onDessert) {
+        return
+      } else {
+        t.uid = CAM
+      }
+    } else if (!t.uid || (t.uid === CAM && onDessert)) {
       return
     }
     e.currentTarget.setPointerCapture?.(e.pointerId)
@@ -275,8 +319,18 @@ export default function PhotoScreen({ result, kiosk = false, onBack }) {
     const t = touch.current
     if (!t.g || !t.ptrs.has(e.pointerId)) return
     t.ptrs.set(e.pointerId, { x: e.clientX, y: e.clientY })
-    const patch = gesturePatch(t.g, [...t.ptrs.values()])
+    const pts = [...t.ptrs.values()]
+    if (t.g.mode === 'zoom') {
+      if (pts.length >= 2) applyZoom(t.g.z0 * (dist(pts[0], pts[1]) / t.g.d0))
+      return
+    }
+    const patch = gesturePatch(t.g, pts)
     if (patch) changeSticker(t.uid, patch)
+  }
+  // 마우스 휠: 스티커 위 = 그 스티커 크기(스티커가 받는다), 빈 곳 = 카메라 확대·축소
+  const onAreaWheel = (e) => {
+    if (e.target.closest?.('[data-sticker]')) return
+    applyZoom(zoomRef.current * Math.exp(-e.deltaY * 0.0015))
   }
   const onAreaUp = (e) => {
     const t = touch.current
@@ -389,16 +443,23 @@ export default function PhotoScreen({ result, kiosk = false, onBack }) {
 
   return (
     <div className="fixed inset-0 bg-ink overflow-hidden select-none">
-      {/* 스테이지: 카메라가 원화 자리를 채우고 금장 테두리가 가장자리에 남는다 */}
-      <ArtStage>
+      {/* 카메라 — 사진에 담기는 영역(가로 = 원화 스테이지, 세로 = 화면 전체)에 맞춘다.
+          (2026-11-04 전: 세로 폰에서도 16:9 스테이지(가로 1500px)에 깔아 영상의 26%만 보여 '확대된 것처럼' 보였다)
+          확대·축소는 영상만 scale — 금장 테두리·디저트·스티커는 그대로. */}
+      <div className="photo-area overflow-hidden">
         <video
           ref={videoRef}
           autoPlay
           playsInline
           muted
+          onLoadedMetadata={measureZoom}
+          onResize={measureZoom}
           className="absolute inset-0 w-full h-full object-cover"
-          style={{ transform: mirrored ? 'scaleX(-1)' : undefined }}
+          style={{ transform: `${mirrored ? 'scaleX(-1) ' : ''}scale(${zoom})` }}
         />
+      </div>
+      {/* 금장 테두리 — 원화 스테이지 위에 */}
+      <ArtStage>
         {goldFrames.map((src, i) => (
           <ArtLayer key={i} src={src} className="photo-gold" />
         ))}
@@ -440,6 +501,7 @@ export default function PhotoScreen({ result, kiosk = false, onBack }) {
         onPointerMove={onAreaMove}
         onPointerUp={onAreaUp}
         onPointerCancel={onAreaUp}
+        onWheel={onAreaWheel}
       >
         <motion.div
           drag
@@ -509,7 +571,7 @@ export default function PhotoScreen({ result, kiosk = false, onBack }) {
               <p className="font-display text-[0.7rem] md:text-xs text-jam leading-tight">
                 {selected
                   ? '↻ 손잡이로 크기·회전 · 두 손가락으로도 돼요'
-                  : '스티커를 눌러 붙이고, 눌러서 크기·회전'}
+                  : '스티커를 눌러 붙이고 · 카메라는 두 손가락·휠로 확대'}
               </p>
             </div>
 
@@ -531,6 +593,36 @@ export default function PhotoScreen({ result, kiosk = false, onBack }) {
                   <path d="M7 22v-3h3" />
                 </svg>
               </motion.button>
+            )}
+
+            {/* 카메라 확대·축소 — 트레이 바로 위 가운데. 숫자를 누르면 1배로 */}
+            {status === 'live' && (
+              <div className="pointer-events-auto absolute left-1/2 -translate-x-1/2 bottom-[6.25rem] md:bottom-[7rem]
+                              gold-rim rounded-full px-2 py-1 flex items-center gap-1.5
+                              shadow-[0_8px_16px_-10px_rgba(0,0,0,0.6)]">
+                <button type="button" onClick={() => applyZoom(zoom - 0.25)} aria-label="카메라 축소"
+                        className="w-8 h-8 rounded-full text-ink text-lg leading-none flex items-center justify-center cursor-pointer">
+                  －
+                </button>
+                <input
+                  type="range"
+                  min={minZoom}
+                  max={MAX_ZOOM}
+                  step={0.01}
+                  value={zoom}
+                  onChange={(e) => applyZoom(Number(e.target.value))}
+                  aria-label="카메라 확대·축소"
+                  className="w-28 md:w-40 accent-[#C2546A] cursor-pointer"
+                />
+                <button type="button" onClick={() => applyZoom(zoom + 0.25)} aria-label="카메라 확대"
+                        className="w-8 h-8 rounded-full text-ink text-lg leading-none flex items-center justify-center cursor-pointer">
+                  ＋
+                </button>
+                <button type="button" onClick={() => applyZoom(1)} aria-label="카메라 원래 크기로" data-zoom-label
+                        className="min-w-11 px-1 font-display text-xs md:text-sm font-bold text-ink cursor-pointer">
+                  {zoom.toFixed(1)}x
+                </button>
+              </div>
             )}
 
             {/* 하단: 스티커 트레이 + 찰칵 */}

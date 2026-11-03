@@ -50,7 +50,10 @@ export async function composePhoto({ video, mirrored, frameRect, videoRect, laye
   ctx.rect(pad, pad, photoW, photoH)
   ctx.clip()
 
-  // 카메라 — <video>가 덮는 상자에 cover로 그린다
+  // 카메라 — <video>가 덮는 상자에 cover로 그린다. 상자는 확대·축소(scale)가 반영된 화면 rect라
+  // 확대하면 사진 영역 밖은 잘리고, 축소하면 둘레가 화면과 같은 어두운 바탕으로 남는다.
+  ctx.fillStyle = '#5E4632'
+  ctx.fillRect(pad, pad, photoW, photoH)
   const drawnW = vw * cover * px
   const drawnH = vh * cover * px
   const vx = X(videoRect.left + (videoRect.width - vw * cover) / 2)
