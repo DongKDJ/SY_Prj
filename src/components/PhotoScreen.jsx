@@ -198,7 +198,8 @@ function PlacedSticker({ item, areaRef, selected, onSelect, onChange, onRemove }
  * 뽑은 디저트가 옆에 둥실 떠 있고(끌어 옮김), 아래 트레이의 스티커를 눌러 붙이고 끌어 꾸민다.
  * 찰칵 → 꾸미기 UI가 사라지고 3초 카운트다운 → 보이는 그대로 합성(테두리·디저트·스티커 + 폴라로이드 캡션) → 찍힌 사진.
  *
- * kiosk(전시 PC, ?kiosk=1): 저장 버튼 없음 — 찍힌 화면을 관람객이 자기 폰으로 찍는다(미러샷). 사진은 메모리에만.
+ * kiosk(전시 PC, ?kiosk=1): 저장 버튼 + 미러샷 안내("내 폰으로 이 화면을 찍어 보세요") — 저장하면 전시 PC 다운로드 폴더에 쌓인다
+ *   (2026-11-04 대표 "전시용도 다운되게"). 전시가 끝나면 그 폴더를 비울 것.
  * 그 외: 저장 — 아이폰·아이패드는 공유 시트("이미지 저장" → 사진 앱), 안드로이드·윈도우·맥은 다운로드.
  * 닫기(책으로)는 결과 화면의 펼친 책 페이지로 바로 돌아간다. 화면을 떠나면 카메라는 즉시 꺼진다(useCamera cleanup).
  */
@@ -630,24 +631,24 @@ export default function PhotoScreen({ result, kiosk = false, onBack }) {
             </div>
             <div className="w-full bg-cream/90 border-t-[0.2rem] border-[#D6A64A]/70 px-3 py-3 md:py-4
                             flex flex-wrap items-center justify-center gap-3 md:gap-5">
-              {kiosk ? (
+              {/* 전시 PC: 폰으로 화면을 찍는 미러샷 안내도 함께 — 저장은 전시 PC의 다운로드 폴더로 간다 */}
+              {kiosk && (
                 <div className="gold-rim rounded-full px-5 py-1.5 text-center">
                   <p className="font-display text-sm md:text-base font-bold text-ink leading-tight">
                     내 폰으로 이 화면을 찍어 보세요!
                   </p>
                   <p className="font-script text-xs md:text-sm text-jam leading-tight">mirror shot</p>
                 </div>
-              ) : (
-                <div className="flex flex-col items-center gap-1">
-                  <InkButton size="sm" arrow={false} onClick={save} aria-label="사진 저장하기">
-                    사진 저장하기
-                  </InkButton>
-                  {/* 아이폰 공유 시트가 안 뜨거나 "이미지 저장"이 없을 때의 길 — iOS는 이미지 길게 누르기 메뉴에 '사진 앱에 저장'이 있다 */}
-                  {isAppleTouch() && (
-                    <p className="font-display text-[0.65rem] text-ink/60">안 되면 사진을 길게 눌러 ‘사진 앱에 저장’</p>
-                  )}
-                </div>
               )}
+              <div className="flex flex-col items-center gap-1">
+                <InkButton size="sm" arrow={false} onClick={save} aria-label="사진 저장하기">
+                  사진 저장하기
+                </InkButton>
+                {/* 아이폰 공유 시트가 안 뜨거나 "이미지 저장"이 없을 때의 길 — iOS는 이미지 길게 누르기 메뉴에 '사진 앱에 저장'이 있다 */}
+                {isAppleTouch() && (
+                  <p className="font-display text-[0.65rem] text-ink/60">안 되면 사진을 길게 눌러 ‘사진 앱에 저장’</p>
+                )}
+              </div>
               <InkButton size="sm" tone="honey" arrow={false} onClick={retake}>
                 다시 찍기
               </InkButton>
