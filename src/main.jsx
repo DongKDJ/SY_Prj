@@ -22,11 +22,39 @@ createRoot(document.getElementById('root')).render(<App />)
 // 오프라인 대비(배포본만) — 서비스 워커는 vite.sw.js가 빌드 때 만든다.
 // 전시 PC(?kiosk=1)는 앱 전체를 미리 저장해 두어, 이후 와이파이가 끊겨도 새로고침·재시작해도 열린다.
 if (import.meta.env.PROD && 'serviceWorker' in navigator) {
+  const base = import.meta.env.BASE_URL
+  const kiosk = new URLSearchParams(window.location.search).get('kiosk') === '1'
+
+  // 전시 PC: 빌드 파일 전체를 4개씩 차례로 요청 — 서비스 워커가 지나가는 응답을 저장한다(이미 있으면 바로 끝).
+  // 서비스 워커가 페이지를 넘겨받은 뒤에만 의미가 있어 controller가 있을 때 돈다. 겹쳐 돌지 않게 한 번에 하나.
+  let warming = null
+  const warm = () => {
+    if (!kiosk || warming || !navigator.serviceWorker.controller) return
+    warming = fetch(`${base}precache.json`, { cache: 'no-store' })
+      .then((r) => r.json())
+      .then(async ({ assets }) => {
+        const queue = [...assets]
+        const worker = async () => {
+          while (queue.length) {
+            const a = queue.shift()
+            try { await (await fetch(base + a)).arrayBuffer() } catch { /* 하나 실패해도 계속 */ }
+          }
+        }
+        await Promise.all([worker(), worker(), worker(), worker()])
+      })
+      .catch(() => {})
+      .finally(() => { warming = null })
+  }
+
+  // 새 배포 직후엔 새 서비스 워커가 페이지를 넘겨받는다 — 새 저장소에 다시 미리 저장
+  navigator.serviceWorker.addEventListener('controllerchange', warm)
   window.addEventListener('load', () => {
-    navigator.serviceWorker.register(`${import.meta.env.BASE_URL}sw.js`)
+    navigator.serviceWorker.register(`${base}sw.js`)
       .then(() => navigator.serviceWorker.ready)
       .then((reg) => {
-        if (new URLSearchParams(window.location.search).get('kiosk') === '1') reg.active?.postMessage('warm')
+        // 같은 주소로 다시 등록하면 브라우저가 새 판 확인을 미룬다 — 열 때마다 직접 확인(새 배포가 첫 접속부터 깔리게)
+        reg.update().catch(() => {})
+        warm()
       })
       .catch(() => {}) // 등록 실패 = 오프라인 대비만 없는 것 — 앱은 그대로
   })
