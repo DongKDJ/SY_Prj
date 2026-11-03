@@ -1,3 +1,4 @@
+import Sentences from './shared/Sentences'
 import { useState } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
 import { dessertResults } from '../data/desserts'
@@ -195,7 +196,7 @@ export default function DessertBook({ currentResult, onRestart, onExit }) {
                           {detailDessert.personality}
                         </p>
                         <p className="relative font-display text-sm md:text-base text-ink/80 leading-relaxed mt-4">
-                          &ldquo;{detailDessert.description}&rdquo;
+                          <Sentences text={detailDessert.description} quote />
                         </p>
                       </div>
                     </div>

@@ -1,3 +1,4 @@
+import Sentences from './shared/Sentences'
 import { useState, useEffect } from 'react'
 import { motion } from 'framer-motion'
 import StarParticles from './shared/StarParticles'
@@ -63,13 +64,14 @@ export default function CardSelect({ stage, onSelect, accent = 'honey' }) {
             </span>
           </div>
           <p className="relative font-display font-semibold text-ink text-lg md:text-xl leading-relaxed">
-            {stage.title}
+            <Sentences text={stage.title} />
           </p>
         </div>
       </motion.div>
 
       {/* ── 카드 2장 ── */}
-      <div className="flex justify-center gap-6 md:gap-12">
+      {/* 폰 폭(390px)에서 두 장이 화면 밖으로 잘리지 않게 — 카드 폭을 화면 폭의 42%까지로 */}
+      <div className="flex justify-center gap-4 sm:gap-6 md:gap-12">
         {stage.cards.map((card, i) => {
           const isSelected = selectedId === card.id
           const isOther    = selectedId && !isSelected
@@ -94,7 +96,7 @@ export default function CardSelect({ stage, onSelect, accent = 'honey' }) {
                   이 화면의 실제 체류 시간이라 그 구간이 정지하면 안 된다.
                   고른 뒤에는 뒤집기 연출이 주가 되므로 떨림을 멈춘다. */}
               <button
-                className={`perspective w-52 md:w-64 aspect-[16/21] cursor-pointer
+                className={`perspective w-[min(13rem,42vw)] md:w-64 aspect-[16/21] cursor-pointer
                            ${selectedId ? '' : 'ambient-bob'}`}
                 style={selectedId ? undefined : {
                   animationDelay: `${i * 1.7}s`,

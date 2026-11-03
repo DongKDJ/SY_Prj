@@ -1,3 +1,4 @@
+import Sentences from './shared/Sentences'
 import { useState, useEffect, useRef } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
 import { getCardImage, cardImages } from '../assets/imageMap'
@@ -316,7 +317,8 @@ export default function StageScreen({ stageIndex, selections, onSelect, onComple
               animate={{ opacity: 1 }}
               exit={{ opacity: 0, pointerEvents: 'none' }}
               transition={{ duration: 0.4 }}
-              className="min-h-[100dvh] flex flex-col items-center justify-center px-4 relative"
+              className="min-h-[100dvh] flex flex-col items-center justify-center px-4 relative
+                         portrait:justify-start portrait:pt-[7.5rem] portrait:md:justify-center portrait:md:pt-0"
             >
               {/* 배경 흐림+어둡기 — backdrop-filter는 페이드 중 화면 모퉁이 깜빡임을 만들어서
                   실시간 블러 대신 미리 흐린 배경 사본을 페이드시킨다 */}
@@ -337,11 +339,14 @@ export default function StageScreen({ stageIndex, selections, onSelect, onComple
                 initial={{ scale: 0.6, opacity: 0, rotateZ: -3 }}
                 animate={{ scale: 1, opacity: 1, rotateZ: 0 }}
                 transition={{ type: 'spring', stiffness: 80, damping: 14 }}
-                className="relative z-10 flex flex-col items-center max-w-lg mt-[5vh]"
+                className="relative z-10 flex flex-col items-center max-w-lg mt-[5vh] portrait:mt-0 portrait:md:mt-[5vh]"
               >
                 {/* 카드 — 테두리·명패까지 원화 한 장에 그려져 있어 별도 액자를 두르지 않는다.
                     설명을 읽는 8~12초 동안 정지하지 않도록 아주 느리게 흔들린다. */}
-                <div className="ambient-pinned w-56 md:w-72 aspect-[16/21]
+                {/* 세로 폰: 내용을 이전 버튼(좌상단) 아래에서 시작하고, 카드는 화면 높이에 맞춰 줄여
+                    설명·다음 버튼까지 한 화면에 들어오게(카드 아래 묶음 ≈ 36rem). 태블릿 세로는 그대로. */}
+                <div className="ambient-pinned w-56 portrait:w-[clamp(7rem,calc((100dvh_-_36rem)_*_0.76),min(12rem,50vw))]
+                                md:w-72 portrait:md:w-72 aspect-[16/21]
                                 shadow-[0_30px_50px_-24px_rgba(94,70,50,0.55)]">
                   {cardImg ? (
                     <img src={cardImg} alt={card.ingredient}
@@ -384,7 +389,7 @@ export default function StageScreen({ stageIndex, selections, onSelect, onComple
                 >
                   <Floret className="w-4 h-4 text-honey mx-auto mb-2" />
                   <p className="font-display text-lg md:text-xl text-ink leading-relaxed">
-                    &ldquo;{card.description}&rdquo;
+                    <Sentences text={card.description} quote />
                   </p>
                 </motion.div>
 

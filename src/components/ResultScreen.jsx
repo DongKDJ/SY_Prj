@@ -1,3 +1,4 @@
+import Sentences from './shared/Sentences'
 import { useState, useMemo } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
 import AnimatedDessert from './shared/AnimatedDessert'
@@ -436,7 +437,7 @@ export default function ResultScreen({ result, onViewBook, onTakePhoto, onBack, 
                                   first-letter:text-jam first-letter:mr-1
                                   first-letter:float-left first-letter:leading-[0.9]
                                   first-letter:mt-1">
-                      {result.description}
+                      <Sentences text={result.description} />
                     </p>
                   </motion.div>
 
