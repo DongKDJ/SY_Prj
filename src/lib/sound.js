@@ -10,8 +10,10 @@
 const files = import.meta.glob('../assets/audio/*.{mp3,ogg,m4a,wav}', { eager: true, query: '?url', import: 'default' })
 const url = (name) => Object.entries(files).find(([p]) => p.split('/').pop().replace(/\.\w+$/, '') === name)?.[1]
 
-const BGM_VOLUME = 0.3
-const SFX_VOLUME = 0.6
+// 파일마다 음량 — 원본 측정값(ffmpeg ebur128)으로 맞춘다. 뒤집힘 두 개는 같은 크기로(원본은 4.6dB 차이),
+// 배경음악은 효과음보다 한참 아래에 깔리게. 음원을 바꾸면 다시 잴 것.
+//   bgm -17.9 LUFS → 0.32(약 -28) · flip-1 -15.4 → 0.6 · flip-2 -10.8 → 0.35(둘 다 약 -19.8) · click 최대 -2.1dB → 0.4
+const VOLUME = { bgm: 0.32, click: 0.4, 'flip-1': 0.6, 'flip-2': 0.35 }
 const KEY = 'sy-sound-muted'
 
 let muted = false
@@ -48,7 +50,7 @@ export function startBgm() {
   if (!src) return
   bgm = new Audio(src)
   bgm.loop = true
-  bgm.volume = BGM_VOLUME
+  bgm.volume = VOLUME.bgm
   syncBgm()
 }
 
@@ -79,6 +81,6 @@ export function play(kind) {
   const base = preloaded[name]
   if (!base) return
   const a = base.cloneNode()
-  a.volume = SFX_VOLUME
+  a.volume = VOLUME[name] ?? 0.5
   a.play().catch(() => {})
 }
