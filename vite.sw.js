@@ -11,7 +11,7 @@ import { createHash } from 'node:crypto'
 const swSource = (version, assets) => `/* 여우씨의 디저트 레시피 — 오프라인 대비 (빌드가 생성, 직접 고치지 말 것: vite.sw.js) */
 const VERSION = ${JSON.stringify(version)}
 const CACHE = 'sy-' + VERSION
-const SHELL = ['./', './index.html', './favicon.svg']
+const SHELL = ['./', './index.html', './favicon.png', './apple-touch-icon.png']
 const ASSETS = ${JSON.stringify(assets)}
 
 self.addEventListener('install', (e) => {
