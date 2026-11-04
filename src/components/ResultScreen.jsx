@@ -225,7 +225,7 @@ export default function ResultScreen({ result, onViewBook, onTakePhoto, onRestar
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
               transition={{ delay: 2 }}
-              className="absolute bottom-8 left-0 right-0 flex flex-col items-center gap-1 z-30"
+              className="absolute above-bar left-0 right-0 flex flex-col items-center gap-1 z-30"
             >
               <span className="font-display text-sm md:text-base text-ink/85 tracking-widest">
                 탭하여 자세히 보기 →
@@ -275,13 +275,32 @@ export default function ResultScreen({ result, onViewBook, onTakePhoto, onRestar
                   animate={{ opacity: 1, x: 0 }}
                   transition={{ delay: 0.25, duration: 0.7 }}
                   className="relative flex flex-col items-center justify-center gap-5 md:gap-6
-                             px-6 pt-8 pb-12 md:px-10 md:pr-14 md:py-12
-                             min-h-[60vh] md:min-h-[78vh]
+                             px-6 pt-8 pb-12 md:px-10 md:pr-14 md:py-10
+                             min-h-[60vh] md:min-h-[70vh] ruled-paper
                              bg-gradient-to-br from-[#FBF3E3] to-[#F0DEB6]"
                 >
                   <PaperGrain />
                   <CornerOrnament corner="tl" className="absolute top-3 left-3 w-9 h-9 text-honey" />
                   <CornerOrnament corner="bl" className="absolute bottom-3 left-3 w-9 h-9 text-honey" />
+
+                  {/* 페이지 제목 — 나만의 레시피 */}
+                  <motion.div
+                    initial={{ opacity: 0, y: -6 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    transition={{ delay: 0.35, duration: 0.6 }}
+                    className="relative flex flex-col items-center"
+                  >
+                    <div className="flex items-center gap-2">
+                      <span className="w-6 md:w-10 h-px bg-ink/20 shrink" />
+                      <Sparkle className="w-3 h-3 text-honey shrink-0" />
+                      <h2 className="font-display text-2xl md:text-3xl font-bold text-ink leading-tight tracking-wide whitespace-nowrap">
+                        나만의 레시피
+                      </h2>
+                      <Sparkle className="w-3 h-3 text-honey shrink-0" />
+                      <span className="w-6 md:w-10 h-px bg-ink/20 shrink" />
+                    </div>
+                    <Divider className="w-28 h-3 text-jam/60 mt-2" />
+                  </motion.div>
 
                   <motion.div
                     initial={{ y: 12, opacity: 0 }}
@@ -305,6 +324,7 @@ export default function ResultScreen({ result, onViewBook, onTakePhoto, onRestar
                     transition={{ delay: 1.0 }}
                     className="relative"
                   >
+                    <SectionLabel>고른 재료</SectionLabel>
                     <ComboCards combo={result.combo} cards={cards} onCard={(card) => setLightbox({ card })} />
                   </motion.div>
 
@@ -316,14 +336,23 @@ export default function ResultScreen({ result, onViewBook, onTakePhoto, onRestar
                   initial={{ opacity: 0, x: 20 }}
                   animate={{ opacity: 1, x: 0 }}
                   transition={{ delay: 0.4, duration: 0.7 }}
-                  className="relative flex flex-col items-center justify-center
-                             px-6 pt-8 pb-12 md:px-10 md:pl-14 md:py-12
-                             min-h-[60vh] md:min-h-[78vh]
+                  className="relative flex flex-col items-center justify-center @container
+                             px-6 pt-8 pb-12 md:px-10 md:pl-14 md:py-10
+                             min-h-[60vh] md:min-h-[70vh] ruled-paper
                              bg-gradient-to-bl from-[#FCF5E6] to-[#F0DEB6]"
                 >
                   <PaperGrain />
                   <CornerOrnament corner="tr" className="absolute top-3 right-3 w-9 h-9 text-honey" />
                   <CornerOrnament corner="br" className="absolute bottom-3 right-3 w-9 h-9 text-honey" />
+
+                  <motion.div
+                    initial={{ opacity: 0, y: -6 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    transition={{ delay: 0.5, duration: 0.6 }}
+                    className="relative mb-3"
+                  >
+                    <SectionLabel>이런 사람이에요</SectionLabel>
+                  </motion.div>
 
                   {/* 성격 명판 — 카드 확대 화면과 같은 뼈다귀 프레임 */}
                   <motion.div
@@ -351,6 +380,7 @@ export default function ResultScreen({ result, onViewBook, onTakePhoto, onRestar
                     <p className="font-display text-base md:text-lg text-ink leading-relaxed text-center max-w-md">
                       <Sentences text={result.description} quote />
                     </p>
+                    <Divider className="w-28 h-3 text-jam/50 mt-5" />
                   </motion.div>
 
                   {/* 버튼: 사진 찍기(주) + 공유·디저트 북 */}
@@ -371,7 +401,7 @@ export default function ResultScreen({ result, onViewBook, onTakePhoto, onRestar
                       내 디저트와 사진 찍기!
                     </InkButton>
 
-                    <div className="flex justify-center items-start gap-3 md:gap-4 flex-wrap">
+                    <div className="flex justify-center items-center gap-3 md:gap-4 flex-wrap @max-sm:flex-col">
                       <InkButton
                         size="sm"
                         tone="honey"
@@ -439,6 +469,17 @@ export default function ResultScreen({ result, onViewBook, onTakePhoto, onRestar
 
       {/* 확대 보기 → 닫기, 펼친 책 → 메달리온 페이지, 메달리온 → 마지막 선택 */}
       <BackButton onClick={() => (lightbox ? closeLightbox() : phase === 'detail' ? setPhase('reveal') : onBack())} />
+    </div>
+  )
+}
+
+/* 작은 구역 이름 — 양옆 선 + 글자 간격 넓게 */
+function SectionLabel({ children }) {
+  return (
+    <div className="flex items-center justify-center gap-3">
+      <span className="w-6 h-px bg-ink/20" />
+      <span className="font-display text-xs md:text-sm text-ink/60 tracking-[0.3em]">{children}</span>
+      <span className="w-6 h-px bg-ink/20" />
     </div>
   )
 }

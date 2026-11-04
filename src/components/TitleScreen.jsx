@@ -63,7 +63,7 @@ export default function TitleScreen({ onStart }) {
         initial={{ opacity: 0 }}
         animate={{ opacity: 1 }}
         transition={{ delay: 1.2, duration: 0.8 }}
-        className="absolute bottom-[5%] left-0 right-0 z-10 flex flex-col items-center gap-1 pointer-events-none"
+        className="absolute above-bar left-0 right-0 z-10 flex flex-col items-center gap-1 pointer-events-none"
       >
         <span className="font-display font-bold text-ink text-lg md:text-2xl script-shimmer
                          [text-shadow:0_0_10px_rgba(255,248,240,0.95),0_1px_3px_rgba(255,248,240,0.9)]">

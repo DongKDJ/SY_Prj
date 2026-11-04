@@ -1,21 +1,28 @@
 import Sentences from './shared/Sentences'
 import { useState, useCallback, useEffect } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
-import { dessertResults, allCards, resultCards } from '../data/desserts'
+import { dessertResults, stages, allCards, resultCards } from '../data/desserts'
 import { getCardImage } from '../assets/imageMap'
 import AnimatedDessert from './shared/AnimatedDessert'
 import { InkButton } from './shared/InkButton'
 import BackButton from './shared/BackButton'
 import { ArtBackdrop } from './shared/ArtStage'
 import { bookmarkBg } from '../assets/screenImages'
-import { PaperGrain, Divider } from './shared/Decorations'
+import { PaperGrain, Divider, Sparkle } from './shared/Decorations'
 import { RoundButton, DessertCard, ComboCards, CardLightbox } from './shared/BookUi'
 
 const allDesserts = Object.values(dessertResults).sort((a, b) => a.id - b.id)
 
+const cardOf = Object.fromEntries(allCards.map((c) => [c.id, c]))
+// 카드 도감 줄 = 책갈피 하나(진행 순서), 칸 = 카드마다 뒷면(선택지) → 앞면(재료)
+const CARD_ROWS = stages.map((s) => ({
+  id: s.id, bookmark: s.bookmark,
+  tiles: s.cards.flatMap((c) => [{ side: 'back', card: cardOf[c.id] }, { side: 'front', card: cardOf[c.id] }]),
+}))
+
 const TABS = [
   { id: 'dessert', label: '디저트 도감', count: `${allDesserts.length}종` },
-  { id: 'card',    label: '카드 도감',   count: `${allCards.length}장` },
+  { id: 'card',    label: '카드 도감',   count: `${allCards.length}장 · 앞뒤` },
 ]
 
 /**
@@ -160,32 +167,46 @@ export default function DessertBook({ currentResult, onRestart, onExit }) {
                     animate={{ opacity: 1, y: 0 }}
                     exit={{ opacity: 0 }}
                     transition={{ duration: 0.25 }}
-                    className="grid grid-cols-2 sm:grid-cols-4 gap-3 md:gap-4 items-start"
+                    className="flex flex-col gap-5 md:gap-6"
                   >
-                    {allCards.map((c) => (
-                      <motion.button
-                        key={c.id}
-                        type="button"
-                        whileHover={{ scale: 1.03 }}
-                        whileTap={{ scale: 0.97 }}
-                        onClick={() => setLightbox({ card: c })}
-                        aria-label={`${c.ingredient} 카드 크게 보기`}
-                        className="gold-rim rounded-xl overflow-hidden flex flex-col
-                                   shadow-[0_14px_24px_-16px_rgba(94,70,50,0.7)] cursor-pointer"
-                      >
-                        <div className="aspect-[16/21] bg-radial from-[#FFF8E8] to-[#F1DDB8] p-2">
-                          <img src={getCardImage(c.frontImage)} alt={c.ingredient} draggable={false}
-                               loading="lazy" className="w-full h-full object-contain select-none" />
+                    {CARD_ROWS.map((row) => (
+                      <section key={row.id} className="flex flex-col gap-2 md:gap-3">
+                        <h3 className="flex items-center justify-center gap-2 font-display text-sm md:text-base font-bold text-ink/85 tracking-wide">
+                          <span className="w-8 h-px bg-ink/15" />
+                          <Sparkle className="w-3 h-3 text-honey" />
+                          {row.bookmark}
+                          <Sparkle className="w-3 h-3 text-honey" />
+                          <span className="w-8 h-px bg-ink/15" />
+                        </h3>
+                        <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 md:gap-4 items-start">
+                          {row.tiles.map(({ side, card: c }) => (
+                            <motion.button
+                              key={`${c.id}-${side}`}
+                              type="button"
+                              whileHover={{ scale: 1.03 }}
+                              whileTap={{ scale: 0.97 }}
+                              onClick={() => setLightbox({ card: c, side })}
+                              aria-label={side === 'back' ? `${c.label} 카드 뒷면 크게 보기` : `${c.ingredient} 카드 크게 보기`}
+                              className="gold-rim rounded-xl overflow-hidden flex flex-col
+                                         shadow-[0_14px_24px_-16px_rgba(94,70,50,0.7)] cursor-pointer"
+                            >
+                              <div className="aspect-[16/21] bg-radial from-[#FFF8E8] to-[#F1DDB8] p-2">
+                                <img src={getCardImage(side === 'back' ? c.backImage : c.frontImage)}
+                                     alt={side === 'back' ? c.label : c.ingredient} draggable={false}
+                                     loading="lazy" className="w-full h-full object-contain select-none" />
+                              </div>
+                              <div className="px-1.5 py-1.5 text-center border-t border-[#D6A64A]/40 bg-[#FBF3E3]">
+                                <p className="font-display text-xs md:text-sm text-ink font-bold truncate">
+                                  {side === 'back' ? c.label : c.brief}
+                                </p>
+                                <p className="font-display text-[0.625rem] md:text-[0.6875rem] text-ink/55 truncate">
+                                  {side === 'back' ? '선택지 · 뒷면' : `${c.ingredient} · 앞면`}
+                                </p>
+                              </div>
+                            </motion.button>
+                          ))}
                         </div>
-                        <div className="px-1.5 py-1.5 text-center border-t border-[#D6A64A]/40 bg-[#FBF3E3]">
-                          <p className="font-display text-xs md:text-sm text-ink font-bold truncate">
-                            {c.brief}
-                          </p>
-                          <p className="font-display text-[0.625rem] md:text-[0.6875rem] text-ink/55 truncate">
-                            {c.bookmark} · {c.label}
-                          </p>
-                        </div>
-                      </motion.button>
+                      </section>
                     ))}
                   </motion.div>
                 )}

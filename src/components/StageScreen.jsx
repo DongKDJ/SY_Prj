@@ -224,7 +224,7 @@ export default function StageScreen({ stageIndex, selections, onSelect, onComple
               initial={{ opacity: 0, y: -20 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.9, ease: [0.16, 1, 0.3, 1], delay: 0.25 }}
-              className="hidden portrait:block absolute top-[5%] left-1/2 -translate-x-1/2 w-[94vw] z-10"
+              className="hidden portrait:block absolute top-[7.5rem] left-1/2 -translate-x-1/2 w-[94vw] z-10"
             >
               <div className="art-bob">
                 <ArtBandCrop src={bookmarkTitles[stage.id]} top={14} bottom={76} />
@@ -258,7 +258,7 @@ export default function StageScreen({ stageIndex, selections, onSelect, onComple
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
               transition={{ delay: 1.4 }}
-              className="absolute bottom-6 left-0 right-0 flex flex-col items-center gap-1 z-10 pointer-events-none"
+              className="absolute above-bar left-0 right-0 flex flex-col items-center gap-1 z-10 pointer-events-none"
             >
               <span className="font-display text-sm md:text-base tracking-widest text-ink/85
                                drop-shadow-[0_1px_4px_rgba(255,248,240,0.9)]">

@@ -56,17 +56,20 @@ export default function CardSelect({ stage, onSelect, accent = 'honey' }) {
         <div className="relative gold-rim rounded-xl px-6 py-4
                         shadow-[0_14px_28px_-14px_rgba(94,70,50,0.55)]">
           <PaperGrain />
-          <div className="relative flex items-center gap-2 mb-1.5">
+          <div className="relative flex items-center justify-center gap-2 mb-2">
+            <div className="w-8 h-px bg-ink/15" />
             <Sparkle className={`w-3 h-3 ${a.text}`} />
             <span className={`font-display text-sm font-bold tracking-wide ${a.text}`}>
               {stage.bookmark}
             </span>
-            <div className="flex-1 h-px bg-ink/15" />
-            <span className="font-display text-xs text-ink/55 tracking-[0.25em]">
-              {stage.element.toUpperCase()}
+            <span className="font-display text-xs text-ink/45">·</span>
+            <span className="font-display text-xs text-ink/55 tracking-[0.2em]">
+              {stage.element}
             </span>
+            <Sparkle className={`w-3 h-3 ${a.text}`} />
+            <div className="w-8 h-px bg-ink/15" />
           </div>
-          <p className="relative font-display font-semibold text-ink text-lg md:text-xl leading-relaxed">
+          <p className="relative font-display font-semibold text-ink text-lg md:text-xl leading-relaxed text-center">
             <Sentences text={stage.title} />
           </p>
         </div>

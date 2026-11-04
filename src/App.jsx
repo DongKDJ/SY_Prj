@@ -21,6 +21,7 @@ import ResultScreen from './components/ResultScreen'
 import DessertBook from './components/DessertBook'
 import PhotoScreen from './components/PhotoScreen'
 import SoundToggle from './components/shared/SoundToggle'
+import SoundGate from './components/shared/SoundGate'
 import { play, startBgm } from './lib/sound'
 
 const pageTransition = {
@@ -165,6 +166,8 @@ function App() {
 
         {/* 소리 켜기·끄기 — 사진 찍기 화면은 아래 트레이와 겹쳐서 숨긴다 */}
         {screen !== 'photo' && <SoundToggle />}
+        {/* 브라우저가 자동재생을 막았으면 첫 터치로 소리부터 켜게 안내(두 번째 터치가 시작) */}
+        {screen === 'title' && <SoundGate />}
 
         <AnimatePresence>
           {idleSeconds !== null && (

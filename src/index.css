@@ -977,3 +977,16 @@ a,
   opacity: 0.8;
   mix-blend-mode: multiply;
 }
+
+/* 결과 펼친 책 — 레시피 노트처럼 옅은 줄 (2026-11-05 "책이 텅 비어 보임") */
+.ruled-paper {
+  background-image: repeating-linear-gradient(
+    to bottom, transparent 0, transparent calc(2rem - 1px), rgba(94, 70, 50, 0.07) calc(2rem - 1px), rgba(94, 70, 50, 0.07) 2rem);
+  background-position: 0 1.25rem;
+}
+
+/* 화면 아래 안내 글 — 가로 화면에서 16:9 원화 아래 생기는 갈색 띠(16:10 PC·4:3 패드) 위가 아니라 원화 안에 놓이게 */
+.above-bar { bottom: 1.5rem; }
+@media (orientation: landscape) {
+  .above-bar { bottom: max(1.5rem, calc((100dvh - 56.25vw) / 2 + 1.5rem)); }
+}

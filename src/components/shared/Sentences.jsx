@@ -6,7 +6,9 @@
  * quote: 첫 마디 앞·마지막 마디 뒤에 큰따옴표.
  */
 export default function Sentences({ text, quote = false }) {
+  // 세 글자 이하 조각("앗," 같은 감탄)은 혼자 한 줄이 되면 어색해서 다음 조각에 붙인다
   const parts = String(text ?? '').split(/(?<=[.!?,…])\s+/).filter(Boolean)
+    .reduce((acc, s) => { if (acc.length && acc[acc.length - 1].length <= 3) acc[acc.length - 1] += ' ' + s; else acc.push(s); return acc }, [])
   return parts.map((s, i) => (
     <span key={i} className="block text-balance">
       {quote && i === 0 ? '“' : ''}

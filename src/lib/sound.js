@@ -35,6 +35,8 @@ const subs = new Set()
 
 export const hasSound = () => Object.keys(files).length > 0
 export const isMuted = () => muted
+export const isPlaying = () => !!bgm && !bgm.paused // 배경음악이 실제로 나오는 중인가(자동재생이 막히면 false)
+const notify = () => subs.forEach((fn) => fn())
 export function subscribe(fn) {
   subs.add(fn)
   return () => subs.delete(fn)
@@ -50,7 +52,7 @@ export function setMuted(v) {
   muted = v
   try { localStorage.setItem(KEY, v ? '1' : '0') } catch { /* 무시 */ }
   syncBgm()
-  subs.forEach((fn) => fn())
+  notify()
 }
 
 /**
@@ -66,6 +68,8 @@ export function startBgm() {
       bgm = new Audio(src)
       bgm.loop = true
       bgm.volume = VOLUME.bgm
+      bgm.addEventListener('play', notify)
+      bgm.addEventListener('pause', notify)
     }
   }
   if (bgm?.paused) syncBgm()

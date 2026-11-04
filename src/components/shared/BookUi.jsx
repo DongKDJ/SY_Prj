@@ -131,7 +131,7 @@ export function CardLightbox({ item, onClose }) {
           <RoundButton icon="close" size="sm" onClick={onClose} aria-label="닫기"
                        className="absolute top-4 right-4 md:top-6 md:right-6" />
           <motion.div
-            key={item.card ? `card-${item.card.id}` : `dessert-${item.dessert.id}`}
+            key={item.card ? `card-${item.card.id}-${item.side || 'front'}` : `dessert-${item.dessert.id}`}
             initial={{ scale: 0.7, opacity: 0 }}
             animate={{ scale: 1, opacity: 1 }}
             exit={{ scale: 0.85, opacity: 0 }}
@@ -140,7 +140,7 @@ export function CardLightbox({ item, onClose }) {
             onClick={(e) => e.stopPropagation()}
           >
             {item.card ? (
-              <CardView card={item.card} />
+              <CardView card={item.card} side={item.side} />
             ) : (
               <>
                 <DessertCard dessert={item.dessert} className="w-[clamp(12rem,44dvh,20rem)] md:w-[clamp(14rem,50dvh,24rem)]" />
@@ -159,10 +159,30 @@ export function CardLightbox({ item, onClose }) {
   )
 }
 
-/* 카드 확대 내용 — 카드가 바뀌면 다시 마운트되어 '카드만' 상태가 초기화된다 */
-function CardView({ card }) {
+/* 카드 확대 내용 — 카드가 바뀌면 다시 마운트되어 '카드만'·앞뒤 상태가 초기화된다.
+   side='back'이면 뒷면(선택지)으로 열리고, 누르면 앞면으로 뒤집힌다(게임 진행 순서 그대로). */
+function CardView({ card, side = 'front' }) {
   const [imageOnly, setImageOnly] = useState(false)
+  const [face, setFace] = useState(side)
   const item = { card }
+  if (face === 'back') {
+    return (
+      <>
+        <motion.button
+          type="button"
+          onClick={() => setFace('front')}
+          aria-label="카드 뒤집기"
+          className="cursor-pointer aspect-[16/21] w-[clamp(12rem,44dvh,18rem)] md:w-[clamp(14rem,50dvh,22rem)]
+                     shadow-[0_30px_50px_-24px_rgba(94,70,50,0.55)]"
+        >
+          <img src={getCardImage(card.backImage)} alt={card.label} draggable={false}
+               className="w-full h-full object-contain select-none" />
+        </motion.button>
+        <p className="font-display text-lg md:text-xl font-bold text-ink text-center mt-5 leading-tight">{card.label}</p>
+        <p className="font-display text-[11px] md:text-xs text-ink/55 tracking-wide mt-3">카드를 누르면 뒤집혀요</p>
+      </>
+    )
+  }
   return (
               <>
                 <motion.button
