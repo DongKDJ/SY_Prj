@@ -449,7 +449,7 @@ export default function ResultScreen({ result, onViewBook, onTakePhoto, onRestar
                     {/* 도장 — 대표가 준 PNG를 갈색 마스크로 (파일은 그대로) */}
                     <div
                       aria-hidden="true"
-                      className="stamp-ink w-20 h-20 md:w-24 md:h-24 mt-3 -rotate-6"
+                      className="stamp-ink w-20 h-20 md:w-24 md:h-24 mt-3"
                       style={{ '--stamp': `url(${stampImg})` }}
                     />
                   </motion.div>
