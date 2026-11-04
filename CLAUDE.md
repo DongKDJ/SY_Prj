@@ -5,7 +5,7 @@
 ## 스택·명령
 
 - React 19 + Vite 8 · Tailwind CSS 4(@tailwindcss/vite) · Framer Motion · Pretendard / Gowun Batang(`.font-display`) / Caveat(`.font-script`)
-- 사운드 없음 — 무음 유지(고정)
+- 소리 = 배경음악·버튼 클릭음·카드 뒤집힘 효과음(2026-11-04 대표 지시로 무음 고정 해제). `lib/sound.js`, 음원 `src/assets/audio/{bgm,click,flip-1,flip-2}.mp3`(Pixabay Content License — 음원 파일만 따로 배포 금지). 배경음악은 첫 터치에서 시작, 오른쪽 아래 소리 끄기 버튼(`SoundToggle`). 소리 없는 버튼은 `data-sfx="none"`.
 - `npm run dev`(http://localhost:5173/SY_Prj/) · `npm run build`(dist/) · `npm run preview` · `npm run lint`
 
 ## 구조

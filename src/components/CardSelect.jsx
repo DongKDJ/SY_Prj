@@ -2,6 +2,7 @@ import Sentences from './shared/Sentences'
 import { useState, useEffect } from 'react'
 import { motion } from 'framer-motion'
 import StarParticles from './shared/StarParticles'
+import { play } from '../lib/sound'
 import { getCardImage } from '../assets/imageMap'
 import {
   PaperGrain,
@@ -34,7 +35,10 @@ export default function CardSelect({ stage, onSelect, accent = 'honey' }) {
   const handlePick = (card) => {
     if (selectedId) return
     setSelectedId(card.id)
-    setTimeout(() => setFlippedId(card.id), 500)
+    setTimeout(() => {
+      setFlippedId(card.id)
+      play('flip') // 뒤집히는 순간 반짝 소리(두 가지 중 무작위)
+    }, 500)
     setTimeout(() => onSelect(card.id), 1800)
   }
 
@@ -96,6 +100,7 @@ export default function CardSelect({ stage, onSelect, accent = 'honey' }) {
                   이 화면의 실제 체류 시간이라 그 구간이 정지하면 안 된다.
                   고른 뒤에는 뒤집기 연출이 주가 되므로 떨림을 멈춘다. */}
               <button
+                data-sfx="none"
                 className={`perspective w-[min(13rem,42vw)] md:w-64 aspect-[16/21] cursor-pointer
                            ${selectedId ? '' : 'ambient-bob'}`}
                 style={selectedId ? undefined : {

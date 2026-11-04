@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import { AnimatePresence, MotionConfig, motion } from 'framer-motion'
 import { useGameState } from './hooks/useGameState'
 import { readKioskFlag, useKioskIdle, useKioskLock } from './hooks/useKiosk'
@@ -20,6 +20,8 @@ import ResultTransition from './components/ResultTransition'
 import ResultScreen from './components/ResultScreen'
 import DessertBook from './components/DessertBook'
 import PhotoScreen from './components/PhotoScreen'
+import SoundToggle from './components/shared/SoundToggle'
+import { play, startBgm } from './lib/sound'
 
 const pageTransition = {
   initial: { opacity: 0 },
@@ -61,6 +63,18 @@ function App() {
   const [stageEntry, setStageEntry] = useState('bookmark')
 
   useKioskLock(isKiosk)
+
+  // 소리 — 첫 터치에서 배경음악 시작(브라우저 자동재생 규칙), 버튼을 누를 때마다 클릭음.
+  // 카드처럼 제 소리가 따로 있는 버튼은 data-sfx="none"으로 뺀다.
+  useEffect(() => {
+    const onDown = (e) => {
+      startBgm()
+      const btn = e.target.closest?.('button, [role="button"]')
+      if (btn && btn.dataset.sfx !== 'none' && !btn.disabled) play('click')
+    }
+    document.addEventListener('pointerdown', onDown, true)
+    return () => document.removeEventListener('pointerdown', onDown, true)
+  }, [])
   const idleSeconds = useKioskIdle({
     enabled: isKiosk,
     armed: screen !== 'title', // 타이틀에서는 되돌릴 진행 상태가 없다
@@ -142,6 +156,9 @@ function App() {
             )}
           </motion.div>
         </AnimatePresence>
+
+        {/* 소리 켜기·끄기 — 사진 찍기 화면은 아래 트레이와 겹쳐서 숨긴다 */}
+        {screen !== 'photo' && <SoundToggle />}
 
         <AnimatePresence>
           {idleSeconds !== null && (
