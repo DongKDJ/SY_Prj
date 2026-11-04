@@ -1,6 +1,6 @@
 /**
  * 소리 (2026-11-04 대표 지시 — 그 전까지는 무음 고정이었다)
- *  · 배경음악 bgm   — 첫 터치에서 시작해 반복(브라우저는 터치 전 자동재생을 막는다). 화면을 떠나면 멈추고 돌아오면 이어서.
+ *  · 배경음악 bgm   — 열리자마자 시도, 브라우저가 막으면 첫 터치에서 시작해 반복. 화면을 떠나면 멈추고 돌아오면 이어서.
  *  · 클릭음 click   — 버튼을 누를 때(App이 문서 전체에서 받는다). data-sfx="none" 버튼은 제외(카드 = 뒤집힘 소리가 대신).
  *  · 카드 뒤집힘 flip-1 / flip-2 — 둘 중 하나 무작위.
  * 음원 = src/assets/audio/{bgm,click,flip-1,flip-2}.mp3 (Pixabay Content License — 앱에 넣어 쓰기 허용, 출처 표기 불필요,
@@ -10,10 +10,12 @@
 const files = import.meta.glob('../assets/audio/*.{mp3,ogg,m4a,wav}', { eager: true, query: '?url', import: 'default' })
 const url = (name) => Object.entries(files).find(([p]) => p.split('/').pop().replace(/\.\w+$/, '') === name)?.[1]
 
-// 파일마다 음량 — 원본 측정값(ffmpeg ebur128)으로 맞춘다. 뒤집힘 두 개는 같은 크기로(원본은 4.6dB 차이),
-// 배경음악은 효과음보다 한참 아래에 깔리게. 음원을 바꾸면 다시 잴 것.
-//   bgm -17.9 LUFS → 0.32(약 -28) · flip-1 -15.4 → 0.6 · flip-2 -10.8 → 0.35(둘 다 약 -19.8) · click 최대 -2.1dB → 0.4
-const VOLUME = { bgm: 0.32, click: 0.4, 'flip-1': 0.6, 'flip-2': 0.35 }
+// 음량 = 파일 자체를 평탄화해 두었다(2026-11-04, ffmpeg loudnorm 2패스 → ebur128로 재측정).
+// 기준 = 게임 오디오 업계 권장치 ASWG-R001 휴대기기 -18 LUFS(±2), 최대 -1 dBTP.
+//   bgm · flip-1 · flip-2 = -18.4 LUFS. click은 0.1초짜리라 LUFS를 잴 수 없어(400ms 창) 짧은 창 RMS로 뒤집힘보다 3dB 아래.
+// 여기서는 배경음악만 살짝(-1.4dB → 약 -19.8) 내려 효과음이 묻히지 않게 한다 — 여전히 ±2 안.
+// 음원을 바꾸면 원본에서 다시 평탄화할 것(원본 = SY_Prj\사운드\, 측정·변환 명령은 커밋 메시지).
+const VOLUME = { bgm: 0.85, click: 1, 'flip-1': 1, 'flip-2': 1 }
 const KEY = 'sy-sound-muted'
 
 let muted = false
@@ -42,16 +44,22 @@ export function setMuted(v) {
   subs.forEach((fn) => fn())
 }
 
-/** 첫 터치에서 부른다 — 여러 번 불러도 한 번만 */
+/**
+ * 화면이 열리자마자 한 번, 그리고 터치·키 입력마다 부른다.
+ * 브라우저가 자동재생을 허락하면(전시 PC 설정·자주 들른 사이트) 바로 나오고,
+ * 막히면 조용히 기다렸다가 첫 터치에서 나온다. 이미 나오고 있으면 아무 일도 안 한다.
+ */
 export function startBgm() {
-  if (wanted) return
-  wanted = true
-  const src = url('bgm')
-  if (!src) return
-  bgm = new Audio(src)
-  bgm.loop = true
-  bgm.volume = VOLUME.bgm
-  syncBgm()
+  if (!wanted) {
+    wanted = true
+    const src = url('bgm')
+    if (src) {
+      bgm = new Audio(src)
+      bgm.loop = true
+      bgm.volume = VOLUME.bgm
+    }
+  }
+  if (bgm?.paused) syncBgm()
 }
 
 if (typeof document !== 'undefined') {

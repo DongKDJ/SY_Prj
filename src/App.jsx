@@ -64,16 +64,21 @@ function App() {
 
   useKioskLock(isKiosk)
 
-  // 소리 — 첫 터치에서 배경음악 시작(브라우저 자동재생 규칙), 버튼을 누를 때마다 클릭음.
+  // 소리 — 열리자마자 배경음악 시도(막히면 첫 터치·키 입력에서), 버튼을 누를 때마다 클릭음.
   // 카드처럼 제 소리가 따로 있는 버튼은 data-sfx="none"으로 뺀다.
   useEffect(() => {
+    startBgm()
     const onDown = (e) => {
       startBgm()
       const btn = e.target.closest?.('button, [role="button"]')
       if (btn && btn.dataset.sfx !== 'none' && !btn.disabled) play('click')
     }
     document.addEventListener('pointerdown', onDown, true)
-    return () => document.removeEventListener('pointerdown', onDown, true)
+    document.addEventListener('keydown', startBgm, true)
+    return () => {
+      document.removeEventListener('pointerdown', onDown, true)
+      document.removeEventListener('keydown', startBgm, true)
+    }
   }, [])
   const idleSeconds = useKioskIdle({
     enabled: isKiosk,
