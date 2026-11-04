@@ -2,6 +2,7 @@ import { useEffect, useState, useSyncExternalStore } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
 import { hasSound, isMuted, isPlaying, subscribe } from '../../lib/sound'
 import { PaperGrain } from './Decorations'
+import { tapWord } from '../../lib/device'
 
 /**
  * 소리 켜기 안내 (2026-11-05 대표: "사이트 들어가서 2번 터치해야 넘어가게").
@@ -22,6 +23,7 @@ export default function SoundGate() {
   }, [])
 
   const show = hasSound() && armed && !dismissed && !muted && !playing
+  const word = tapWord() // PC = 클릭, 폰·태블릿 = 터치
 
   useEffect(() => {
     if (!show) return
@@ -42,7 +44,7 @@ export default function SoundGate() {
           onPointerDown={() => setDismissed(true)}
           className="fixed inset-0 z-[60] flex items-center justify-center bg-cream/35 backdrop-blur-[2px] cursor-pointer"
           role="button"
-          aria-label="터치해서 소리 켜기"
+          aria-label={`${word}해서 소리 켜기`}
           data-sfx="none"
         >
           <motion.div
@@ -60,11 +62,11 @@ export default function SoundGate() {
               <path d="M18.5 7a7 7 0 0 1 0 10" />
             </svg>
             <p className="relative font-display font-bold text-ink text-lg md:text-xl mt-3 leading-snug">
-              화면을 한 번 터치하면
+              화면을 한 번 {word}하면
               <br />소리가 켜져요
             </p>
             <p className="relative font-display text-xs md:text-sm text-ink/60 mt-2 tracking-wide">
-              켜진 뒤 다시 터치하면 시작합니다
+              켜진 뒤 다시 {word}하면 시작합니다
             </p>
           </motion.div>
         </motion.div>

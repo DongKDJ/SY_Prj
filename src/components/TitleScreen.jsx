@@ -2,6 +2,7 @@ import { motion } from 'framer-motion'
 import { ArtStage, ArtLayer, GoldFrame, ArtBandCrop, LoadingCover } from './shared/ArtStage'
 import { titleBg, titleLogo, titleSpoon, titleFork, titleBgPatch, goldFrames } from '../assets/screenImages'
 import { useImagesReady } from '../hooks/useImagesReady'
+import { tapWord } from '../lib/device'
 
 // App 전역 게이트가 전 자산을 선로드하므로 보통 즉시 통과하는 안전망
 const TITLE_SRCS = [titleBg, titleBgPatch, titleSpoon, titleFork, titleLogo, ...goldFrames]
@@ -67,7 +68,7 @@ export default function TitleScreen({ onStart }) {
       >
         <span className="font-display font-bold text-ink text-lg md:text-2xl script-shimmer
                          [text-shadow:0_0_10px_rgba(255,248,240,0.95),0_1px_3px_rgba(255,248,240,0.9)]">
-          화면을 탭해 레시피를 펼쳐보세요
+          화면을 {tapWord()}해 레시피를 펼쳐보세요
         </span>
       </motion.div>
     </button>
