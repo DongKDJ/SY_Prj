@@ -120,6 +120,7 @@ export default function StageScreen({ stageIndex, selections, onSelect, onComple
   const handleCardSelected = (cardId) => {
     setSelectedCardId(cardId)
     setPhase('enlarged')
+    play('spell') // 고른 카드가 크게 펼쳐지는 순간
   }
 
   // 페이즈가 곧 페이지 — 스테이지 안에서 한 칸씩 되짚고, 첫 페이즈에서만 이전 스테이지로.

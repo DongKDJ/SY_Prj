@@ -4,6 +4,8 @@
  *  · 클릭음 click   — 버튼을 누를 때(App이 문서 전체에서 받는다). data-sfx="none" 버튼은 제외(카드 = 뒤집힘 소리가 대신).
  *  · 카드 뒤집힘 flip-1 / flip-2 — 둘 중 하나 무작위.
  *  · 책갈피 넘김 page-1~3 — 종이 넘기는 소리 한 파일(대표 지정)을 세 조각으로 잘라 무작위.
+ *  · 카드 결과 spell — 고른 카드가 크게 펼쳐질 때. · 최종 결과 fanfare — 디저트가 처음 공개될 때.
+ *  · 여우 대사 blip-1~8 — 타자기로 글자가 찍힐 때마다(두 글자에 한 번, 모동숲처럼) 팝 소리 한 파일을 잘라 무작위.
  * 음원 = src/assets/audio/{bgm,click,flip-1,flip-2,page-1~3}.mp3 (Pixabay Content License — 앱에 넣어 쓰기 허용, 출처 표기 불필요,
  * 음원 파일만 따로 나눠 주기는 금지). 파일이 없으면 그 소리만 조용히 빠진다(빌드는 그대로).
  * 끄기 상태는 기기에 기억(localStorage).
@@ -16,9 +18,13 @@ const url = (name) => Object.entries(files).find(([p]) => p.split('/').pop().rep
 //   bgm · flip-1 · flip-2 · page-2 · page-3 = -18.4 LUFS, page-1 = -19.1(최대치 -1 dBTP에 걸려 더 못 올림). click은 0.1초짜리라 LUFS를 잴 수 없어(400ms 창) 짧은 창 RMS로 뒤집힘보다 3dB 아래.
 // 여기서는 배경음악만 살짝(-1.4dB → 약 -19.8) 내려 효과음이 묻히지 않게 한다 — 여전히 ±2 안.
 // 음원을 바꾸면 원본에서 다시 평탄화할 것(원본 = SY_Prj\사운드\, 측정·변환 명령은 커밋 메시지).
-const VOLUME = { bgm: 0.85 } // 효과음은 모두 1
+const VOLUME = { bgm: 0.85, ...Object.fromEntries(Array.from({ length: 8 }, (_, i) => [`blip-${i + 1}`, 0.5])) } // 그 외 효과음은 1. 블립은 -6dBFS 피크 파일을 절반으로(대사 밑에 깔리게)
 // 무작위로 고르는 묶음
-const POOLS = { flip: ['flip-1', 'flip-2'], page: ['page-1', 'page-2', 'page-3'] }
+const POOLS = {
+  flip: ['flip-1', 'flip-2'],
+  page: ['page-1', 'page-2', 'page-3'],
+  blip: Array.from({ length: 8 }, (_, i) => `blip-${i + 1}`),
+}
 const KEY = 'sy-sound-muted'
 
 let muted = false
@@ -71,7 +77,7 @@ if (typeof document !== 'undefined') {
 
 // 효과음은 미리 받아 두고 재생할 때마다 복제 — 연달아 눌러도 겹쳐 나온다
 const preloaded = {}
-for (const name of ['click', ...Object.values(POOLS).flat()]) {
+for (const name of ['click', 'spell', 'fanfare', ...Object.values(POOLS).flat()]) {
   const src = url(name)
   if (src && typeof Audio !== 'undefined') {
     const a = new Audio(src)
@@ -80,7 +86,7 @@ for (const name of ['click', ...Object.values(POOLS).flat()]) {
   }
 }
 
-/** 'click' | 'flip' | 'page' */
+/** 'click' | 'spell' | 'fanfare' | 'flip' | 'page' | 'blip' */
 export function play(kind) {
   if (muted) return
   let name = kind

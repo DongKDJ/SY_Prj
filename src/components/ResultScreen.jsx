@@ -1,5 +1,5 @@
 import Sentences from './shared/Sentences'
-import { useState, useMemo, useCallback } from 'react'
+import { useState, useMemo, useCallback, useEffect } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
 import AnimatedDessert from './shared/AnimatedDessert'
 import { InkButton } from './shared/InkButton'
@@ -9,6 +9,7 @@ import { bookmarkBg, cardPlate } from '../assets/screenImages'
 import { resultCards } from '../data/desserts'
 import { DessertCard, ComboCards, CardLightbox } from './shared/BookUi'
 import stampImg from '../assets/images/ui/stamp-soyo.png'
+import { play } from '../lib/sound'
 import {
   PaperGrain,
   Divider,
@@ -52,6 +53,8 @@ export default function ResultScreen({ result, onViewBook, onTakePhoto, onRestar
   const [lightbox, setLightbox] = useState(null) // { card } | { dessert } — 확대 보기
   const closeLightbox = useCallback(() => setLightbox(null), [])
   const cards = useMemo(() => resultCards(result), [result])
+  // 디저트가 처음 공개될 때 한 번(사진 찍기에서 돌아올 때는 아님)
+  useEffect(() => { if (initialPhase === 'reveal') play('fanfare') }, [initialPhase])
   const motes = useMemo(() =>
     Array.from({ length: 44 }, (_, i) => createMote(i)), []
   )
