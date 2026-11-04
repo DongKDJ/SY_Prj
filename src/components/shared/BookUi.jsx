@@ -63,17 +63,25 @@ export function DessertCard({ dessert, variant = 'card', className = '', onClick
 }
 
 /** 조합 칩 + 고른 카드 4장. cards = resultCards(result). */
-export function ComboCards({ combo, cards, onCard, compact = false }) {
+export function ComboCards({ combo, cards, onCard, compact = false, withBrief = false }) {
+  // withBrief: 칩 위에 그 카드의 성격 이름(자유로운 상상가…)을 다른 색으로 — 도감 상세(2026-11-05 대표)
   return (
-    <div className="flex flex-col items-center gap-3">
-      <div className={`flex items-center justify-center flex-wrap ${compact ? 'gap-1' : 'gap-1.5 md:gap-2'}`}>
+    <div className={`flex flex-col items-center ${compact ? 'gap-3' : 'gap-4'}`}>
+      <div className={`flex items-end justify-center flex-wrap ${compact ? 'gap-1' : 'gap-1.5 md:gap-2'}`}>
         {combo.split('/').map((part, i, arr) => (
-          <span key={i} className={`flex items-center ${compact ? 'gap-1' : 'gap-1.5 md:gap-2'}`}>
-            <span className={`font-display text-ink gold-rim rounded-full py-0.5 whitespace-nowrap
-                              ${compact ? 'text-xs md:text-sm px-2 md:px-3' : 'text-sm md:text-base px-3'}`}>
-              {part.trim()}
+          <span key={i} className={`flex items-end ${compact ? 'gap-1' : 'gap-1.5 md:gap-2'}`}>
+            <span className="flex flex-col items-center gap-1">
+              {withBrief && cards[i] && (
+                <span className="font-display text-[10px] md:text-xs text-jam/85 tracking-wide whitespace-nowrap leading-none">
+                  {cards[i].brief}
+                </span>
+              )}
+              <span className={`font-display text-ink gold-rim rounded-full py-0.5 whitespace-nowrap
+                                ${compact ? 'text-xs md:text-sm px-2 md:px-3' : 'text-sm md:text-base px-3'}`}>
+                {part.trim()}
+              </span>
             </span>
-            {i < arr.length - 1 && <Sparkle className={`text-jam/70 ${compact ? 'w-2 h-2' : 'w-2.5 h-2.5'}`} />}
+            {i < arr.length - 1 && <Sparkle className={`text-jam/70 mb-1.5 ${compact ? 'w-2 h-2' : 'w-2.5 h-2.5'}`} />}
           </span>
         ))}
       </div>

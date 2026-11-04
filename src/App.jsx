@@ -2,6 +2,8 @@ import { useEffect, useState } from 'react'
 import { AnimatePresence, MotionConfig, motion } from 'framer-motion'
 import { useGameState } from './hooks/useGameState'
 import { readKioskFlag, useKioskIdle, useKioskLock } from './hooks/useKiosk'
+import { useWakeLock, useAndroidBack } from './hooks/useDevice'
+import ErrorBoundary from './components/shared/ErrorBoundary'
 import { useImagesReady } from './hooks/useImagesReady'
 import KioskIdlePrompt from './components/shared/KioskIdlePrompt'
 import { LoadingCover } from './components/shared/ArtStage'
@@ -64,6 +66,8 @@ function App() {
   const [stageEntry, setStageEntry] = useState('bookmark')
 
   useKioskLock(isKiosk)
+  useWakeLock()     // 화면 꺼짐 방지 (2026-11-05 대표)
+  useAndroidBack()  // 폰 뒤로 가기 = 이전으로
 
   // 소리 — 열리자마자 배경음악 시도(막히면 첫 터치·키 입력에서), 버튼을 누를 때마다 클릭음.
   // 카드처럼 제 소리가 따로 있는 버튼은 data-sfx="none"으로 뺀다.
@@ -110,6 +114,8 @@ function App() {
   return (
     <MotionConfig reducedMotion="user">
       <div className="min-h-[100dvh] bg-cream overflow-x-hidden">
+      {/* 오류 안전망 — 평소엔 투명, 깨지면 카드 띄우고 처음으로 */}
+      <ErrorBoundary onReset={restart}>
         <AnimatePresence mode="wait">
           <motion.div key={pageKey} {...pageTransition}>
             {screen === 'title' && (
@@ -162,7 +168,7 @@ function App() {
               <DessertBook
                 currentResult={currentResult}
                 onRestart={restart}
-                onExit={() => goToScreen('result')}
+                onExit={() => { setResultPhase('detail'); goToScreen('result') }}
               />
             )}
           </motion.div>
@@ -178,6 +184,7 @@ function App() {
             <KioskIdlePrompt key="kiosk-idle" secondsLeft={idleSeconds} />
           )}
         </AnimatePresence>
+      </ErrorBoundary>
       </div>
     </MotionConfig>
   )

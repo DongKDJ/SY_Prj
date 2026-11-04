@@ -178,8 +178,14 @@ export default function DessertBook({ currentResult, onRestart, onExit }) {
                           <Sparkle className="w-3 h-3 text-honey" />
                           <span className="w-8 h-px bg-ink/15" />
                         </h3>
-                        <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 md:gap-4 items-start">
-                          {row.tiles.map(({ side, card: c }) => (
+                        <div className="flex flex-col sm:flex-row gap-3 md:gap-4 items-stretch">
+                          {[row.tiles.slice(0, 2), row.tiles.slice(2)].map((set, si) => (
+                          <div key={si} className="contents">
+                          {si === 1 && (
+                            <div aria-hidden="true" className="border-t sm:border-t-0 sm:border-l border-dashed border-ink/25 sm:self-stretch sm:mx-0.5" />
+                          )}
+                          <div className="flex-1 grid grid-cols-2 gap-3 md:gap-4 items-start">
+                          {set.map(({ side, card: c }) => (
                             <motion.button
                               key={`${c.id}-${side}`}
                               type="button"
@@ -204,6 +210,9 @@ export default function DessertBook({ currentResult, onRestart, onExit }) {
                                 </p>
                               </div>
                             </motion.button>
+                          ))}
+                          </div>
+                          </div>
                           ))}
                         </div>
                       </section>
@@ -268,6 +277,7 @@ export default function DessertBook({ currentResult, onRestart, onExit }) {
                             compact
                             combo={detailDessert.combo}
                             cards={resultCards(detailDessert)}
+                            withBrief
                             onCard={(card) => setLightbox({ card })}
                           />
                         </div>

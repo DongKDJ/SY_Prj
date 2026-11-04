@@ -14,6 +14,7 @@
 - 데이터 = `src/data/desserts.js`(stages 4문항 · dessertResults 16조합(카드 ID 키) · foxDialogs).
 - 이미지 = `src/assets/images/` — `character/`(여우씨 레이어) · `cards/` · `desserts/`(+`layers/`) · `screens/`(원화 레이어). 같은 파일명으로 교체.
 - 오프라인 = 배포본만 서비스 워커(`vite.sw.js`가 빌드 때 `sw.js` 생성, 등록은 `main.jsx`): 화면은 인터넷 먼저·끊기면 저장본, 해시 파일은 저장본 먼저. `?kiosk=1`은 페이지가 `precache.json` 목록을 하나씩 요청해 전체(약 33MB)를 미리 저장 → 전시장 와이파이가 끊겨도 열린다. 미리 저장을 워커 안 긴 작업으로 돌리지 말 것(새 판 워커가 못 넘겨받아 새로고침이 걸린다).
+- 전시 안전장치 = `hooks/useDevice.js`(화면 꺼짐 방지 Wake Lock · 폰 뒤로 가기 = 화면의 '이전으로' 버튼 클릭) · `shared/ErrorBoundary.jsx`(깨지면 금테 카드 + 8초 뒤 처음으로, 평소엔 무영향) · 퍼가기 금지 = 우클릭(App)·길게 누르기·끌기(`index.css` img 규칙), 예외 `.allow-save`(사진 찍기 결과). 디저트 북에서 '이전' = 펼친 책(`resultPhase` 'detail').
 - 브랜치 = `main` 단일(분기 안 함). `main` push → GitHub Actions 자동 배포(정본: 메모리 `deploy-mechanism`).
 
 ## 스킬 — 그 영역을 건드릴 때 연다

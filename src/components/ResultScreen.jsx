@@ -324,7 +324,7 @@ export default function ResultScreen({ result, onViewBook, onTakePhoto, onRestar
                     initial={{ opacity: 0 }}
                     animate={{ opacity: 1 }}
                     transition={{ delay: 1.0 }}
-                    className="relative flex flex-col items-center gap-3"
+                    className="relative flex flex-col items-center gap-4 -mt-1"
                   >
                     <SectionLabel>고른 재료</SectionLabel>
                     <ComboCards combo={result.combo} cards={cards} onCard={(card) => setLightbox({ card })} />
@@ -450,7 +450,7 @@ export default function ResultScreen({ result, onViewBook, onTakePhoto, onRestar
                     {/* 도장 — 대표가 준 PNG를 갈색 마스크로 (파일은 그대로) */}
                     <div
                       aria-hidden="true"
-                      className="stamp-ink w-20 h-20 md:w-24 md:h-24 mt-2"
+                      className="stamp-ink w-28 h-28 md:w-32 md:h-32 mt-2"
                       style={{ '--stamp': `url(${stampImg})` }}
                     />
                   </motion.div>
