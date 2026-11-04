@@ -110,7 +110,7 @@ export function KitchenPortraitStrip({ text, hint }) {
         <p className="font-display text-ink text-sm leading-relaxed min-h-[3.5rem]">
           {text}
         </p>
-        <p className="font-script text-right text-sm text-jam/70 mt-1 min-h-[1.25rem]">
+        <p className="font-display text-right text-xs text-jam/80 tracking-wide mt-1 min-h-[1.25rem]">
           {hint}
         </p>
       </div>

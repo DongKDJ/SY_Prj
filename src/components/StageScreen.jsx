@@ -259,9 +259,6 @@ export default function StageScreen({ stageIndex, selections, onSelect, onComple
               transition={{ delay: 1.4 }}
               className="absolute bottom-6 left-0 right-0 flex flex-col items-center gap-1 z-10 pointer-events-none"
             >
-              <span className="font-script text-2xl text-jam drop-shadow-[0_1px_4px_rgba(255,248,240,0.9)]">
-                turn the page
-              </span>
               <span className="font-display text-sm md:text-base tracking-widest text-ink/85
                                drop-shadow-[0_1px_4px_rgba(255,248,240,0.9)]">
                 탭하여 계속 →
@@ -402,7 +399,6 @@ export default function StageScreen({ stageIndex, selections, onSelect, onComple
                 <InkButton
                   onClick={handleProceed}
                   size="md"
-                  sub="next page"
                   initial={{ opacity: 0, y: 12 }}
                   animate={{ opacity: 1, y: 0 }}
                   transition={{ delay: 0.8, type: 'spring', stiffness: 140, damping: 14 }}

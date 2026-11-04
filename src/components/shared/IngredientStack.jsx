@@ -62,7 +62,7 @@ export default function IngredientStack({ selections }) {
               </div>
               {/* 폴라로이드 캡션 */}
               <div className="absolute bottom-1 left-0 right-0 text-center px-1">
-                <p className="font-script text-[10px] text-jam leading-none">
+                <p className="font-display text-[10px] text-jam leading-none">
                   {card.stageLabel}
                 </p>
                 <p className="font-display text-[10px] md:text-xs text-ink font-bold leading-tight mt-0.5">

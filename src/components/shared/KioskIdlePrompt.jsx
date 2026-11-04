@@ -29,8 +29,6 @@ export default function KioskIdlePrompt({ secondsLeft }) {
       >
         <PaperGrain />
 
-        <p className="relative font-script text-xl text-jam">still there?</p>
-
         <p className="relative font-display text-lg text-ink mt-1">
           잠시 후 처음으로 돌아갑니다
         </p>

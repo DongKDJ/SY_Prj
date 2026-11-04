@@ -62,7 +62,7 @@ export function ArtBackdrop({ src, veil = 'bg-cream/45' }) {
 export function LoadingCover({ progress }) {
   return (
     <div className="h-[100dvh] w-full bg-paper flex flex-col items-center justify-center gap-5">
-      <span className="font-script text-xl text-ink/50 script-shimmer">
+      <span className="font-display text-base text-ink/60 script-shimmer">
         여우씨가 레시피 재료를 준비하고 있어요…
       </span>
       {progress != null && (

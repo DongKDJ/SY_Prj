@@ -140,6 +140,7 @@ function App() {
                 initialPhase={resultPhase}
                 onViewBook={() => goToScreen('dessertBook')}
                 onTakePhoto={() => goToScreen('photo')}
+                onRestart={restart}
                 onBack={() => { setStageEntry('cards'); prevScreen() }}
               />
             )}

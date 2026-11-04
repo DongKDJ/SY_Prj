@@ -62,6 +62,14 @@ body {
   color: var(--color-brown);
   word-break: keep-all;
   -webkit-font-smoothing: antialiased;
+  /* 전시·터치용 — 연타해도 글자가 파랗게 선택되지 않게. 입력칸은 그대로. */
+  user-select: none;
+  -webkit-user-select: none;
+  -webkit-tap-highlight-color: transparent;
+}
+input, textarea, [contenteditable] {
+  user-select: text;
+  -webkit-user-select: text;
 }
 
 /* Card flip */
@@ -958,4 +966,14 @@ a,
 }
 .sticker-tray::-webkit-scrollbar {
   display: none;
+}
+
+/* ===== 도장 — 대표가 준 흑백 PNG(투명 배경)를 그림 파일은 그대로 두고 마스크로 갈색만 입힌다.
+   multiply로 종이 결 위에 찍힌 느낌. --stamp 에 url(...)을 넣어 쓴다. */
+.stamp-ink {
+  background-color: #6B4A33;
+  -webkit-mask: var(--stamp) center / contain no-repeat;
+  mask: var(--stamp) center / contain no-repeat;
+  opacity: 0.8;
+  mix-blend-mode: multiply;
 }

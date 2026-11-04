@@ -22,7 +22,6 @@ export default function CardSelect({ stage, onSelect, accent = 'honey' }) {
   const [flippedId, setFlippedId] = useState(null)
 
   const a = accentMap[accent] || accentMap.honey
-  const stageNum = String(stage.id).padStart(2, '0')
 
   // 앞면(재료 카드) 이미지 선로딩 — 뒤집히는 순간 빈 카드가 보이지 않게
   useEffect(() => {
@@ -59,8 +58,8 @@ export default function CardSelect({ stage, onSelect, accent = 'honey' }) {
           <PaperGrain />
           <div className="relative flex items-center gap-2 mb-1.5">
             <Sparkle className={`w-3 h-3 ${a.text}`} />
-            <span className={`font-script text-lg ${a.text}`}>
-              Chapter {stageNum}
+            <span className={`font-display text-sm font-bold tracking-wide ${a.text}`}>
+              {stage.bookmark}
             </span>
             <div className="flex-1 h-px bg-ink/15" />
             <span className="font-display text-xs text-ink/55 tracking-[0.25em]">

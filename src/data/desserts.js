@@ -280,3 +280,10 @@ export const foxDialogs = {
     '이건 세상에 하나뿐인, 너만의 디저트야.',
   ],
 }
+
+// 카드 조회 — 결과의 조합 키(카드 id 4개)에서 고른 카드 4장을 되찾는다. 결과 화면·디저트 북·카드 도감 공용.
+export const allCards = stages.flatMap((s) => s.cards.map((c) => ({ ...c, stageId: s.id, bookmark: s.bookmark })))
+const cardById = Object.fromEntries(allCards.map((c) => [c.id, c]))
+const keyOfResult = Object.fromEntries(Object.entries(dessertResults).map(([k, r]) => [r.id, k]))
+export const resultCards = (result) =>
+  (keyOfResult[result?.id] || '').split('-').map((id) => cardById[id]).filter(Boolean)

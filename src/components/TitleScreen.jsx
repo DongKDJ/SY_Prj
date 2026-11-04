@@ -69,10 +69,6 @@ export default function TitleScreen({ onStart }) {
                          [text-shadow:0_0_10px_rgba(255,248,240,0.95),0_1px_3px_rgba(255,248,240,0.9)]">
           화면을 탭해 레시피를 펼쳐보세요
         </span>
-        <span className="font-script text-xl text-jam
-                         [text-shadow:0_0_8px_rgba(255,248,240,0.9)]">
-          open the book
-        </span>
       </motion.div>
     </button>
   )

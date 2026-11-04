@@ -736,7 +736,6 @@ export default function PhotoScreen({ result, kiosk = false, onBack }) {
                   <p className="font-display text-sm md:text-base font-bold text-ink leading-snug">
                     내 폰으로 이 화면을 찍어 보세요!
                   </p>
-                  <p className="font-script text-xs md:text-sm text-jam leading-tight">mirror shot</p>
                 </div>
               )}
               <div className="flex flex-col items-center gap-1">

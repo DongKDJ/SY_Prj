@@ -1,19 +1,20 @@
 import Sentences from './shared/Sentences'
-import { useState, useMemo } from 'react'
+import { useState, useMemo, useCallback } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
 import AnimatedDessert from './shared/AnimatedDessert'
 import { InkButton } from './shared/InkButton'
 import BackButton from './shared/BackButton'
 import { ArtBackdrop } from './shared/ArtStage'
-import { bookmarkBg } from '../assets/screenImages'
+import { bookmarkBg, cardPlate } from '../assets/screenImages'
+import { resultCards } from '../data/desserts'
+import { DessertCard, ComboCards, CardLightbox } from './shared/BookUi'
+import stampImg from '../assets/images/ui/stamp-soyo.png'
 import {
   PaperGrain,
   Divider,
   Sparkle,
   Floret,
-  WheatSprig,
   CornerOrnament,
-  MaskingTape,
 } from './shared/Decorations'
 
 /* ── 컨페티 입자: 꽃잎/별/원/재료 조각 ── */
@@ -46,8 +47,11 @@ function createMote(id) {
 }
 
 // initialPhase: 'reveal'(오븐에서 온 첫 공개) | 'detail'(사진 찍기에서 돌아올 때 — 메달리온을 건너뛰고 펼친 책으로)
-export default function ResultScreen({ result, onViewBook, onTakePhoto, onBack, initialPhase = 'reveal' }) {
+export default function ResultScreen({ result, onViewBook, onTakePhoto, onRestart, onBack, initialPhase = 'reveal' }) {
   const [phase, setPhase] = useState(initialPhase)
+  const [lightbox, setLightbox] = useState(null) // { card } | { dessert } — 확대 보기
+  const closeLightbox = useCallback(() => setLightbox(null), [])
+  const cards = useMemo(() => resultCards(result), [result])
   const motes = useMemo(() =>
     Array.from({ length: 44 }, (_, i) => createMote(i)), []
   )
@@ -60,7 +64,7 @@ export default function ResultScreen({ result, onViewBook, onTakePhoto, onBack, 
     )
   }
 
-  const pageNum = String(result.id).padStart(2, '0')
+  const pageNum = result.id
 
   return (
     <div className="min-h-[100dvh] w-full relative overflow-hidden">
@@ -151,20 +155,6 @@ export default function ResultScreen({ result, onViewBook, onTakePhoto, onBack, 
               transition={{ delay: 0.3, type: 'spring', stiffness: 55, damping: 12 }}
               className="relative z-10 flex flex-col items-center"
             >
-              {/* 손글씨 캡션 — Today's Recipe */}
-              <motion.div
-                initial={{ opacity: 0, y: 6 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ delay: 0.9, duration: 0.6 }}
-                className="flex items-center gap-3 mb-3"
-              >
-                <span className="h-px w-8 bg-jam/50" />
-                <span className="font-script text-2xl text-jam tracking-wide">
-                  today&apos;s recipe
-                </span>
-                <span className="h-px w-8 bg-jam/50" />
-              </motion.div>
-
               {/* 메달리온 — 안쪽 종이 톤 + 디저트 */}
               <motion.div
                 animate={{
@@ -234,8 +224,7 @@ export default function ResultScreen({ result, onViewBook, onTakePhoto, onBack, 
               transition={{ delay: 2 }}
               className="absolute bottom-8 left-0 right-0 flex flex-col items-center gap-1 z-30"
             >
-              <span className="font-script text-2xl text-jam">turn the page</span>
-              <span className="font-display text-xs text-ink/55 tracking-widest">
+              <span className="font-display text-sm md:text-base text-ink/85 tracking-widest">
                 탭하여 자세히 보기 →
               </span>
             </motion.div>
@@ -251,6 +240,8 @@ export default function ResultScreen({ result, onViewBook, onTakePhoto, onBack, 
 
         {/* ═══════════════════════════════════════════
             Phase 2: 펼친 책 — 좌우 페이지 레이아웃
+            (2026-11-05 대표 재구성: 왼쪽 = 도감 금테 카드 + 조합 + 고른 카드 4장,
+             오른쪽 = 카드 뒤집었을 때와 같은 명판 + 따옴표 설명, 영어 머리글·장식 제거, 도장)
             ═══════════════════════════════════════════ */}
         {phase === 'detail' && (
           <motion.div
@@ -258,29 +249,30 @@ export default function ResultScreen({ result, onViewBook, onTakePhoto, onBack, 
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             transition={{ duration: 0.6 }}
-            className="min-h-[100dvh] relative flex items-center justify-center px-3 py-6 md:px-8 md:py-10"
+            className="min-h-[100dvh] relative flex items-center justify-center px-3 py-6 md:px-8 md:py-10 portrait:pt-[7.5rem] portrait:md:pt-10"
           >
             {/* 배경: 책상 원화(흐림) 위에 펼친 책 */}
             <ArtBackdrop src={bookmarkBg} veil="bg-cream/25" />
 
             {/* 책 컨테이너 */}
-            <div className="relative z-10 max-w-5xl mx-auto page-turn-in">
+            <div className="relative z-10 w-full max-w-5xl mx-auto page-turn-in">
               {/* 책등 그림자 (중앙 세로 가운데) — md 이상에서만 */}
               <div className="hidden md:block absolute top-4 bottom-4 left-1/2 -translate-x-1/2 w-16
                               bg-gradient-to-r from-transparent via-ink/20 to-transparent
                               pointer-events-none z-20" />
 
-              <div className="grid md:grid-cols-2 gap-0 md:gap-0
+              <div className="grid md:grid-cols-2 gap-0
                               gold-rim rounded-2xl md:rounded-[2rem]
                               shadow-[0_30px_60px_-30px_rgba(94,70,50,0.45)]
                               overflow-hidden relative">
 
-                {/* ─────── 좌측 페이지: 디저트 ─────── */}
+                {/* ─────── 왼쪽 페이지: 디저트 카드 + 조합 + 고른 카드 ─────── */}
                 <motion.section
                   initial={{ opacity: 0, x: -20 }}
                   animate={{ opacity: 1, x: 0 }}
                   transition={{ delay: 0.25, duration: 0.7 }}
-                  className="relative flex flex-col justify-center p-6 md:p-10 md:pr-14
+                  className="relative flex flex-col items-center justify-center gap-5 md:gap-6
+                             px-6 pt-8 pb-12 md:px-10 md:pr-14 md:py-12
                              min-h-[60vh] md:min-h-[78vh]
                              bg-gradient-to-br from-[#FBF3E3] to-[#F0DEB6]"
                 >
@@ -288,176 +280,87 @@ export default function ResultScreen({ result, onViewBook, onTakePhoto, onBack, 
                   <CornerOrnament corner="tl" className="absolute top-3 left-3 w-9 h-9 text-honey" />
                   <CornerOrnament corner="bl" className="absolute bottom-3 left-3 w-9 h-9 text-honey" />
 
-                  {/* 페이지 헤더 */}
-                  <div className="relative flex items-center justify-between mb-4">
-                    <span className="font-script text-lg text-jam tracking-wide">
-                      Recipe №{pageNum}
-                    </span>
-                    <span className="font-display text-[10px] text-ink/50 tracking-[0.3em]">
-                      FOX&apos;S BAKERY
-                    </span>
-                  </div>
-                  <Divider variant="wave" className="w-full h-3 text-ink/40 mb-6" />
+                  <motion.div
+                    initial={{ y: 12, opacity: 0 }}
+                    animate={{ y: 0, opacity: 1 }}
+                    transition={{ delay: 0.5, type: 'spring', stiffness: 80, damping: 14 }}
+                    className="relative flex flex-col items-center gap-3"
+                  >
+                    <DessertCard
+                      dessert={result}
+                      className="w-48 md:w-60"
+                      onClick={() => setLightbox({ dessert: result })}
+                    />
+                    <p className="font-display text-xl md:text-2xl font-bold text-ink text-center leading-tight">
+                      {result.name}
+                    </p>
+                  </motion.div>
 
-                  {/* 디저트 사진 — 마스킹 테이프로 고정된 폴라로이드 */}
-                  <div className="relative flex items-center justify-center mt-4 md:mt-2">
-                    {/* 살짝 틀어진 종이 폴라로이드 */}
-                    <motion.div
-                      initial={{ rotate: 0, y: 12, opacity: 0 }}
-                      animate={{ rotate: -2.5, y: 0, opacity: 1 }}
-                      transition={{ delay: 0.5, type: 'spring', stiffness: 80, damping: 14 }}
-                      className="relative bg-[#FCF5E6] p-3 md:p-4 pb-10 md:pb-12
-                                 shadow-[0_18px_30px_-18px_rgba(94,70,50,0.5)]
-                                 border border-paper-edge"
-                    >
-                      <MaskingTape
-                        className="absolute -top-3 left-6"
-                        width={70} rotate={-12} tone="honey"
-                      />
-                      <MaskingTape
-                        className="absolute -top-3 right-8"
-                        width={70} rotate={9} tone="sage"
-                      />
-
-                      <div className="w-56 h-56 md:w-72 md:h-72 bg-[#F3E2C2]
-                                      flex items-center justify-center">
-                        <AnimatedDessert
-                          dessertId={result.id}
-                          image={result.image}
-                          name={result.name}
-                          variant="card"
-                          className="w-48 h-48 md:w-60 md:h-60"
-                        />
-                      </div>
-
-                      {/* 폴라로이드 캡션 */}
-                      <p className="absolute bottom-2 left-0 right-0 text-center
-                                    font-script text-xl text-ink/80">
-                        {result.name}
-                      </p>
-                    </motion.div>
-
-                    {/* 옆에 손글씨 메모 */}
-                    <motion.div
-                      initial={{ opacity: 0, x: 10, rotate: 0 }}
-                      animate={{ opacity: 1, x: 0, rotate: 7 }}
-                      transition={{ delay: 0.9, duration: 0.6 }}
-                      className="hidden md:block absolute -right-4 bottom-12
-                                 max-w-[140px] text-jam"
-                    >
-                      <span className="font-script text-xl leading-tight block">
-                        제일 좋아하는<br />레시피!
-                      </span>
-                      <svg viewBox="0 0 60 30" className="w-14 h-7 mt-1 text-jam"
-                           fill="none" stroke="currentColor" strokeWidth="1.4"
-                           strokeLinecap="round">
-                        <path d="M2 4 Q 30 30, 56 12" strokeDasharray="3 3" />
-                        <path d="M56 12 L 50 8 M 56 12 L 48 16" />
-                      </svg>
-                    </motion.div>
-                  </div>
-
-                  {/* 콤보 라벨 */}
                   <motion.div
                     initial={{ opacity: 0 }}
                     animate={{ opacity: 1 }}
                     transition={{ delay: 1.0 }}
-                    className="relative mt-8 flex items-center justify-center gap-2 flex-wrap"
+                    className="relative"
                   >
-                    {result.combo.split('/').map((part, i, arr) => (
-                      <span key={i} className="flex items-center gap-2">
-                        <span className="font-display text-sm md:text-base text-ink
-                                         px-3 py-0.5 gold-rim rounded-full">
-                          {part.trim()}
-                        </span>
-                        {i < arr.length - 1 && (
-                          <Sparkle className="w-3 h-3 text-jam/70" />
-                        )}
-                      </span>
-                    ))}
+                    <ComboCards combo={result.combo} cards={cards} onCard={(card) => setLightbox({ card })} />
                   </motion.div>
 
-                  {/* 페이지 번호 */}
-                  <div className="absolute bottom-4 left-0 right-0 flex justify-center">
-                    <span className="font-script text-base text-ink/55 tracking-widest">
-                      · {pageNum} ·
-                    </span>
-                  </div>
+                  <PageNumber n={pageNum * 2 - 1} />
                 </motion.section>
 
-                {/* ─────── 우측 페이지: 텍스트 ─────── */}
+                {/* ─────── 오른쪽 페이지: 성격 명판 + 설명 + 버튼 + 도장 ─────── */}
                 <motion.section
                   initial={{ opacity: 0, x: 20 }}
                   animate={{ opacity: 1, x: 0 }}
                   transition={{ delay: 0.4, duration: 0.7 }}
-                  className="relative flex flex-col justify-center p-6 md:p-10 md:pl-14
+                  className="relative flex flex-col items-center justify-center
+                             px-6 pt-8 pb-12 md:px-10 md:pl-14 md:py-12
                              min-h-[60vh] md:min-h-[78vh]
                              bg-gradient-to-bl from-[#FCF5E6] to-[#F0DEB6]"
                 >
                   <PaperGrain />
                   <CornerOrnament corner="tr" className="absolute top-3 right-3 w-9 h-9 text-honey" />
                   <CornerOrnament corner="br" className="absolute bottom-3 right-3 w-9 h-9 text-honey" />
-                  <WheatSprig className="absolute top-10 right-4 w-8 h-auto text-sage/40" />
 
-                  {/* 페이지 헤더 */}
-                  <div className="relative flex items-center justify-between mb-4">
-                    <span className="font-display text-[10px] text-ink/50 tracking-[0.3em]">
-                      PERSONALITY
-                    </span>
-                    <span className="font-script text-lg text-jam tracking-wide">
-                      a note for you
-                    </span>
-                  </div>
-                  <Divider variant="wave" className="w-full h-3 text-ink/40 mb-6" />
-
-                  {/* 성격 한줄 */}
-                  <motion.h2
-                    initial={{ opacity: 0, y: 6 }}
+                  {/* 성격 명판 — 카드 확대 화면과 같은 뼈다귀 프레임 */}
+                  <motion.div
+                    initial={{ opacity: 0, y: 8 }}
                     animate={{ opacity: 1, y: 0 }}
                     transition={{ delay: 0.6, duration: 0.6 }}
-                    className="font-display text-2xl md:text-3xl font-bold text-ink
-                               text-center leading-tight ink-bleed-in"
+                    className="relative w-64 md:w-80"
                   >
-                    {result.personality}
-                  </motion.h2>
-                  <div className="flex justify-center my-5">
-                    <Divider className="w-28 h-3 text-jam/70" />
-                  </div>
+                    <img src={cardPlate} alt="" aria-hidden="true" draggable={false} className="w-full h-auto select-none" />
+                    <div className="absolute inset-0 flex items-center justify-center pt-[5%] px-10">
+                      <h2 className="font-display text-lg md:text-2xl font-bold text-ink text-center leading-tight whitespace-nowrap">
+                        {result.personality}
+                      </h2>
+                    </div>
+                  </motion.div>
 
-                  {/* 디저트 설명 — drop cap + 들여쓰기 */}
+                  {/* 디저트 설명 — 쉼표·문장마다 줄바꿈, 가운데 정렬 */}
                   <motion.div
                     initial={{ opacity: 0 }}
                     animate={{ opacity: 1 }}
                     transition={{ delay: 0.8 }}
-                    className="relative mb-7"
+                    className="relative mt-5 flex flex-col items-center"
                   >
-                    <p className="font-display text-[15px] md:text-base text-ink/85
-                                  leading-loose first-letter:font-display
-                                  first-letter:text-5xl first-letter:font-bold
-                                  first-letter:text-jam first-letter:mr-1
-                                  first-letter:float-left first-letter:leading-[0.9]
-                                  first-letter:mt-1">
-                      <Sentences text={result.description} />
+                    <Floret className="w-4 h-4 text-honey mb-2" />
+                    <p className="font-display text-base md:text-lg text-ink leading-relaxed text-center max-w-md">
+                      <Sentences text={result.description} quote />
                     </p>
                   </motion.div>
-
-                  {/* 작은 디바이더 */}
-                  <div className="flex justify-center my-5">
-                    <Floret className="w-5 h-5 text-honey/80" />
-                  </div>
 
                   {/* 버튼: 사진 찍기(주) + 공유·디저트 북 */}
                   <motion.div
                     initial={{ opacity: 0, y: 10 }}
                     animate={{ opacity: 1, y: 0 }}
                     transition={{ delay: 1.2 }}
-                    className="flex flex-col items-center gap-5 mt-8"
+                    className="relative flex flex-col items-center gap-4 mt-8"
                   >
                     <InkButton
                       size="md"
                       tone="jam"
                       arrow={false}
-                      sub="photo booth"
                       onClick={onTakePhoto}
                       aria-label="내 디저트와 사진 찍기"
                     >
@@ -465,7 +368,7 @@ export default function ResultScreen({ result, onViewBook, onTakePhoto, onBack, 
                       내 디저트와 사진 찍기!
                     </InkButton>
 
-                    <div className="flex justify-center items-start gap-6">
+                    <div className="flex justify-center items-start gap-3 md:gap-4 flex-wrap">
                       <InkButton
                         size="sm"
                         tone="honey"
@@ -493,21 +396,32 @@ export default function ResultScreen({ result, onViewBook, onTakePhoto, onBack, 
 
                       <InkButton
                         size="sm"
-                        sub="recipe book"
                         onClick={onViewBook}
                         aria-label="디저트 북 보기"
                       >
                         디저트 북 보기
                       </InkButton>
+
+                      <InkButton
+                        size="sm"
+                        tone="sage"
+                        arrow={false}
+                        onClick={onRestart}
+                        aria-label="다시하기"
+                      >
+                        다시하기
+                      </InkButton>
                     </div>
+
+                    {/* 도장 — 대표가 준 PNG를 갈색 마스크로 (파일은 그대로) */}
+                    <div
+                      aria-hidden="true"
+                      className="stamp-ink w-20 h-20 md:w-24 md:h-24 mt-3 -rotate-6"
+                      style={{ '--stamp': `url(${stampImg})` }}
+                    />
                   </motion.div>
 
-                  {/* 페이지 번호 */}
-                  <div className="absolute bottom-4 left-0 right-0 flex justify-center">
-                    <span className="font-script text-base text-ink/55 tracking-widest">
-                      · {pageNum} ·
-                    </span>
-                  </div>
+                  <PageNumber n={pageNum * 2} />
                 </motion.section>
               </div>
 
@@ -518,8 +432,21 @@ export default function ResultScreen({ result, onViewBook, onTakePhoto, onBack, 
         )}
       </AnimatePresence>
 
-      {/* 펼친 책에서는 메달리온 페이지로, 메달리온에서는 마지막 선택으로 */}
-      <BackButton onClick={() => (phase === 'detail' ? setPhase('reveal') : onBack())} />
+      <CardLightbox item={lightbox} onClose={closeLightbox} />
+
+      {/* 확대 보기 → 닫기, 펼친 책 → 메달리온 페이지, 메달리온 → 마지막 선택 */}
+      <BackButton onClick={() => (lightbox ? closeLightbox() : phase === 'detail' ? setPhase('reveal') : onBack())} />
+    </div>
+  )
+}
+
+/* 펼친 책 페이지 번호 — 왼쪽 홀수·오른쪽 짝수 */
+function PageNumber({ n }) {
+  return (
+    <div className="absolute bottom-4 left-0 right-0 flex justify-center">
+      <span className="font-display text-xs text-ink/50 tracking-[0.3em]">
+        {String(n).padStart(2, '0')}
+      </span>
     </div>
   )
 }
