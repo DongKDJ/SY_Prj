@@ -126,7 +126,7 @@ export default function DessertBook({ currentResult, onRestart, onExit }) {
             exit={{ opacity: 0 }}
             className="relative min-h-[100dvh] flex flex-col"
           >
-            <div className="w-full max-w-4xl mx-auto px-4 pt-[max(1.5rem,8dvh)] pb-[max(1.5rem,6dvh)] flex-1 flex flex-col">
+            <div className="w-full max-w-4xl lg:max-w-5xl mx-auto px-4 pt-[max(1.5rem,8dvh)] pb-[max(1.5rem,6dvh)] flex-1 flex flex-col">
               {/* 그리드로 닫기 */}
               <div className="flex justify-end">
                 <motion.button
@@ -164,7 +164,7 @@ export default function DessertBook({ currentResult, onRestart, onExit }) {
                     exit={{ opacity: 0, x: -30 }}
                     transition={{ duration: 0.25 }}
                     className="flex-1 flex flex-col md:flex-row gap-5 md:gap-6
-                               items-center max-w-3xl mx-auto"
+                               items-center max-w-3xl md:max-w-4xl mx-auto"
                   >
                     {/* 카드 이미지 */}
                     <div className="w-48 md:w-72 flex-shrink-0">

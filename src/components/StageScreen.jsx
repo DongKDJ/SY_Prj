@@ -9,6 +9,7 @@ import BackButton from './shared/BackButton'
 import { ArtStage, ArtLayer, GoldFrame, ArtBandCrop, LoadingCover } from './shared/ArtStage'
 import { bookmarkBg, grassLayers, bookmarkTitles, ingredientLayers, goldFrames, cardPlate } from '../assets/screenImages'
 import { useImagesReady } from '../hooks/useImagesReady'
+import { play } from '../lib/sound'
 import {
   PaperGrain,
   Floret,
@@ -267,9 +268,10 @@ export default function StageScreen({ stageIndex, selections, onSelect, onComple
               </span>
             </motion.div>
 
-            {/* 전체 탭 */}
+            {/* 전체 탭 — 클릭음 대신 종이 넘기는 소리 */}
             <button
-              onClick={() => setPhase('cards')}
+              onClick={() => { play('page'); setPhase('cards') }}
+              data-sfx="none"
               className="absolute inset-0 z-20 cursor-pointer"
               aria-label="다음 페이지"
             />
@@ -340,14 +342,16 @@ export default function StageScreen({ stageIndex, selections, onSelect, onComple
                 initial={{ scale: 0.6, opacity: 0, rotateZ: -3 }}
                 animate={{ scale: 1, opacity: 1, rotateZ: 0 }}
                 transition={{ type: 'spring', stiffness: 80, damping: 14 }}
-                className="relative z-10 flex flex-col items-center max-w-lg mt-[5vh] portrait:mt-0 portrait:md:mt-[5vh]"
+                className="relative z-10 flex flex-col items-center max-w-lg md:max-w-2xl mt-[5vh] portrait:mt-0 portrait:md:mt-[5vh]"
               >
                 {/* 카드 — 테두리·명패까지 원화 한 장에 그려져 있어 별도 액자를 두르지 않는다.
                     설명을 읽는 8~12초 동안 정지하지 않도록 아주 느리게 흔들린다. */}
                 {/* 세로 폰: 내용을 이전 버튼(좌상단) 아래에서 시작하고, 카드는 화면 높이에 맞춰 줄여
-                    설명·다음 버튼까지 한 화면에 들어오게(카드 아래 묶음 ≈ 36rem). 태블릿 세로는 그대로. */}
+                    설명·다음 버튼까지 한 화면에 들어오게(카드 아래 묶음 ≈ 36rem). 태블릿 세로는 그대로.
+                    가로 PC도 같은 식 — 쉼표마다 줄을 바꿔 설명이 6줄까지 늘어서, 키가 낮은 화면(900px 이하)에선
+                    카드를 줄여 다음 버튼이 화면 안에 남게(카드 아래 묶음 ≈ 38rem, 1080px 이상은 원래 18rem). 아이폰 SE처럼 키 700px 이하는 명판·설명 글씨·간격도 한 단계 작게. */}
                 <div className="ambient-pinned w-56 portrait:w-[clamp(7rem,calc((100dvh_-_36rem)_*_0.76),min(12rem,50vw))]
-                                md:w-72 portrait:md:w-72 aspect-[16/21]
+                                md:w-[clamp(8rem,calc((100dvh_-_38rem)_*_0.76),18rem)] portrait:md:w-72 aspect-[16/21]
                                 shadow-[0_30px_50px_-24px_rgba(94,70,50,0.55)]">
                   {cardImg ? (
                     <img src={cardImg} alt={card.ingredient}
@@ -365,7 +369,7 @@ export default function StageScreen({ stageIndex, selections, onSelect, onComple
                   initial={{ opacity: 0, y: 10 }}
                   animate={{ opacity: 1, y: 0 }}
                   transition={{ delay: 0.25 }}
-                  className="relative mt-2 w-64 md:w-80"
+                  className="relative mt-2 w-64 md:w-80 [@media(max-height:700px)]:w-52"
                 >
                   <img
                     src={cardPlate}
@@ -386,10 +390,10 @@ export default function StageScreen({ stageIndex, selections, onSelect, onComple
                   initial={{ opacity: 0, y: 12 }}
                   animate={{ opacity: 1, y: 0 }}
                   transition={{ delay: 0.4 }}
-                  className="mt-7 max-w-lg text-center px-2"
+                  className="mt-7 [@media(max-height:700px)]:mt-3 max-w-lg md:max-w-2xl text-center px-2"
                 >
                   <Floret className="w-4 h-4 text-honey mx-auto mb-2" />
-                  <p className="font-display text-lg md:text-xl text-ink leading-relaxed">
+                  <p className="font-display text-lg md:text-xl [@media(max-height:700px)]:text-base text-ink leading-relaxed">
                     <Sentences text={card.description} quote />
                   </p>
                 </motion.div>
@@ -402,7 +406,7 @@ export default function StageScreen({ stageIndex, selections, onSelect, onComple
                   initial={{ opacity: 0, y: 12 }}
                   animate={{ opacity: 1, y: 0 }}
                   transition={{ delay: 0.8, type: 'spring', stiffness: 140, damping: 14 }}
-                  className="mt-8"
+                  className="mt-8 [@media(max-height:700px)]:mt-4"
                   aria-label="다음으로"
                 >
                   다음으로
