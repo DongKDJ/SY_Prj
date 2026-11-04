@@ -257,49 +257,50 @@ export default function ResultScreen({ result, onViewBook, onTakePhoto, onRestar
             {/* 배경: 책상 원화(흐림) 위에 펼친 책 */}
             <ArtBackdrop src={bookmarkBg} veil="bg-cream/25" />
 
-            {/* 책 컨테이너 */}
-            <div className="relative z-10 w-full max-w-5xl mx-auto page-turn-in">
+            {/* 책 컨테이너 — 바깥쪽에 겹친 종이 가장자리(book-edges)로 두께감 */}
+            <div className="relative z-10 w-full max-w-5xl mx-auto page-turn-in book-edges">
               {/* 책등 그림자 (중앙 세로 가운데) — md 이상에서만 */}
               <div className="hidden md:block absolute top-4 bottom-4 left-1/2 -translate-x-1/2 w-16
-                              bg-gradient-to-r from-transparent via-ink/20 to-transparent
+                              bg-gradient-to-r from-transparent via-ink/25 to-transparent
                               pointer-events-none z-20" />
 
               <div className="grid md:grid-cols-2 gap-0
                               gold-rim rounded-2xl md:rounded-[2rem]
-                              shadow-[0_30px_60px_-30px_rgba(94,70,50,0.45)]
+                              shadow-[0_34px_70px_-30px_rgba(94,70,50,0.55)]
                               overflow-hidden relative">
 
-                {/* ─────── 왼쪽 페이지: 디저트 카드 + 조합 + 고른 카드 ─────── */}
+                {/* ─────── 왼쪽 페이지: 나만의 레시피 — 디저트 카드 + 재료 ─────── */}
                 <motion.section
                   initial={{ opacity: 0, x: -20 }}
                   animate={{ opacity: 1, x: 0 }}
                   transition={{ delay: 0.25, duration: 0.7 }}
-                  className="relative flex flex-col items-center justify-center gap-5 md:gap-6
-                             px-6 pt-8 pb-12 md:px-10 md:pr-14 md:py-10
+                  className="page-left page-frame relative flex flex-col items-center justify-center gap-4 md:gap-5
+                             px-7 pt-9 pb-12 md:px-12 md:pr-16 md:py-11
                              min-h-[60vh] md:min-h-[70vh] ruled-paper
-                             bg-gradient-to-br from-[#FBF3E3] to-[#F0DEB6]"
+                             bg-gradient-to-br from-[#FBF3E3] via-[#F7EBD2] to-[#EFDDB5]"
                 >
                   <PaperGrain />
-                  <CornerOrnament corner="tl" className="absolute top-3 left-3 w-9 h-9 text-honey" />
-                  <CornerOrnament corner="bl" className="absolute bottom-3 left-3 w-9 h-9 text-honey" />
+                  <CornerOrnament corner="tl" className="absolute top-3 left-3 w-10 h-10 text-honey" />
+                  <CornerOrnament corner="bl" className="absolute bottom-3 left-3 w-10 h-10 text-honey" />
 
-                  {/* 페이지 제목 — 나만의 레시피 */}
+                  {/* 페이지 제목 — 카드 명판과 같은 뼈다귀 프레임 안에 '나만의 레시피' + 레시피 번호 */}
                   <motion.div
                     initial={{ opacity: 0, y: -6 }}
                     animate={{ opacity: 1, y: 0 }}
                     transition={{ delay: 0.35, duration: 0.6 }}
                     className="relative flex flex-col items-center"
                   >
-                    <div className="flex items-center gap-2">
-                      <span className="w-6 md:w-10 h-px bg-ink/20 shrink" />
-                      <Sparkle className="w-3 h-3 text-honey shrink-0" />
-                      <h2 className="font-display text-2xl md:text-3xl font-bold text-ink leading-tight tracking-wide whitespace-nowrap">
-                        나만의 레시피
-                      </h2>
-                      <Sparkle className="w-3 h-3 text-honey shrink-0" />
-                      <span className="w-6 md:w-10 h-px bg-ink/20 shrink" />
+                    <div className="relative w-56 md:w-72">
+                      <img src={cardPlate} alt="" aria-hidden="true" draggable={false} className="w-full h-auto select-none" />
+                      <div className="absolute inset-0 flex items-center justify-center pt-[5%] px-8">
+                        <h2 className="font-display text-xl md:text-2xl font-bold text-ink text-center leading-tight whitespace-nowrap">
+                          나만의 레시피
+                        </h2>
+                      </div>
                     </div>
-                    <Divider className="w-28 h-3 text-jam/60 mt-2" />
+                    <span className="font-display text-[11px] md:text-xs text-ink/70 tracking-[0.25em] gold-rim rounded-full px-3 py-0.5 -mt-1">
+                      레시피 {String(pageNum).padStart(2, '0')}번
+                    </span>
                   </motion.div>
 
                   <motion.div
@@ -310,19 +311,20 @@ export default function ResultScreen({ result, onViewBook, onTakePhoto, onRestar
                   >
                     <DessertCard
                       dessert={result}
-                      className="w-48 md:w-60"
+                      className="w-44 md:w-56"
                       onClick={() => setLightbox({ dessert: result })}
                     />
                     <p className="font-display text-xl md:text-2xl font-bold text-ink text-center leading-tight">
                       {result.name}
                     </p>
+                    <Divider className="w-24 h-3 text-jam/55 -mt-1" />
                   </motion.div>
 
                   <motion.div
                     initial={{ opacity: 0 }}
                     animate={{ opacity: 1 }}
                     transition={{ delay: 1.0 }}
-                    className="relative"
+                    className="relative flex flex-col items-center gap-3"
                   >
                     <SectionLabel>고른 재료</SectionLabel>
                     <ComboCards combo={result.combo} cards={cards} onCard={(card) => setLightbox({ card })} />
@@ -331,19 +333,19 @@ export default function ResultScreen({ result, onViewBook, onTakePhoto, onRestar
                   <PageNumber n={pageNum * 2 - 1} />
                 </motion.section>
 
-                {/* ─────── 오른쪽 페이지: 성격 명판 + 설명 + 버튼 + 도장 ─────── */}
+                {/* ─────── 오른쪽 페이지: 성격 명판 + 설명 노트 + 버튼 + 도장 ─────── */}
                 <motion.section
                   initial={{ opacity: 0, x: 20 }}
                   animate={{ opacity: 1, x: 0 }}
                   transition={{ delay: 0.4, duration: 0.7 }}
-                  className="relative flex flex-col items-center justify-center @container
-                             px-6 pt-8 pb-12 md:px-10 md:pl-14 md:py-10
+                  className="page-right page-frame relative flex flex-col items-center justify-center @container
+                             px-7 pt-9 pb-12 md:px-12 md:pl-16 md:py-11
                              min-h-[60vh] md:min-h-[70vh] ruled-paper
-                             bg-gradient-to-bl from-[#FCF5E6] to-[#F0DEB6]"
+                             bg-gradient-to-bl from-[#FCF5E6] via-[#F7EBD2] to-[#EFDDB5]"
                 >
                   <PaperGrain />
-                  <CornerOrnament corner="tr" className="absolute top-3 right-3 w-9 h-9 text-honey" />
-                  <CornerOrnament corner="br" className="absolute bottom-3 right-3 w-9 h-9 text-honey" />
+                  <CornerOrnament corner="tr" className="absolute top-3 right-3 w-10 h-10 text-honey" />
+                  <CornerOrnament corner="br" className="absolute bottom-3 right-3 w-10 h-10 text-honey" />
 
                   <motion.div
                     initial={{ opacity: 0, y: -6 }}
@@ -369,26 +371,25 @@ export default function ResultScreen({ result, onViewBook, onTakePhoto, onRestar
                     </div>
                   </motion.div>
 
-                  {/* 디저트 설명 — 쉼표·문장마다 줄바꿈, 가운데 정렬 */}
+                  {/* 디저트 설명 — 점선 테 노트 상자, 쉼표·문장마다 줄바꿈, 가운데 정렬 */}
                   <motion.div
                     initial={{ opacity: 0 }}
                     animate={{ opacity: 1 }}
                     transition={{ delay: 0.8 }}
-                    className="relative mt-5 flex flex-col items-center"
+                    className="relative mt-4 w-full max-w-md note-inset rounded-xl px-5 py-4 md:px-6 md:py-5 flex flex-col items-center"
                   >
                     <Floret className="w-4 h-4 text-honey mb-2" />
-                    <p className="font-display text-base md:text-lg text-ink leading-relaxed text-center max-w-md">
+                    <p className="font-display text-base md:text-lg text-ink leading-relaxed text-center">
                       <Sentences text={result.description} quote />
                     </p>
-                    <Divider className="w-28 h-3 text-jam/50 mt-5" />
                   </motion.div>
 
-                  {/* 버튼: 사진 찍기(주) + 공유·디저트 북 */}
+                  {/* 버튼: 사진 찍기(주) + 공유·디저트 북·다시하기 */}
                   <motion.div
                     initial={{ opacity: 0, y: 10 }}
                     animate={{ opacity: 1, y: 0 }}
                     transition={{ delay: 1.2 }}
-                    className="relative flex flex-col items-center gap-4 mt-8"
+                    className="relative flex flex-col items-center gap-4 mt-7"
                   >
                     <InkButton
                       size="md"
@@ -449,7 +450,7 @@ export default function ResultScreen({ result, onViewBook, onTakePhoto, onRestar
                     {/* 도장 — 대표가 준 PNG를 갈색 마스크로 (파일은 그대로) */}
                     <div
                       aria-hidden="true"
-                      className="stamp-ink w-20 h-20 md:w-24 md:h-24 mt-3"
+                      className="stamp-ink w-20 h-20 md:w-24 md:h-24 mt-2"
                       style={{ '--stamp': `url(${stampImg})` }}
                     />
                   </motion.div>
@@ -459,7 +460,7 @@ export default function ResultScreen({ result, onViewBook, onTakePhoto, onRestar
               </div>
 
               {/* 책 아래 그림자 */}
-              <div className="h-6 w-[90%] mx-auto bg-ink/20 blur-xl rounded-full" />
+              <div className="h-6 w-[90%] mx-auto bg-ink/25 blur-xl rounded-full" />
             </div>
           </motion.div>
         )}
