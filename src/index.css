@@ -1033,3 +1033,17 @@ a,
 }
 .page-left::after  { right: 0; background: linear-gradient(to right, transparent, rgba(94, 70, 50, 0.10)); }
 .page-right::after { left: 0;  background: linear-gradient(to left,  transparent, rgba(94, 70, 50, 0.10)); }
+
+/* ===== 퍼가기 방지 — 모든 기기 (2026-11-05 대표). 그림 길게 누르기(iOS 저장 메뉴)·끌어내기 차단, 우클릭은 App이 막는다.
+   .allow-save = 사진 찍기 결과처럼 관람객이 가져가야 하는 그림만 예외. 화면 캡처까지 막지는 못한다. */
+img, svg, canvas, video {
+  -webkit-touch-callout: none;
+  -webkit-user-drag: none;
+  user-drag: none;
+}
+.allow-save {
+  -webkit-touch-callout: default;
+  -webkit-user-drag: auto;
+  user-drag: auto;
+}
+body { touch-action: manipulation; } /* 더블탭 확대 차단 — 핀치 줌은 그대로(접근성) */

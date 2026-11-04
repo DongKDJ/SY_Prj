@@ -719,8 +719,7 @@ export default function PhotoScreen({ result, kiosk = false, onBack }) {
                 transition={{ type: 'spring', stiffness: 90, damping: 14 }}
                 src={shot.url}
                 alt={`${result.name}와 함께 찍은 사진`}
-                draggable={false}
-                className="max-w-full max-h-full object-contain
+                className="allow-save max-w-full max-h-full object-contain
                            shadow-[0_22px_40px_-20px_rgba(0,0,0,0.8)]"
               />
             </div>

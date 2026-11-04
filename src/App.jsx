@@ -74,11 +74,15 @@ function App() {
       const btn = e.target.closest?.('button, [role="button"]')
       if (btn && btn.dataset.sfx !== 'none' && !btn.disabled) play('click')
     }
+    // 우클릭·길게 누르기 메뉴 차단 — 모든 기기(퍼가기 방지, 2026-11-05 대표). 사진 찍기 결과(.allow-save)만 예외.
+    const onMenu = (e) => { if (!e.target.closest?.('.allow-save')) e.preventDefault() }
     document.addEventListener('pointerdown', onDown, true)
     document.addEventListener('keydown', startBgm, true)
+    document.addEventListener('contextmenu', onMenu)
     return () => {
       document.removeEventListener('pointerdown', onDown, true)
       document.removeEventListener('keydown', startBgm, true)
+      document.removeEventListener('contextmenu', onMenu)
     }
   }, [])
   const idleSeconds = useKioskIdle({
