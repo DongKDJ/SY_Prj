@@ -325,7 +325,7 @@ export default function ResultScreen({ result, onViewBook, onTakePhoto, onRestar
                     ) : (
                       <ArchTitle />
                     )}
-                    <span className="font-display text-[11px] md:text-xs text-ink/70 tracking-[0.25em] gold-rim rounded-full px-3 py-0.5 mt-1">
+                    <span className="font-display text-[11px] md:text-xs text-ink/70 tracking-[0.25em] gold-rim rounded-full px-3 py-0.5 -mt-4 @sm:-mt-6">
                       레시피 {String(pageNum).padStart(2, '0')}번
                     </span>
                   </motion.div>
