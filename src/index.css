@@ -1047,3 +1047,10 @@ img, svg, canvas, video {
   user-drag: auto;
 }
 body { touch-action: manipulation; } /* 더블탭 확대 차단 — 핀치 줌은 그대로(접근성) */
+
+/* 결과 책 반짝이 — 아주 느리게 숨 쉬듯(--ambient 를 타므로 reduced-motion 에서는 멈춘다) */
+@keyframes sparkle-twinkle-kf {
+  0%, 100% { opacity: 0.92; scale: 1; }
+  50%      { opacity: 1; scale: calc(1 + 0.06 * var(--ambient)); }
+}
+.sparkle-twinkle { animation: sparkle-twinkle-kf 3.6s ease-in-out infinite; }

@@ -1,5 +1,5 @@
 import Sentences from './shared/Sentences'
-import { useState, useMemo, useCallback, useEffect } from 'react'
+import { useState, useMemo, useCallback, useEffect, useId } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
 import AnimatedDessert from './shared/AnimatedDessert'
 import { InkButton } from './shared/InkButton'
@@ -7,8 +7,9 @@ import BackButton from './shared/BackButton'
 import { ArtBackdrop } from './shared/ArtStage'
 import { bookmarkBg, cardPlate } from '../assets/screenImages'
 import { resultCards } from '../data/desserts'
-import { DessertCard, ComboCards, CardLightbox } from './shared/BookUi'
+import { ComboCards, CardLightbox } from './shared/BookUi'
 import stampImg from '../assets/images/ui/stamp-soyo.png'
+import sparkleImg from '../assets/images/stickers/sparkle.png'
 import { play } from '../lib/sound'
 import {
   PaperGrain,
@@ -48,7 +49,7 @@ function createMote(id) {
 }
 
 // initialPhase: 'reveal'(오븐에서 온 첫 공개) | 'detail'(사진 찍기에서 돌아올 때 — 메달리온을 건너뛰고 펼친 책으로)
-export default function ResultScreen({ result, onViewBook, onTakePhoto, onRestart, onBack, initialPhase = 'reveal' }) {
+export default function ResultScreen({ result, onViewBook, onTakePhoto, onRestart, onBack, initialPhase = 'reveal', kiosk = false }) {
   const [phase, setPhase] = useState(initialPhase)
   const [lightbox, setLightbox] = useState(null) // { card } | { dessert } — 확대 보기
   const closeLightbox = useCallback(() => setLightbox(null), [])
@@ -263,18 +264,44 @@ export default function ResultScreen({ result, onViewBook, onTakePhoto, onRestar
               <div className="hidden md:block absolute top-4 bottom-4 left-1/2 -translate-x-1/2 w-16
                               bg-gradient-to-r from-transparent via-ink/25 to-transparent
                               pointer-events-none z-20" />
+              {/* 분홍 책갈피 끈 — 책등 위에서 내려온다 (두 쪽 펼침에서만). 대표 지시로 도형(SVG): 새틴 결 그라데이션 + 양옆 박음질 + 제비꼬리 끝 */}
+              <div aria-hidden="true"
+                   className="hidden md:block absolute -top-1.5 left-1/2 -translate-x-1/2 w-9 lg:w-11 h-[66%] z-30 pointer-events-none
+                              drop-shadow-[0_8px_10px_rgba(94,70,50,0.38)]">
+                <svg viewBox="0 0 40 400" preserveAspectRatio="none" className="w-full h-full">
+                  <defs>
+                    <linearGradient id="ribbon-satin" x1="0" x2="1" y1="0" y2="0">
+                      <stop offset="0" stopColor="#F9A8C8" />
+                      <stop offset="0.22" stopColor="#F173A6" />
+                      <stop offset="0.55" stopColor="#EC5A95" />
+                      <stop offset="0.82" stopColor="#F27AAB" />
+                      <stop offset="1" stopColor="#D8437E" />
+                    </linearGradient>
+                    <linearGradient id="ribbon-fold" x1="0" x2="0" y1="0" y2="1">
+                      <stop offset="0" stopColor="#B32E66" stopOpacity="0.55" />
+                      <stop offset="1" stopColor="#B32E66" stopOpacity="0" />
+                    </linearGradient>
+                  </defs>
+                  <path d="M3 0 H37 V384 L20 358 L3 400 Z" fill="url(#ribbon-satin)" />
+                  {/* 위쪽 접힌 그늘 — 책등에서 나오는 자리 */}
+                  <rect x="3" y="0" width="34" height="26" fill="url(#ribbon-fold)" />
+                  {/* 박음질 */}
+                  <path d="M8 6 V380" stroke="#FFE3EF" strokeWidth="1" strokeDasharray="5 5" opacity="0.8" fill="none" vectorEffect="non-scaling-stroke" />
+                  <path d="M32 6 V366" stroke="#FFE3EF" strokeWidth="1" strokeDasharray="5 5" opacity="0.6" fill="none" vectorEffect="non-scaling-stroke" />
+                </svg>
+              </div>
 
               <div className="grid md:grid-cols-2 gap-0
                               gold-rim rounded-2xl md:rounded-[2rem]
                               shadow-[0_34px_70px_-30px_rgba(94,70,50,0.55)]
                               overflow-hidden relative">
 
-                {/* ─────── 왼쪽 페이지: 나만의 레시피 — 디저트 카드 + 재료 ─────── */}
+                {/* ─────── 왼쪽 페이지: 나만의 레시피 — 디저트(카드 테 없이) + 반짝이 + 재료 ─────── */}
                 <motion.section
                   initial={{ opacity: 0, x: -20 }}
                   animate={{ opacity: 1, x: 0 }}
                   transition={{ delay: 0.25, duration: 0.7 }}
-                  className="page-left page-frame relative flex flex-col items-center justify-center gap-4 md:gap-5
+                  className="page-left page-frame relative flex flex-col items-center justify-center gap-3 md:gap-4 @container
                              px-7 pt-9 pb-12 md:px-12 md:pr-16 md:py-11
                              min-h-[60vh] md:min-h-[70vh] ruled-paper
                              bg-gradient-to-br from-[#FBF3E3] via-[#F7EBD2] to-[#EFDDB5]"
@@ -283,37 +310,53 @@ export default function ResultScreen({ result, onViewBook, onTakePhoto, onRestar
                   <CornerOrnament corner="tl" className="absolute top-3 left-3 w-10 h-10 text-honey" />
                   <CornerOrnament corner="bl" className="absolute bottom-3 left-3 w-10 h-10 text-honey" />
 
-                  {/* 페이지 제목 — 카드 명판과 같은 뼈다귀 프레임 안에 '나만의 레시피' + 레시피 번호 */}
+                  {/* 페이지 제목 — 손글씨 '나만의+레시피'(result-title.png). 그림이 없으면 명조 글씨를 둥글게 휘어 임시로 */}
                   <motion.div
                     initial={{ opacity: 0, y: -6 }}
                     animate={{ opacity: 1, y: 0 }}
                     transition={{ delay: 0.35, duration: 0.6 }}
                     className="relative flex flex-col items-center"
                   >
-                    <div className="relative w-56 md:w-72">
-                      <img src={cardPlate} alt="" aria-hidden="true" draggable={false} className="w-full h-auto select-none" />
-                      <div className="absolute inset-0 flex items-center justify-center pt-[5%] px-8">
-                        <h2 className="font-display text-xl md:text-2xl font-bold text-ink text-center leading-tight whitespace-nowrap">
-                          나만의 레시피
-                        </h2>
-                      </div>
-                    </div>
-                    <span className="font-display text-[11px] md:text-xs text-ink/70 tracking-[0.25em] gold-rim rounded-full px-3 py-0.5 -mt-1">
+                    {ART.title ? (
+                      <img src={ART.title} alt="나만의 레시피" draggable={false} className="w-60 @sm:w-80 h-auto select-none" />
+                    ) : (
+                      <ArchTitle />
+                    )}
+                    <span className="font-display text-[11px] md:text-xs text-ink/70 tracking-[0.25em] gold-rim rounded-full px-3 py-0.5 mt-1">
                       레시피 {String(pageNum).padStart(2, '0')}번
                     </span>
                   </motion.div>
 
+                  {/* 디저트 — 금테 카드 없이 그림만. 반짝이 둘이 왼쪽 위·오른쪽 아래에.
+                      반짝이 그림 = 대표 지정 IMG_2907(스티커 sparkle.png가 바로 그 그림을 잘라 둔 것) */}
                   <motion.div
                     initial={{ y: 12, opacity: 0 }}
                     animate={{ y: 0, opacity: 1 }}
                     transition={{ delay: 0.5, type: 'spring', stiffness: 80, damping: 14 }}
-                    className="relative flex flex-col items-center gap-3"
+                    className="relative flex flex-col items-center gap-2"
                   >
-                    <DessertCard
-                      dessert={result}
-                      className="w-44 md:w-56"
-                      onClick={() => setLightbox({ dessert: result })}
-                    />
+                    <div className="relative">
+                      <img src={sparkleImg} alt="" aria-hidden="true" draggable={false}
+                           className="sparkle-twinkle absolute -left-8 @sm:-left-16 -top-2 w-16 @sm:w-28 -rotate-12 select-none pointer-events-none" />
+                      <img src={sparkleImg} alt="" aria-hidden="true" draggable={false}
+                           className="sparkle-twinkle [animation-delay:1.4s] absolute -right-7 @sm:-right-14 bottom-2 w-14 @sm:w-24 rotate-[150deg] select-none pointer-events-none" />
+                      <motion.button
+                        type="button"
+                        whileHover={{ scale: 1.03 }}
+                        whileTap={{ scale: 0.97 }}
+                        onClick={() => setLightbox({ dessert: result })}
+                        aria-label={`${result.name} 크게 보기`}
+                        className="relative block cursor-pointer w-52 h-52 @sm:w-72 @sm:h-72"
+                      >
+                        <AnimatedDessert
+                          dessertId={result.id}
+                          image={result.image}
+                          name={result.name}
+                          variant="card"
+                          className="w-full h-full"
+                        />
+                      </motion.button>
+                    </div>
                     <p className="font-display text-xl md:text-2xl font-bold text-ink text-center leading-tight">
                       {result.name}
                     </p>
@@ -324,16 +367,15 @@ export default function ResultScreen({ result, onViewBook, onTakePhoto, onRestar
                     initial={{ opacity: 0 }}
                     animate={{ opacity: 1 }}
                     transition={{ delay: 1.0 }}
-                    className="relative flex flex-col items-center gap-4 -mt-1"
+                    className="relative mt-1"
                   >
-                    <SectionLabel>고른 재료</SectionLabel>
                     <ComboCards combo={result.combo} cards={cards} onCard={(card) => setLightbox({ card })} />
                   </motion.div>
 
                   <PageNumber n={pageNum * 2 - 1} />
                 </motion.section>
 
-                {/* ─────── 오른쪽 페이지: 성격 명판 + 설명 노트 + 버튼 + 도장 ─────── */}
+                {/* ─────── 오른쪽 페이지: 성격 명판 + 설명 노트 / 버튼(왼쪽 세로) + 작품 더보기 QR + 도장(오른쪽 아래) ─────── */}
                 <motion.section
                   initial={{ opacity: 0, x: 20 }}
                   animate={{ opacity: 1, x: 0 }}
@@ -384,12 +426,13 @@ export default function ResultScreen({ result, onViewBook, onTakePhoto, onRestar
                     </p>
                   </motion.div>
 
-                  {/* 버튼: 사진 찍기(주) + 공유·디저트 북·다시하기 */}
+                  {/* 아래쪽: 버튼은 왼쪽에 세로로, 그 아래 '작품 더보기' QR과 큰 도장이 나란히 (2026-11-05 대표 시안).
+                      페이지가 좁으면(폰) 버튼만 가운데로 모은다. */}
                   <motion.div
                     initial={{ opacity: 0, y: 10 }}
                     animate={{ opacity: 1, y: 0 }}
                     transition={{ delay: 1.2 }}
-                    className="relative flex flex-col items-center gap-4 mt-7"
+                    className="relative w-full max-w-md mt-6 flex flex-col items-start @max-sm:items-center gap-3"
                   >
                     <InkButton
                       size="md"
@@ -402,57 +445,58 @@ export default function ResultScreen({ result, onViewBook, onTakePhoto, onRestar
                       내 디저트와 사진 찍기!
                     </InkButton>
 
-                    <div className="flex justify-center items-center gap-3 md:gap-4 flex-wrap @max-sm:flex-col">
-                      <InkButton
-                        size="sm"
-                        tone="honey"
-                        arrow={false}
-                        onClick={() => {
-                          // 받은 사람이 들어올 사이트 주소 — 전시 PC 주소(?kiosk=1)가 아닌 기본 주소
-                          const url = new URL(import.meta.env.BASE_URL, window.location.origin).href
-                          const text =
-                            `나의 디저트는 "${result.name}"!\n성격: ${result.personality}\n\n${result.description}\n\n여우씨의 디저트 레시피에서 확인해보세요!`
-                          if (navigator.share) {
-                            // 주소는 url 칸으로 — 받는 앱이 링크 미리보기로 붙인다. 시트를 닫으면 AbortError — 조용히 무시
-                            navigator.share({ title: '여우씨의 디저트 레시피', text, url }).catch(() => {})
-                          } else if (navigator.clipboard) {
-                            navigator.clipboard.writeText(`${text}\n${url}`)
-                              .then(() => alert('결과가 클립보드에 복사되었습니다!'))
-                              .catch(() => alert('복사하지 못했어요. 화면을 캡처해 주세요.'))
-                          } else {
-                            alert('이 브라우저에서는 공유를 지원하지 않아요. 화면을 캡처해 주세요.')
-                          }
-                        }}
-                        aria-label="결과 공유하기"
-                      >
-                        결과 공유
-                      </InkButton>
+                    <InkButton
+                      size="sm"
+                      onClick={onViewBook}
+                      aria-label="디저트 북 보기"
+                    >
+                      디저트 북 보기
+                    </InkButton>
 
-                      <InkButton
-                        size="sm"
-                        onClick={onViewBook}
-                        aria-label="디저트 북 보기"
-                      >
-                        디저트 북 보기
-                      </InkButton>
+                    <InkButton
+                      size="sm"
+                      tone="honey"
+                      arrow={false}
+                      onClick={() => {
+                        // 받은 사람이 들어올 사이트 주소 — 전시 PC 주소(?kiosk=1)가 아닌 기본 주소
+                        const url = new URL(import.meta.env.BASE_URL, window.location.origin).href
+                        const text =
+                          `나의 디저트는 "${result.name}"!\n성격: ${result.personality}\n\n${result.description}\n\n여우씨의 디저트 레시피에서 확인해보세요!`
+                        if (navigator.share) {
+                          // 주소는 url 칸으로 — 받는 앱이 링크 미리보기로 붙인다. 시트를 닫으면 AbortError — 조용히 무시
+                          navigator.share({ title: '여우씨의 디저트 레시피', text, url }).catch(() => {})
+                        } else if (navigator.clipboard) {
+                          navigator.clipboard.writeText(`${text}\n${url}`)
+                            .then(() => alert('결과가 클립보드에 복사되었습니다!'))
+                            .catch(() => alert('복사하지 못했어요. 화면을 캡처해 주세요.'))
+                        } else {
+                          alert('이 브라우저에서는 공유를 지원하지 않아요. 화면을 캡처해 주세요.')
+                        }
+                      }}
+                      aria-label="결과 공유하기"
+                    >
+                      결과 공유
+                    </InkButton>
 
-                      <InkButton
-                        size="sm"
-                        tone="sage"
-                        arrow={false}
-                        onClick={onRestart}
-                        aria-label="다시하기"
-                      >
-                        다시하기
-                      </InkButton>
+                    <InkButton
+                      size="sm"
+                      tone="sage"
+                      arrow={false}
+                      onClick={onRestart}
+                      aria-label="다시하기"
+                    >
+                      다시하기
+                    </InkButton>
+
+                    <div className="w-full flex items-end justify-between @max-sm:justify-center @max-sm:gap-7 gap-3 mt-1 @max-sm:mt-3">
+                      <MoreWorks kiosk={kiosk} />
+                      {/* 도장 — 대표가 준 PNG를 갈색 마스크로 (파일은 그대로). 시안대로 오른쪽 아래에 크게 */}
+                      <div
+                        aria-hidden="true"
+                        className="stamp-ink shrink-0 w-32 h-32 @sm:w-56 @sm:h-56 @sm:-mt-36 @sm:-mr-2"
+                        style={{ '--stamp': `url(${stampImg})` }}
+                      />
                     </div>
-
-                    {/* 도장 — 대표가 준 PNG를 갈색 마스크로 (파일은 그대로) */}
-                    <div
-                      aria-hidden="true"
-                      className="stamp-ink w-28 h-28 md:w-32 md:h-32 mt-2"
-                      style={{ '--stamp': `url(${stampImg})` }}
-                    />
                   </motion.div>
 
                   <PageNumber n={pageNum * 2} />
@@ -471,6 +515,48 @@ export default function ResultScreen({ result, onViewBook, onTakePhoto, onRestar
       {/* 확대 보기 → 닫기, 펼친 책 → 메달리온 페이지, 메달리온 → 마지막 선택 */}
       <BackButton onClick={() => (lightbox ? closeLightbox() : phase === 'detail' ? setPhase('reveal') : onBack())} />
     </div>
+  )
+}
+
+/* 결과 책에 얹는 작가 그림 — images/ui/result-{title,qr}.png 가 있으면 쓰고, 없으면 임시본으로 그린다.
+   파일만 넣으면 바뀌도록 글롭으로 찾는다(없어도 빌드는 된다). */
+const artFiles = import.meta.glob('../assets/images/ui/result-*.png', { eager: true, query: '?url', import: 'default' })
+const art = (name) => Object.entries(artFiles).find(([p]) => p.endsWith(`/result-${name}.png`))?.[1]
+const ART = { title: art('title'), qr: art('qr') }
+const INSTAGRAM = 'https://www.instagram.com/soyo_88_/'
+
+/* 손글씨 제목 그림이 오기 전 임시 — 명조 글씨를 둥글게 휘어 놓는다 */
+function ArchTitle() {
+  const id = useId()
+  return (
+    <svg viewBox="0 0 320 118" className="w-60 @sm:w-80 h-auto overflow-visible" role="img" aria-label="나만의 레시피">
+      <path id={id} d="M 14 108 Q 160 -14 306 108" fill="none" />
+      <text className="font-display" fontSize="46" fontWeight="700" fill="#A8782F" letterSpacing="3">
+        <textPath href={`#${id}`} startOffset="50%" textAnchor="middle">나만의 ✦ 레시피</textPath>
+      </text>
+    </svg>
+  )
+}
+
+/* '작품 더보기' — 작가 인스타 QR + 계정. 폰·일반 PC에서는 누르면 새 창으로 열리고, 전시 PC(kiosk)는 스캔 전용(사이트를 벗어나지 않게) */
+function MoreWorks({ kiosk }) {
+  const body = (
+    <>
+      <span className="font-display font-bold text-sm md:text-base text-[#B9682A] tracking-wide whitespace-nowrap">✦ 작품 더보기 ✦</span>
+      {ART.qr && (
+        <img src={ART.qr} alt="작가 인스타그램 QR" draggable={false} className="w-24 h-24 md:w-28 md:h-28 select-none" />
+      )}
+      <span className="font-display text-xs md:text-sm text-[#B9682A] tracking-[0.12em]">@SOYO_88_</span>
+    </>
+  )
+  const cls = 'flex flex-col items-center gap-1'
+  return kiosk ? (
+    <div className={cls}>{body}</div>
+  ) : (
+    <a href={INSTAGRAM} target="_blank" rel="noopener noreferrer" data-sfx="none"
+       aria-label="작가 인스타그램 열기" className={`${cls} cursor-pointer`}>
+      {body}
+    </a>
   )
 }
 

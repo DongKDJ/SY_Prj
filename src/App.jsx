@@ -152,6 +152,7 @@ function App() {
                 onViewBook={() => goToScreen('dessertBook')}
                 onTakePhoto={() => goToScreen('photo')}
                 onRestart={restart}
+                kiosk={isKiosk}
                 onBack={() => { setStageEntry('cards'); prevScreen() }}
               />
             )}
