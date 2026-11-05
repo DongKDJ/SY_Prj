@@ -91,6 +91,9 @@ const STAGE_SRCS = [
   cardPlate,
 ]
 
+// 확대 카드가 눈에 들어오는 시점(스프링 시작 후 약 0.1초)에 소리를 맞춘다
+const SPELL_LEAD_MS = 90
+
 // Phase: 'bookmark' → 'cards' → 'enlarged'
 // initialPhase: 'bookmark'(대화에서 들어옴) | 'cards'(결과·오븐에서 뒤로 들어옴)
 export default function StageScreen({ stageIndex, selections, onSelect, onComplete, onBack, initialPhase = 'bookmark' }) {
@@ -120,7 +123,6 @@ export default function StageScreen({ stageIndex, selections, onSelect, onComple
   const handleCardSelected = (cardId) => {
     setSelectedCardId(cardId)
     setPhase('enlarged')
-    play('spell') // 고른 카드가 크게 펼쳐지는 순간
   }
 
   // 페이즈가 곧 페이지 — 스테이지 안에서 한 칸씩 되짚고, 첫 페이즈에서만 이전 스테이지로.
@@ -337,6 +339,8 @@ export default function StageScreen({ stageIndex, selections, onSelect, onComple
               <div className="absolute inset-0 bg-radial from-[#FFF3D6]/60 via-transparent to-transparent" />
 
               <motion.div
+                // 소리는 카드가 실제로 튀어나올 때 — 페이즈를 바꾸는 순간에 틀면 앞 화면이 사라지는 0.5초만큼 소리가 먼저 난다
+                onAnimationStart={() => { setTimeout(() => play('spell'), SPELL_LEAD_MS) }}
                 initial={{ scale: 0.6, opacity: 0, rotateZ: -3 }}
                 animate={{ scale: 1, opacity: 1, rotateZ: 0 }}
                 transition={{ type: 'spring', stiffness: 80, damping: 14 }}

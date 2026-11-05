@@ -5,7 +5,8 @@
  *  · 카드 뒤집힘 flip-1 / flip-2 — 둘 중 하나 무작위.
  *  · 책갈피 넘김 page-1~3 — 종이 넘기는 소리 한 파일(대표 지정)을 세 조각으로 잘라 무작위.
  *  · 카드 결과 spell — 고른 카드가 크게 펼쳐질 때. · 최종 결과 fanfare — 디저트가 처음 공개될 때.
- *  · 여우 대사 blip-1~8 — 타자기로 글자가 찍힐 때마다(두 글자에 한 번, 모동숲처럼) 팝 소리 한 파일을 잘라 무작위.
+ *  · 여우 대사 blip-1~8 — 타자기로 글자가 찍힐 때마다 한 번씩(글자·숫자만, 빈칸·문장부호는 조용히) 팝 소리 한 파일을 잘라 무작위.
+ *    2026-11-05 대표 "글자에 싱크 맞게": 글자마다 짧게(0.06초) 끊어 내고, 효과음은 Web Audio로 지연 없이 낸다(typeBlip · TYPE_MS).
  * 음원 = src/assets/audio/{bgm,click,flip-1,flip-2,page-1~3}.mp3 (Pixabay Content License — 앱에 넣어 쓰기 허용, 출처 표기 불필요,
  * 음원 파일만 따로 나눠 주기는 금지). 파일이 없으면 그 소리만 조용히 빠진다(빌드는 그대로).
  * 끄기 상태는 기기에 기억(localStorage).
@@ -80,9 +81,10 @@ if (typeof document !== 'undefined') {
   document.addEventListener('visibilitychange', syncBgm)
 }
 
-// 효과음은 미리 받아 두고 재생할 때마다 복제 — 연달아 눌러도 겹쳐 나온다
+// 효과음은 미리 받아 두고 재생할 때마다 복제 — 연달아 눌러도 겹쳐 나온다 (Web Audio를 못 쓸 때의 예비 경로)
+const SFX = ['click', 'spell', 'fanfare', ...Object.values(POOLS).flat()]
 const preloaded = {}
-for (const name of ['click', 'spell', 'fanfare', ...Object.values(POOLS).flat()]) {
+for (const name of SFX) {
   const src = url(name)
   if (src && typeof Audio !== 'undefined') {
     const a = new Audio(src)
@@ -90,6 +92,30 @@ for (const name of ['click', 'spell', 'fanfare', ...Object.values(POOLS).flat()]
     preloaded[name] = a
   }
 }
+
+/* 효과음 본 경로 = Web Audio. <audio>를 복제해 틀면 누를 때마다 수십 ms씩 늦고 들쭉날쭉해서 글자·그림과 어긋난다.
+   미리 풀어 둔 버퍼를 바로 내면 지연이 거의 없다. 컨텍스트는 사용자가 처음 누를 때 만든다(그 전에 만들면 브라우저가 막는다). */
+let ctx = null
+const buffers = {}
+export function unlockAudio() {
+  if (typeof window === 'undefined') return
+  if (!ctx) {
+    const AC = window.AudioContext || window.webkitAudioContext
+    if (!AC) return
+    try { ctx = new AC({ latencyHint: 'interactive' }) } catch { return }
+    for (const name of SFX) {
+      const src = url(name)
+      if (!src) continue
+      fetch(src).then((r) => r.arrayBuffer()).then((b) => ctx.decodeAudioData(b))
+        .then((buf) => { buffers[name] = buf }).catch(() => { /* 못 풀면 그 소리는 예비 경로로 */ })
+    }
+  }
+  if (ctx.state === 'suspended') ctx.resume().catch(() => {})
+}
+
+// 대사 팝 한 번의 길이 — 글자 간격(TYPE_MS)보다 조금 길게 끊어 글자마다 또렷이 들리게
+const BLIP_HOLD = 0.035
+const BLIP_LEN = 0.06
 
 /** 'click' | 'spell' | 'fanfare' | 'flip' | 'page' | 'blip' */
 export function play(kind) {
@@ -100,9 +126,34 @@ export function play(kind) {
     if (!pool.length) return
     name = pool[Math.floor(Math.random() * pool.length)]
   }
+  const vol = VOLUME[name] ?? 1
+  const buf = ctx && ctx.state === 'running' ? buffers[name] : null
+  if (buf) {
+    const src = ctx.createBufferSource()
+    const gain = ctx.createGain()
+    src.buffer = buf
+    gain.gain.value = vol
+    src.connect(gain).connect(ctx.destination)
+    if (kind === 'blip') {
+      const t = ctx.currentTime
+      gain.gain.setValueAtTime(vol, t + BLIP_HOLD)
+      gain.gain.linearRampToValueAtTime(0.0001, t + BLIP_LEN)
+      src.start(t, 0, BLIP_LEN + 0.01)
+    } else {
+      src.start()
+    }
+    return
+  }
   const base = preloaded[name]
   if (!base) return
   const a = base.cloneNode()
-  a.volume = VOLUME[name] ?? 1
+  a.volume = vol
   a.play().catch(() => {})
+}
+
+/** 타자기 한 글자 간격(ms) — 글자마다 팝이 하나씩 붙으므로 팝 길이(0.06초)와 맞춘 값 */
+export const TYPE_MS = 50
+/** 방금 찍힌 글자에 팝 — 글자·숫자일 때만(빈칸·문장부호는 조용히 넘어가 말의 리듬이 생긴다) */
+export function typeBlip(ch) {
+  if (ch && /[\p{L}\p{N}]/u.test(ch)) play('blip')
 }

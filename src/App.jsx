@@ -24,7 +24,7 @@ import DessertBook from './components/DessertBook'
 import PhotoScreen from './components/PhotoScreen'
 import SoundToggle from './components/shared/SoundToggle'
 import SoundGate from './components/shared/SoundGate'
-import { play, startBgm } from './lib/sound'
+import { play, startBgm, unlockAudio } from './lib/sound'
 
 const pageTransition = {
   initial: { opacity: 0 },
@@ -75,17 +75,22 @@ function App() {
     startBgm()
     const onDown = (e) => {
       startBgm()
+      unlockAudio() // 효과음용 Web Audio — 첫 누름에서 만들어 둔다
       const btn = e.target.closest?.('button, [role="button"]')
       if (btn && btn.dataset.sfx !== 'none' && !btn.disabled) play('click')
     }
     // 우클릭·길게 누르기 메뉴 차단 — 모든 기기(퍼가기 방지, 2026-11-05 대표). 사진 찍기 결과(.allow-save)만 예외.
     const onMenu = (e) => { if (!e.target.closest?.('.allow-save')) e.preventDefault() }
     document.addEventListener('pointerdown', onDown, true)
-    document.addEventListener('keydown', startBgm, true)
+    const onKey = () => { startBgm(); unlockAudio() }
+    document.addEventListener('keydown', onKey, true)
+    // 아이폰은 손을 뗄 때(pointerup)라야 소리 재생을 허락하는 판이 있어 한 번 더 건다 — 이미 켜져 있으면 아무 일도 없다
+    document.addEventListener('pointerup', onKey, true)
     document.addEventListener('contextmenu', onMenu)
     return () => {
       document.removeEventListener('pointerdown', onDown, true)
-      document.removeEventListener('keydown', startBgm, true)
+      document.removeEventListener('keydown', onKey, true)
+      document.removeEventListener('pointerup', onKey, true)
       document.removeEventListener('contextmenu', onMenu)
     }
   }, [])

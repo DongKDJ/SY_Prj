@@ -2,7 +2,7 @@ import { useState, useRef, useEffect } from 'react'
 import { getDessertImage, getDessertLayers } from '../assets/imageMap'
 import FoxKitchen, { KitchenPortraitStrip } from './shared/FoxKitchen'
 import BackButton from './shared/BackButton'
-import { play } from '../lib/sound'
+import { typeBlip, TYPE_MS } from '../lib/sound'
 
 /* 오븐 대기 — 오프닝과 같은 여우씨 부엌에서 오른쪽 오븐 창이 달아오르고,
    다 구워지면 여우씨가 말풍선으로 꺼내 보자고 한다 */
@@ -30,9 +30,9 @@ export default function ResultTransition({ onComplete, result, onBack }) {
     if (!isTyping) return
     const timer = setTimeout(() => {
       // 오프닝 대사와 같은 팝 소리 (2026-11-05 대표: 결과 전 여우 대사에 효과음이 빠져 있었다)
-      if (charIndex % 2 === 0 && /\S/.test(line[charIndex])) play('blip')
+      typeBlip(line[charIndex])
       setCharIndex(prev => prev + 1)
-    }, 40)
+    }, TYPE_MS)
     return () => clearTimeout(timer)
   }, [isTyping, charIndex, line])
 

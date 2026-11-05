@@ -5,7 +5,7 @@ import { LoadingCover } from './shared/ArtStage'
 import BackButton from './shared/BackButton'
 import { foxDialogs } from '../data/desserts'
 import { useImagesReady } from '../hooks/useImagesReady'
-import { play } from '../lib/sound'
+import { typeBlip, TYPE_MS } from '../lib/sound'
 
 export default function DialogScreen({ onComplete, onBack }) {
   const lines = foxDialogs.intro
@@ -23,10 +23,10 @@ export default function DialogScreen({ onComplete, onBack }) {
     if (!ready) return
     if (charIndex < currentLine.length) {
       const timer = setTimeout(() => {
-        // 글자가 찍힐 때 팝(두 글자에 한 번, 빈칸은 조용히) — 모동숲 식 말소리
-        if (charIndex % 2 === 0 && /\S/.test(currentLine[charIndex])) play('blip')
+        // 글자가 찍히는 바로 그때 팝 하나(글자마다, 빈칸·문장부호는 조용히) — 모동숲 식 말소리
+        typeBlip(currentLine[charIndex])
         setCharIndex(prev => prev + 1)
-      }, 40)
+      }, TYPE_MS)
       return () => clearTimeout(timer)
     }
   }, [ready, charIndex, currentLine])

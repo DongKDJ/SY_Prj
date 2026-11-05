@@ -58,7 +58,12 @@ export default function ResultScreen({ result, onViewBook, onTakePhoto, onRestar
   const closeLightbox = useCallback(() => setLightbox(null), [])
   const cards = useMemo(() => resultCards(result), [result])
   // 디저트가 처음 공개될 때 한 번(사진 찍기에서 돌아올 때는 아님)
-  useEffect(() => { if (initialPhase === 'reveal') play('fanfare') }, [initialPhase])
+  // 메달리온이 0.3초 뒤에 튀어나오므로 소리도 그때 — 화면이 뜨자마자 틀면 소리가 먼저 난다
+  useEffect(() => {
+    if (initialPhase !== 'reveal') return
+    const t = setTimeout(() => play('fanfare'), 380)
+    return () => clearTimeout(t)
+  }, [initialPhase])
   const motes = useMemo(() =>
     Array.from({ length: 44 }, (_, i) => createMote(i)), []
   )
