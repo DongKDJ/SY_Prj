@@ -227,7 +227,7 @@ export default function StageScreen({ stageIndex, selections, onSelect, onComple
               className="hidden portrait:block absolute top-[7.5rem] left-1/2 -translate-x-1/2 w-[94vw] z-10"
             >
               <div className="art-bob">
-                <ArtBandCrop src={bookmarkTitles[stage.id]} top={14} bottom={76} />
+                <ArtBandCrop src={bookmarkTitles[stage.id]} top={24} bottom={80} />
               </div>
             </motion.div>
 
