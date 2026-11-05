@@ -1,5 +1,5 @@
 import Sentences from './shared/Sentences'
-import { useState, useMemo, useCallback, useEffect, useId } from 'react'
+import { useState, useMemo, useCallback, useEffect, useId, useRef } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
 import AnimatedDessert from './shared/AnimatedDessert'
 import { InkButton } from './shared/InkButton'
@@ -55,6 +55,8 @@ function createMote(id) {
 export default function ResultScreen({ result, onViewBook, onTakePhoto, onRestart, onBack, initialPhase = 'reveal', kiosk = false }) {
   const [phase, setPhase] = useState(initialPhase)
   const [lightbox, setLightbox] = useState(null) // { card } | { dessert } — 확대 보기
+  // 메달리온을 눌러 책을 펼칠 때만 종이 넘기는 소리 — 사진·도감에서 돌아와 책이 다시 뜰 때는 조용히
+  const openedByTap = useRef(false)
   const closeLightbox = useCallback(() => setLightbox(null), [])
   const cards = useMemo(() => resultCards(result), [result])
   // 디저트가 처음 공개될 때 한 번(사진 찍기에서 돌아올 때는 아님)
@@ -243,7 +245,8 @@ export default function ResultScreen({ result, onViewBook, onTakePhoto, onRestar
 
             {/* 전체 탭 영역 */}
             <button
-              onClick={() => setPhase('detail')}
+              onClick={() => { openedByTap.current = true; setPhase('detail') }}
+              data-sfx="none"
               className="absolute inset-0 z-40 cursor-pointer"
               aria-label="다음 페이지"
             />
@@ -261,6 +264,8 @@ export default function ResultScreen({ result, onViewBook, onTakePhoto, onRestar
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             transition={{ duration: 0.6 }}
+            // 책이 실제로 펼쳐지기 시작하는 순간에 종이 넘기는 소리(누른 순간에 틀면 앞 화면이 사라지는 동안 소리가 먼저 난다)
+            onAnimationStart={() => { if (openedByTap.current) { openedByTap.current = false; play('page') } }}
             className="min-h-[100dvh] relative flex items-center justify-center px-3 py-6 md:px-8 md:py-10 portrait:pt-[7.5rem] portrait:md:pt-10"
           >
             {/* 배경: 책상 원화(흐림) 위에 펼친 책 */}
