@@ -10,6 +10,9 @@ import { resultCards } from '../data/desserts'
 import { ComboCards, CardLightbox } from './shared/BookUi'
 import stampImg from '../assets/images/ui/stamp-soyo.png'
 import sparkleImg from '../assets/images/stickers/sparkle.png'
+// 대표가 준 인스타 QR(SY_Prj/QR.png)을 640px·24색 팔레트 PNG로 줄인 사본(55KB).
+// 점무늬라 손실 WebP로 바꾸면 오히려 커져서(140KB) ?url로 변환을 건너뛴다.
+import qrImg from '../assets/images/ui/result-qr.png?url'
 import { play } from '../lib/sound'
 import {
   PaperGrain,
@@ -518,11 +521,12 @@ export default function ResultScreen({ result, onViewBook, onTakePhoto, onRestar
   )
 }
 
-/* 결과 책에 얹는 작가 그림 — images/ui/result-{title,qr}.png 가 있으면 쓰고, 없으면 임시본으로 그린다.
+/* 결과 책에 얹는 작가 그림 — images/ui/result-title.png(손글씨 제목)가 있으면 쓰고, 없으면 임시본으로 그린다.
+   ※ 글롭(?url)으로 찾은 그림은 WebP 변환을 건너뛴다 — 손글씨 제목 파일이 오면 stampImg처럼 정적 import로 바꿀 것.
    파일만 넣으면 바뀌도록 글롭으로 찾는다(없어도 빌드는 된다). */
 const artFiles = import.meta.glob('../assets/images/ui/result-*.png', { eager: true, query: '?url', import: 'default' })
 const art = (name) => Object.entries(artFiles).find(([p]) => p.endsWith(`/result-${name}.png`))?.[1]
-const ART = { title: art('title'), qr: art('qr') }
+const ART = { title: art('title') }
 const INSTAGRAM = 'https://www.instagram.com/soyo_88_/'
 
 /* 손글씨 제목 그림이 오기 전 임시 — 명조 글씨를 둥글게 휘어 놓는다 */
@@ -543,9 +547,7 @@ function MoreWorks({ kiosk }) {
   const body = (
     <>
       <span className="font-display font-bold text-sm md:text-base text-[#B9682A] tracking-wide whitespace-nowrap">✦ 작품 더보기 ✦</span>
-      {ART.qr && (
-        <img src={ART.qr} alt="작가 인스타그램 QR" draggable={false} className="w-24 h-24 md:w-28 md:h-28 select-none" />
-      )}
+      <img src={qrImg} alt="작가 인스타그램 QR" draggable={false} className="w-24 h-24 @sm:w-32 @sm:h-32 my-0.5 select-none" />
       <span className="font-display text-xs md:text-sm text-[#B9682A] tracking-[0.12em]">@SOYO_88_</span>
     </>
   )
