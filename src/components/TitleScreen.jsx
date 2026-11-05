@@ -1,11 +1,11 @@
 import { motion } from 'framer-motion'
 import { ArtStage, ArtLayer, GoldFrame, ArtBandCrop, LoadingCover } from './shared/ArtStage'
-import { titleBg, titleLogo, titleSpoon, titleFork, titleBgPatch, goldFrames } from '../assets/screenImages'
+import { titleBg, titleLogo, titleSpoon, titleFork, goldFrames } from '../assets/screenImages'
 import { useImagesReady } from '../hooks/useImagesReady'
 import { tapWord } from '../lib/device'
 
 // App 전역 게이트가 전 자산을 선로드하므로 보통 즉시 통과하는 안전망
-const TITLE_SRCS = [titleBg, titleBgPatch, titleSpoon, titleFork, titleLogo, ...goldFrames]
+const TITLE_SRCS = [titleBg, titleSpoon, titleFork, titleLogo, ...goldFrames]
 
 export default function TitleScreen({ onStart }) {
   const { ready } = useImagesReady(TITLE_SRCS)
@@ -18,18 +18,17 @@ export default function TitleScreen({ onStart }) {
       aria-label="시작하기"
     >
       <ArtStage className="art-reveal bg-ink">
-        {/* 배경 켄번즈 줌 안에 스푼·포크까지 넣어야 메운 자리(patch)와 어긋나지 않는다 */}
+        {/* 스푼·포크도 배경 켄번즈 줌 안에 — 배경과 같이 커져야 자리가 어긋나지 않는다 */}
         <div className="absolute inset-0 art-zoom">
           <ArtLayer src={titleBg} />
-          <ArtLayer src={titleBgPatch} />
 
-          {/* 배경에서 떼어낸 스푼·포크 — 제자리에서 서로 어긋나게 둥실 */}
-          <div className="absolute inset-0 art-drift" style={{ transformOrigin: '10.9% 66.4%' }}>
+          {/* 스푼·포크 — 제자리에서 서로 어긋나게 둥실. 회전 중심 = 각 그림의 한가운데(새 원화 기준) */}
+          <div className="absolute inset-0 art-drift" style={{ transformOrigin: '12.5% 66.4%' }}>
             <ArtLayer src={titleSpoon} />
           </div>
           <div
             className="absolute inset-0 art-drift"
-            style={{ transformOrigin: '89.1% 63.4%', animationDelay: '-3.1s', '--drift-dir': -1 }}
+            style={{ transformOrigin: '85.9% 67.2%', animationDelay: '-3.1s', '--drift-dir': -1 }}
           >
             <ArtLayer src={titleFork} />
           </div>
@@ -56,7 +55,7 @@ export default function TitleScreen({ onStart }) {
         transition={{ duration: 1, ease: [0.16, 1, 0.3, 1], delay: 0.2 }}
         className="hidden portrait:block absolute top-[6%] left-1/2 -translate-x-1/2 w-[94vw] z-10"
       >
-        <ArtBandCrop src={titleLogo} top={1} bottom={49} />
+        <ArtBandCrop src={titleLogo} top={1} bottom={52} />
       </motion.div>
 
       {/* 하단 시작 안내 — 뷰포트 기준(세로 크롭에서도 항상 보이게) */}

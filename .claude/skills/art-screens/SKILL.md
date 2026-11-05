@@ -20,6 +20,8 @@ description: "원화 화면·UI 아트 — 3840x2160 원화 레이어(ArtStage·
 
 ## 타이틀 스푼·포크 둥실
 
+> 2026-11-05 대표가 타이틀 원화를 새 그림으로 교체: 배경(`title-bg.png`)에 스푼·포크가 없고, 작가가 스푼·포크를 한 장 레이어로 따로 줬다. 그 레이어를 가운데서 좌우로만 나눈 것이 `title-spoon.png`/`title-fork.png`(픽셀 그대로). **메우는 조각 `title-bg-patch.png`는 이제 쓰지 않는다** — 아래 patch 설명은 예전 배경 기준의 기록이다. 흔들림(`.art-drift`)과 `art-zoom` 안에 넣는 규칙은 그대로.
+
 원화 `title-bg.png`에 그려져 있던 좌우 스푼·포크를 떼어내 따로 띄운다. 작가 원본은 그대로 두고 파생 3장을 추가:
 - `title-spoon.png` / `title-fork.png` — 실루엣만 남긴 컷아웃 (GrabCut + 색 정리, 스크래치패드 스크립트)
 - `title-bg-patch.png` — 떼어낸 자리를 메운 배경 조각. **배경 바로 위에 깔아야** 원본 스푼이 비치지 않는다.

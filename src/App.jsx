@@ -8,7 +8,7 @@ import { useImagesReady } from './hooks/useImagesReady'
 import KioskIdlePrompt from './components/shared/KioskIdlePrompt'
 import { LoadingCover } from './components/shared/ArtStage'
 import {
-  titleBg, titleLogo, titleSpoon, titleFork, titleBgPatch, goldFrames,
+  titleBg, titleLogo, titleSpoon, titleFork, goldFrames,
   openingBg, openingBubble, openingObject,
   bookmarkBg, grassLayers, bookmarkTitles, ingredientLayers, cardPlate,
 } from './assets/screenImages'
@@ -39,7 +39,7 @@ const isKiosk = readKioskFlag()
 // 시작 시 전 흐름 자산을 한 번에 로드 — 이후 어떤 화면에서도 요소가 낱장으로 뜨지 않는다.
 // (결과 디저트 이미지는 오븐 대기 중 선로딩되는 기존 경로 유지)
 const ALL_ART_SRCS = [
-  titleBg, titleBgPatch, titleSpoon, titleFork, titleLogo, ...goldFrames,
+  titleBg, titleSpoon, titleFork, titleLogo, ...goldFrames,
   openingBg, openingBubble, openingObject, ...foxLayerSources,
   bookmarkBg, ...grassLayers,
   ...Object.values(bookmarkTitles), ...Object.values(ingredientLayers),

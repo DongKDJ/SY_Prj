@@ -20,7 +20,7 @@ const url = (name) => Object.entries(files).find(([p]) => p.split('/').pop().rep
 // 여기서는 배경음악만 내린다 — 0.6(-4.4dB → 약 -22.8 LUFS). 2026-11-05 대표가 귀로 듣고 "살짝 작게"(0.85 → 0.6, 3dB 더).
 // 기준 범위(-18±2)보다 조금 아래지만 효과음 밑에 깔리는 음악이라 대표 판단을 따른다.
 // 음원을 바꾸면 원본에서 다시 평탄화할 것(원본 = SY_Prj\사운드\, 측정·변환 명령은 커밋 메시지).
-const VOLUME = { bgm: 0.6, ...Object.fromEntries(Array.from({ length: 8 }, (_, i) => [`blip-${i + 1}`, 0.5])) } // 그 외 효과음은 1. 블립은 -6dBFS 피크 파일을 절반으로(대사 밑에 깔리게)
+const VOLUME = { bgm: 0.6, ...Object.fromEntries(Array.from({ length: 8 }, (_, i) => [`blip-${i + 1}`, 0.85])) } // 그 외 효과음은 1. 블립은 -6dBFS 피크 파일 — 2026-11-05 대표 "좀 더 크게"(0.5 → 0.85, 약 +4.6dB)
 // 무작위로 고르는 묶음
 const POOLS = {
   flip: ['flip-1', 'flip-2'],
