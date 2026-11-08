@@ -108,3 +108,5 @@ dist/
 
 # 카드 원본 이미지 보관 폴더 (뒤집기 전/후 최신본은 src/assets/images/cards/에 반영됨)
 카드/
+dist-offline
+

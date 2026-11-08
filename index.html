@@ -25,6 +25,35 @@
     <meta name="twitter:image" content="https://dongkdj.github.io/SY_Prj/og-cover.png" />
     <!-- 폰트는 src/main.jsx에서 번들로 로드 (전시장 네트워크 비의존) -->
     <title>여우씨의 디저트 레시피</title>
+    <!-- 앱이 못 켜지는 브라우저(오래된 사파리 등)에서 하얀 화면 대신 안내 카드. 어느 브라우저나 읽는 옛 문법으로만 쓴다. (2026-11-09 아이맥 안 뜸) -->
+    <script>
+      (function () {
+        var shown = false;
+        function rootFilled() { var r = document.getElementById('root'); return !!(r && r.childNodes.length); }
+        function show(detail) {
+          if (shown || rootFilled()) return;
+          shown = true;
+          var d = document.createElement('div');
+          d.id = 'old-browser-notice';
+          d.setAttribute('style', 'position:fixed;top:0;left:0;right:0;bottom:0;display:-webkit-flex;display:flex;-webkit-align-items:center;align-items:center;-webkit-justify-content:center;justify-content:center;background:#FBF3E3;color:#5E4632;font-family:-apple-system,BlinkMacSystemFont,"Apple SD Gothic Neo","Malgun Gothic",sans-serif;padding:24px;text-align:center;line-height:1.6;z-index:99999');
+          d.innerHTML = '<div style="max-width:28rem;border:3px solid #D6A64A;border-radius:16px;padding:28px 24px;background:#FFF8EC">'
+            + '<div style="font-size:20px;font-weight:700">이 브라우저에서는 열리지 않아요</div>'
+            + '<div style="margin-top:10px;font-size:15px">크롬(Chrome)으로 열거나, 사파리를 최신 버전으로 업데이트해 주세요.</div>'
+            + '<div style="margin-top:14px;font-size:12px;opacity:.7">' + detail + '</div></div>';
+          document.body.appendChild(d);
+          // 늦게라도 앱이 켜지면(느린 인터넷) 안내를 거둔다
+          if (window.MutationObserver) {
+            new MutationObserver(function () { if (rootFilled() && d.parentNode) d.parentNode.removeChild(d); })
+              .observe(document.getElementById('root'), { childList: true });
+          }
+        }
+        window.addEventListener('error', function (e) {
+          var m = (e && e.message) || '';
+          if (/SyntaxError|Unexpected token|Invalid regular expression|Unexpected identifier/i.test(m)) show('브라우저가 코드를 읽지 못했습니다: ' + m);
+        });
+        setTimeout(function () { show('앱이 12초 안에 켜지지 않았습니다'); }, 12000);
+      })();
+    </script>
   </head>
   <body>
     <div id="root"></div>
