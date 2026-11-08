@@ -903,9 +903,15 @@ input, textarea, [contenteditable] {
 
 /* ===== 전시장 키오스크 모드 (?kiosk=1) =====
    클래스는 useKioskLock이 <html>에 붙인다. 관람객 폰·심사 링크에는 붙지 않는다. */
-.kiosk-mode,
+/* 가로 스크롤만 막고 세로는 열어 둔다 — 도감처럼 화면보다 긴 페이지를 전시 PC에서도 끝까지 내려 볼 수 있게
+   (2026-11-09 아이맥 1080p: 도감 넷째 줄·아래 버튼이 안 닿았다). html에만 걸어야 뷰포트가 스크롤한다(body에도 걸면 body가 따로 스크롤 상자가 된다).
+   튕김·당겨서 새로고침은 overscroll-behavior가 막는다. */
+.kiosk-mode {
+  overflow-x: hidden;
+  overflow-y: auto;
+  overscroll-behavior: none;
+}
 .kiosk-mode body {
-  overflow: hidden;
   overscroll-behavior: none;
 }
 

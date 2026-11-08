@@ -79,6 +79,12 @@ export const dessertImages = {
   'dessert-16.png': dessert16,
 }
 
+// 도감 그리드용 작은 썸네일 — 합성본 한 장을 512px로(빌드에서 WebP). dev에서는 원본이 그대로 쓰인다.
+const dessertThumbFiles = import.meta.glob('./images/desserts/dessert-*.png', { eager: true, query: '?w=512', import: 'default' })
+export function getDessertThumb(filename) {
+  return Object.entries(dessertThumbFiles).find(([p]) => p.endsWith('/' + filename))?.[1] || getDessertImage(filename)
+}
+
 export function getDessertImage(filename) {
   return dessertImages[filename] || null
 }

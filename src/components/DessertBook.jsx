@@ -2,8 +2,7 @@ import Sentences from './shared/Sentences'
 import { useState, useCallback, useEffect } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
 import { dessertResults, stages, allCards, resultCards } from '../data/desserts'
-import { getCardImage } from '../assets/imageMap'
-import AnimatedDessert from './shared/AnimatedDessert'
+import { getCardImage, getDessertThumb } from '../assets/imageMap'
 import { InkButton } from './shared/InkButton'
 import BackButton from './shared/BackButton'
 import { ArtBackdrop } from './shared/ArtStage'
@@ -133,15 +132,11 @@ export default function DessertBook({ currentResult, onRestart, onExit }) {
                         className="gold-rim aspect-[3/4] rounded-xl overflow-hidden flex flex-col relative
                                    shadow-[0_14px_24px_-16px_rgba(94,70,50,0.7)] cursor-pointer"
                       >
-                        <div className="flex-1 overflow-hidden flex items-center justify-center
+                        {/* 그리드는 512px 합성 썸네일 한 장(정지) — 레이어 스택 16개는 오래된 전시 PC에서 화면을 비운다. 움직임은 상세·결과에서 */}
+                        <div className="flex-1 overflow-hidden flex items-center justify-center p-2
                                         bg-radial from-[#FFF8E8] to-[#F1DDB8]">
-                          <AnimatedDessert
-                            dessertId={d.id}
-                            image={d.image}
-                            name={d.name}
-                            variant="thumb"
-                            className="w-full h-full"
-                          />
+                          <img src={getDessertThumb(d.image)} alt={d.name} loading="lazy" draggable={false}
+                               className="w-full h-full object-contain select-none" />
                         </div>
                         <div className="px-1.5 py-1.5 text-center border-t border-[#D6A64A]/40 bg-[#FBF3E3]">
                           <p className="font-display text-xs md:text-sm text-ink font-bold truncate">

@@ -7,7 +7,7 @@ import { defineConfig, globalIgnores } from 'eslint/config'
 
 export default defineConfig([
   // .claude/: Claude Code 워크트리·설정 폴더 — 린트 대상 아님 (디렉토리 무시는 trailing slash 필요)
-  globalIgnores(['dist', '.claude/']),
+  globalIgnores(['dist', 'dist-offline', '.claude/']),
   {
     files: ['**/*.{js,jsx}'],
     extends: [
