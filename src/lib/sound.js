@@ -20,7 +20,7 @@ const url = (name) => Object.entries(files).find(([p]) => p.split('/').pop().rep
 // 여기서는 배경음악만 내린다 — 0.6(-4.4dB → 약 -22.8 LUFS). 2026-11-05 대표가 귀로 듣고 "살짝 작게"(0.85 → 0.6, 3dB 더).
 // 기준 범위(-18±2)보다 조금 아래지만 효과음 밑에 깔리는 음악이라 대표 판단을 따른다.
 // 음원을 바꾸면 원본에서 다시 평탄화할 것(원본 = SY_Prj\사운드\, 측정·변환 명령은 커밋 메시지).
-const VOLUME = { bgm: 0.6, ...Object.fromEntries(Array.from({ length: 8 }, (_, i) => [`blip-${i + 1}`, 0.85])) } // 그 외 효과음은 1. 블립은 -6dBFS 피크 파일 — 2026-11-05 대표 "좀 더 크게"(0.5 → 0.85, 약 +4.6dB)
+const VOLUME = { bgm: 0.6, ...Object.fromEntries(Array.from({ length: 8 }, (_, i) => [`blip-${i + 1}`, 1])) } // 그 외 효과음은 1. 블립의 진짜 크기는 아래 BLIP_GAIN(Web Audio) — 여기 1은 <audio> 예비 경로 상한
 // 무작위로 고르는 묶음
 const POOLS = {
   flip: ['flip-1', 'flip-2'],
@@ -113,9 +113,25 @@ export function unlockAudio() {
   if (ctx.state === 'suspended') ctx.resume().catch(() => {})
 }
 
-// 대사 팝 한 번의 길이 — 글자 간격(TYPE_MS)보다 조금 길게 끊어 글자마다 또렷이 들리게
-const BLIP_HOLD = 0.035
-const BLIP_LEN = 0.06
+// 대사 팝 한 번 — 글자 간격(TYPE_MS 50ms)보다 길게 잡아 소리가 겹치며 '보글보글'하게.
+// 2026-11-09 대표 "32차 뒤 팝이 작아졌다, 원래보다 더 크게": 0.06초·0.85에서는 순간 음량이 원래(두 글자에 한 번, 전체 길이, 0.5)보다
+// 약 10dB 작았다(모의 측정 -33 vs -22 LUFS). 0.095초·게인 1.3이면 원래보다 약 5dB 크고(-17 LUFS) 겹쳐도 최대치 -1dBFS 안.
+const BLIP_HOLD = 0.055
+const BLIP_LEN = 0.095
+const BLIP_GAIN = 1.3
+let blipBus = null // 팝 전용 리미터 — 여러 개가 겹쳐 1.0을 넘는 순간을 눌러 깨짐을 막는다
+function getBlipBus() {
+  if (!blipBus) {
+    blipBus = ctx.createDynamicsCompressor()
+    blipBus.threshold.value = -3
+    blipBus.knee.value = 0
+    blipBus.ratio.value = 20
+    blipBus.attack.value = 0.001
+    blipBus.release.value = 0.05
+    blipBus.connect(ctx.destination)
+  }
+  return blipBus
+}
 
 /** 'click' | 'spell' | 'fanfare' | 'flip' | 'page' | 'blip' */
 export function play(kind) {
@@ -132,14 +148,16 @@ export function play(kind) {
     const src = ctx.createBufferSource()
     const gain = ctx.createGain()
     src.buffer = buf
-    gain.gain.value = vol
-    src.connect(gain).connect(ctx.destination)
     if (kind === 'blip') {
       const t = ctx.currentTime
-      gain.gain.setValueAtTime(vol, t + BLIP_HOLD)
+      gain.gain.value = BLIP_GAIN
+      gain.gain.setValueAtTime(BLIP_GAIN, t + BLIP_HOLD)
       gain.gain.linearRampToValueAtTime(0.0001, t + BLIP_LEN)
+      src.connect(gain).connect(getBlipBus())
       src.start(t, 0, BLIP_LEN + 0.01)
     } else {
+      gain.gain.value = vol
+      src.connect(gain).connect(ctx.destination)
       src.start()
     }
     return
